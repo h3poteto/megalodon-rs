@@ -1,0 +1,15 @@
+pub struct Relationship {
+    id: String,
+    following: bool,
+    followed_by: bool,
+    delivery_following: Option<bool>,
+    blocking: bool,
+    blocked_by: bool,
+    muting: bool,
+    muting_notifications: bool,
+    requested: bool,
+    domain_blocking: bool,
+    showing_reblogs: bool,
+    endorsed: bool,
+    notifying: bool,
+}
