@@ -1,3 +1,4 @@
+use crate::default::DEFAULT_UA;
 use crate::error::Error as MegalodonError;
 use crate::response::Response;
 use reqwest::Url;
@@ -9,8 +10,6 @@ pub struct APIClient {
     base_url: String,
     user_agent: String,
 }
-
-static DEFAULT_UA: &str = "megalodon";
 
 impl APIClient {
     pub fn new(base_url: String, access_token: Option<String>, user_agent: Option<String>) -> Self {
@@ -32,15 +31,18 @@ impl APIClient {
         T: DeserializeOwned + Debug,
     {
         let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url);
+        let url = Url::parse(&*url)?;
+        let client = reqwest::Client::builder()
+            .user_agent(&self.user_agent)
+            .build()?;
 
-        match url {
-            Err(err) => Err(err.into()),
-            Ok(url) => {
-                let res = reqwest::get(url).await?;
-                let res = Response::<T>::from_reqwest(res).await?;
-                Ok(res)
-            }
+        let mut req = client.get(url);
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
         }
+
+        let res = req.send().await?;
+        let res = Response::<T>::from_reqwest(res).await?;
+        Ok(res)
     }
 }

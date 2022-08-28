@@ -26,7 +26,10 @@ impl<T> Response<T> {
         })
     }
 
-    pub fn json(&self) -> &T {
-        &self.json
+    pub fn json(&self) -> T
+    where
+        T: Clone,
+    {
+        self.json.clone()
     }
 }

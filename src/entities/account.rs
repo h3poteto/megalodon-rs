@@ -2,7 +2,7 @@ use super::{Emoji, Field, Source};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Account {
     id: String,
     username: String,

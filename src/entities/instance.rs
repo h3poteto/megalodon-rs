@@ -1,7 +1,7 @@
 use super::{Account, Stats, URLs};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Instance {
     uri: String,
     title: String,
@@ -18,21 +18,21 @@ pub struct Instance {
     configuration: Option<InstanceConfig>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct InstanceConfig {
     statuses: Statuses,
     media_attachments: MediaAttachments,
     polls: Polls,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 struct Statuses {
     max_characters: u32,
     max_media_attachments: u32,
     characters_reserved_per_url: u32,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 struct MediaAttachments {
     supported_mime_types: Vec<String>,
     image_size_limit: u32,
@@ -42,7 +42,7 @@ struct MediaAttachments {
     video_matrix_limit: u32,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 struct Polls {
     max_options: u32,
     max_characters_per_option: u32,

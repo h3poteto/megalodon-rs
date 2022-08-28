@@ -1,5 +1,5 @@
 use super::api_client::APIClient;
-use crate::{entities::Instance, error::Error, megalodon::Megalodon, response::Response};
+use crate::{entities, error::Error, megalodon::Megalodon, response::Response};
 use async_trait::async_trait;
 
 pub struct Mastodon {
@@ -20,7 +20,15 @@ impl Mastodon {
 
 #[async_trait]
 impl Megalodon for Mastodon {
-    async fn get_instance(&self) -> Result<Response<Instance>, Error> {
-        self.client.get::<Instance>("/api/v1/instance").await
+    async fn verify_account_credentials(&self) -> Result<Response<entities::Account>, Error> {
+        self.client
+            .get::<entities::Account>("/api/v1/accounts/verify_credentials")
+            .await
+    }
+
+    async fn get_instance(&self) -> Result<Response<entities::Instance>, Error> {
+        self.client
+            .get::<entities::Instance>("/api/v1/instance")
+            .await
     }
 }
