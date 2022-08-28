@@ -5,4 +5,7 @@ pub mod mastodon;
 pub mod megalodon;
 pub mod response;
 
+pub use megalodon::detector;
+pub use megalodon::generator;
 pub use megalodon::Megalodon;
+pub use megalodon::SNS;
