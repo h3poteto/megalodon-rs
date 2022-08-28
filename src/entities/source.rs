@@ -3,9 +3,9 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Source {
-    privacy: Option<String>,
-    sensitive: Option<bool>,
-    language: Option<String>,
-    note: String,
-    fields: Option<Vec<Field>>,
+    pub privacy: Option<String>,
+    pub sensitive: Option<bool>,
+    pub language: Option<String>,
+    pub note: String,
+    pub fields: Option<Vec<Field>>,
 }

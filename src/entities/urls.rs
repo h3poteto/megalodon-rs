@@ -2,5 +2,5 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct URLs {
-    streaming_api: String,
+    pub streaming_api: String,
 }

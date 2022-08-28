@@ -3,13 +3,22 @@ use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 
 pub struct Response<T> {
-    json: T,
-    status: u16,
-    status_text: String,
-    header: HeaderMap,
+    pub json: T,
+    pub status: u16,
+    pub status_text: String,
+    pub header: HeaderMap,
 }
 
 impl<T> Response<T> {
+    pub fn new(json: T, status: u16, status_text: String, header: HeaderMap) -> Response<T> {
+        Self {
+            json,
+            status,
+            status_text,
+            header,
+        }
+    }
+
     pub async fn from_reqwest(response: reqwest::Response) -> Result<Response<T>, reqwest::Error>
     where
         T: DeserializeOwned + Debug,

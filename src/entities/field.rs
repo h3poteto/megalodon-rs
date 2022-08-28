@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Field {
-    name: String,
-    value: String,
-    verified_at: DateTime<Utc>,
+    pub name: String,
+    pub value: String,
+    pub verified_at: DateTime<Utc>,
 }
