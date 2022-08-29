@@ -2,12 +2,12 @@ use super::StatusVisibility;
 use chrono::{DateTime, Utc};
 
 pub struct StatusParams {
-    text: String,
-    in_reply_to_id: Option<String>,
-    media_ids: Option<Vec<String>>,
-    sensitive: Option<bool>,
-    spoiler_text: Option<String>,
-    visibility: StatusVisibility,
-    scheduled_at: Option<DateTime<Utc>>,
-    application_id: String,
+    pub text: String,
+    pub in_reply_to_id: Option<String>,
+    pub media_ids: Option<Vec<String>>,
+    pub sensitive: Option<bool>,
+    pub spoiler_text: Option<String>,
+    pub visibility: StatusVisibility,
+    pub scheduled_at: Option<DateTime<Utc>>,
+    pub application_id: String,
 }

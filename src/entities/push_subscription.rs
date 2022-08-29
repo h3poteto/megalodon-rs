@@ -1,14 +1,14 @@
 pub struct PushSubscription {
-    id: String,
-    endpoint: String,
-    server_key: String,
-    alerts: Alerts,
+    pub id: String,
+    pub endpoint: String,
+    pub server_key: String,
+    pub alerts: Alerts,
 }
 
 pub struct Alerts {
-    follow: bool,
-    favourite: bool,
-    mention: bool,
-    reblog: bool,
-    poll: bool,
+    pub follow: bool,
+    pub favourite: bool,
+    pub mention: bool,
+    pub reblog: bool,
+    pub poll: bool,
 }

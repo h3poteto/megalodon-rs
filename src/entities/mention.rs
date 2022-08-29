@@ -1,6 +1,6 @@
 pub struct Mention {
-    id: String,
-    username: String,
-    url: String,
-    acct: String,
+    pub id: String,
+    pub username: String,
+    pub url: String,
+    pub acct: String,
 }

@@ -1,11 +1,13 @@
 use super::{Account, Emoji, Status};
 use crate::error::Error;
 
+use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
-use serde::{de, ser};
+use serde::{de, ser, Deserialize};
 use std::fmt;
 
+#[derive(Debug, Deserialize, Clone)]
 pub struct Notification {
     account: Account,
     created_at: DateTime<Utc>,
@@ -15,6 +17,7 @@ pub struct Notification {
     r#type: NotificationType,
 }
 
+#[derive(Debug, Clone)]
 pub enum NotificationType {
     Follow,
     FollowRequest,
@@ -74,6 +77,37 @@ impl<'de> de::Deserialize<'de> for NotificationType {
         match NotificationType::from_str(s.as_str()) {
             Ok(r) => Ok(r),
             Err(e) => Err(de::Error::custom(e)),
+        }
+    }
+}
+
+impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
+    fn into(self) -> MegalodonEntities::notification::NotificationType {
+        match self {
+            NotificationType::Follow => MegalodonEntities::notification::NotificationType::Follow,
+            NotificationType::FollowRequest => {
+                MegalodonEntities::notification::NotificationType::FollowRequest
+            }
+            NotificationType::Mention => MegalodonEntities::notification::NotificationType::Mention,
+            NotificationType::Reblog => MegalodonEntities::notification::NotificationType::Reblog,
+            NotificationType::Favourite => {
+                MegalodonEntities::notification::NotificationType::Favourite
+            }
+            NotificationType::Poll => MegalodonEntities::notification::NotificationType::Poll,
+            NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
+        }
+    }
+}
+
+impl Into<MegalodonEntities::Notification> for Notification {
+    fn into(self) -> MegalodonEntities::Notification {
+        MegalodonEntities::Notification {
+            account: self.account.into(),
+            created_at: self.created_at,
+            id: self.id,
+            status: self.status.map(|i| i.into()),
+            emoji: self.emoji.map(|i| i.into()),
+            r#type: self.r#type.into(),
         }
     }
 }

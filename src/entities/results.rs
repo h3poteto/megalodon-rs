@@ -1,7 +1,7 @@
 use super::{Account, Status, Tag};
 
 pub struct Results {
-    accounts: Vec<Account>,
-    statuses: Vec<Status>,
-    hashtags: Vec<Tag>,
+    pub accounts: Vec<Account>,
+    pub statuses: Vec<Status>,
+    pub hashtags: Vec<Tag>,
 }

@@ -1,16 +1,16 @@
 pub struct Card {
-    url: String,
-    title: String,
-    description: String,
-    r#type: CardType,
-    image: Option<String>,
-    author_name: Option<String>,
-    author_url: Option<String>,
-    provider_name: Option<String>,
-    provider_url: Option<String>,
-    html: Option<String>,
-    width: Option<u32>,
-    height: Option<u32>,
+    pub url: String,
+    pub title: String,
+    pub description: String,
+    pub r#type: CardType,
+    pub image: Option<String>,
+    pub author_name: Option<String>,
+    pub author_url: Option<String>,
+    pub provider_name: Option<String>,
+    pub provider_url: Option<String>,
+    pub html: Option<String>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
 }
 
 pub enum CardType {

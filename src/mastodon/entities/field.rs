@@ -4,9 +4,9 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Field {
-    pub name: String,
-    pub value: String,
-    pub verified_at: DateTime<Utc>,
+    name: String,
+    value: String,
+    verified_at: DateTime<Utc>,
 }
 
 impl From<MegalodonEntities::Field> for Field {

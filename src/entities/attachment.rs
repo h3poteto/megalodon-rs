@@ -1,49 +1,49 @@
 pub struct Attachment {
-    id: String,
-    r#type: AttachmentType,
-    url: String,
-    remote_url: Option<String>,
-    preview_url: String,
-    text_url: Option<String>,
-    meta: Option<AttachmentMeta>,
-    description: Option<String>,
-    blurhash: Option<String>,
+    pub id: String,
+    pub r#type: AttachmentType,
+    pub url: String,
+    pub remote_url: Option<String>,
+    pub preview_url: String,
+    pub text_url: Option<String>,
+    pub meta: Option<AttachmentMeta>,
+    pub description: Option<String>,
+    pub blurhash: Option<String>,
 }
 
 pub struct AttachmentMeta {
-    original: Option<MetaSub>,
-    small: Option<MetaSub>,
-    focus: Option<Focus>,
-    length: Option<String>,
-    duration: Option<f64>,
-    fps: Option<u32>,
-    size: Option<String>,
-    width: Option<u32>,
-    height: Option<u32>,
-    aspect: Option<f64>,
-    audio_encode: Option<String>,
-    audio_bitrate: Option<String>,
-    audio_channel: Option<String>,
+    pub original: Option<MetaSub>,
+    pub small: Option<MetaSub>,
+    pub focus: Option<Focus>,
+    pub length: Option<String>,
+    pub duration: Option<f64>,
+    pub fps: Option<u32>,
+    pub size: Option<String>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
+    pub aspect: Option<f64>,
+    pub audio_encode: Option<String>,
+    pub audio_bitrate: Option<String>,
+    pub audio_channel: Option<String>,
 }
 
 pub struct MetaSub {
     // For Image, Gifv, Video
-    width: u32,
-    height: u32,
-    size: String,
-    aspect: f64,
+    pub width: u32,
+    pub height: u32,
+    pub size: String,
+    pub aspect: f64,
 
     // For Gifv, Video
-    frame_rate: Option<String>,
+    pub frame_rate: Option<String>,
 
     // For Audio, Gifv, Video
-    duration: Option<f64>,
-    bitrate: Option<u32>,
+    pub duration: Option<f64>,
+    pub bitrate: Option<u32>,
 }
 
 pub struct Focus {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
 pub enum AttachmentType {

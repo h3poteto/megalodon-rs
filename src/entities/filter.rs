@@ -1,12 +1,12 @@
 use chrono::{DateTime, Utc};
 
 pub struct Filter {
-    id: String,
-    phrase: String,
-    context: Vec<FilterContext>,
-    expires_at: DateTime<Utc>,
-    irreversible: bool,
-    whole_word: bool,
+    pub id: String,
+    pub phrase: String,
+    pub context: Vec<FilterContext>,
+    pub expires_at: DateTime<Utc>,
+    pub irreversible: bool,
+    pub whole_word: bool,
 }
 
 pub enum FilterContext {

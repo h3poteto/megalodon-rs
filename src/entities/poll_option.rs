@@ -1,4 +1,4 @@
 pub struct PollOption {
-    title: String,
-    votes_count: Option<u32>,
+    pub title: String,
+    pub votes_count: Option<u32>,
 }

@@ -1,5 +1,5 @@
 pub struct History {
-    day: u64,
-    uses: usize,
-    accounts: usize,
+    pub day: u64,
+    pub uses: usize,
+    pub accounts: usize,
 }

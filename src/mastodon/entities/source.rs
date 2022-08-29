@@ -4,11 +4,11 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Source {
-    pub privacy: Option<String>,
-    pub sensitive: Option<bool>,
-    pub language: Option<String>,
-    pub note: String,
-    pub fields: Option<Vec<Field>>,
+    privacy: Option<String>,
+    sensitive: Option<bool>,
+    language: Option<String>,
+    note: String,
+    fields: Option<Vec<Field>>,
 }
 
 impl From<MegalodonEntities::Source> for Source {

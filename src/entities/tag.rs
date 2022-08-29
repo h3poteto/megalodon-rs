@@ -1,7 +1,7 @@
 use super::History;
 
 pub struct Tag {
-    name: String,
-    url: String,
-    history: Option<Vec<History>>,
+    pub name: String,
+    pub url: String,
+    pub history: Option<Vec<History>>,
 }

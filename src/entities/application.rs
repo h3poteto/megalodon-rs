@@ -1,5 +1,5 @@
 pub struct Application {
-    name: String,
-    website: Option<String>,
-    vapid_key: Option<String>,
+    pub name: String,
+    pub website: Option<String>,
+    pub vapid_key: Option<String>,
 }

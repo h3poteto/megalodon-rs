@@ -1,6 +1,6 @@
 use super::Status;
 
 pub struct Context {
-    ancestors: Vec<Status>,
-    descendants: Vec<Status>,
+    pub ancestors: Vec<Status>,
+    pub descendants: Vec<Status>,
 }

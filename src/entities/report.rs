@@ -1,7 +1,7 @@
 pub struct Report {
-    id: String,
-    action_taken: String,
-    comment: String,
-    account_id: String,
-    status_ids: Vec<String>,
+    pub id: String,
+    pub action_taken: String,
+    pub comment: String,
+    pub account_id: String,
+    pub status_ids: Vec<String>,
 }

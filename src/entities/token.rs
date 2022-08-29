@@ -1,6 +1,6 @@
 pub struct Token {
-    access_token: String,
-    token_type: String,
-    scope: String,
-    created_at: u64,
+    pub access_token: String,
+    pub token_type: String,
+    pub scope: String,
+    pub created_at: u64,
 }

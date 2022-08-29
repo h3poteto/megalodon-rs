@@ -3,10 +3,10 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Emoji {
-    pub shortcode: String,
-    pub static_url: String,
-    pub url: String,
-    pub visible_in_picker: bool,
+    shortcode: String,
+    static_url: String,
+    url: String,
+    visible_in_picker: bool,
 }
 
 impl From<MegalodonEntities::Emoji> for Emoji {

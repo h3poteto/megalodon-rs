@@ -1,4 +1,4 @@
 pub struct List {
-    id: String,
-    title: String,
+    pub id: String,
+    pub title: String,
 }

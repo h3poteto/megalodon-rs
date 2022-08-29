@@ -1,8 +1,8 @@
 use super::Account;
 
 pub struct Reaction {
-    count: u32,
-    me: bool,
-    name: String,
-    accounts: Option<Vec<Account>>,
+    pub count: u32,
+    pub me: bool,
+    pub name: String,
+    pub accounts: Option<Vec<Account>>,
 }

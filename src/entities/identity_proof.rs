@@ -1,9 +1,9 @@
 use chrono::{DateTime, Utc};
 
 pub struct IdentityProof {
-    provider: String,
-    provider_username: String,
-    updated_at: DateTime<Utc>,
-    proof_url: String,
-    profile_url: String,
+    pub provider: String,
+    pub provider_username: String,
+    pub updated_at: DateTime<Utc>,
+    pub proof_url: String,
+    pub profile_url: String,
 }

@@ -1,6 +1,6 @@
 pub struct Activity {
-    week: String,
-    statuses: String,
-    logins: String,
-    registrations: String,
+    pub week: String,
+    pub statuses: String,
+    pub logins: String,
+    pub registrations: String,
 }
