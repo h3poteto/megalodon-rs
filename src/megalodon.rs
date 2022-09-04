@@ -1,4 +1,5 @@
 use crate::error::Error;
+use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
 use crate::{entities, mastodon};
 use async_trait::async_trait;
@@ -6,8 +7,35 @@ use serde::Deserialize;
 
 #[async_trait]
 pub trait Megalodon {
+    /// Register the application to get client_id and client_secret.
+    async fn register_app(
+        &self,
+        client_name: String,
+        options: &AppInputOptions,
+    ) -> Result<AppData, Error>;
+    /// Create an application.
+    async fn create_app(
+        &self,
+        client_name: String,
+        options: &AppInputOptions,
+    ) -> Result<AppData, Error>;
+    // async fn verify_app_credentials(&self) -> Result<Response<entities::Application>, Error>;
+    /// Fetch OAuth access token. Get an access token based client_id, client_secret and authorization_code.
+    async fn fetch_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        code: String,
+        redirect_uri: String,
+    ) -> Result<TokenData, Error>;
     async fn verify_account_credentials(&self) -> Result<Response<entities::Account>, Error>;
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
+}
+
+pub struct AppInputOptions {
+    pub scopes: Option<Vec<String>>,
+    pub redirect_uris: Option<String>,
+    pub website: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

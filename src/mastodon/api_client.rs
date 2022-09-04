@@ -3,6 +3,7 @@ use crate::error::Error as MegalodonError;
 use crate::response::Response;
 use reqwest::Url;
 use serde::de::DeserializeOwned;
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 pub struct APIClient {
@@ -42,6 +43,29 @@ impl APIClient {
         }
 
         let res = req.send().await?;
+        let res = Response::<T>::from_reqwest(res).await?;
+        Ok(res)
+    }
+
+    pub async fn post<T>(
+        &self,
+        path: &str,
+        params: &HashMap<&str, String>,
+    ) -> Result<Response<T>, MegalodonError>
+    where
+        T: DeserializeOwned + Debug,
+    {
+        let url = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url)?;
+        let client = reqwest::Client::builder()
+            .user_agent(&self.user_agent)
+            .build()?;
+
+        let mut req = client.post(url);
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
+        }
+        let res = req.form(params).send().await?;
         let res = Response::<T>::from_reqwest(res).await?;
         Ok(res)
     }
