@@ -9,8 +9,7 @@ use crate::{
 use async_trait::async_trait;
 use oauth2::basic::BasicClient;
 use oauth2::{
-    AuthUrl, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, RedirectUrl, ResponseType,
-    Scope, TokenUrl,
+    AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
 
 pub struct Mastodon {
@@ -47,8 +46,7 @@ impl Mastodon {
 
         let scopes: Vec<Scope> = scope.iter().map(|s| Scope::new(s.to_string())).collect();
 
-        let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
-        let (auth_url, csrf_otken) = client
+        let (auth_url, _) = client
             .authorize_url(CsrfToken::new_random)
             .add_scopes(scopes)
             .set_response_type(&ResponseType::new("code".to_string()))
@@ -106,9 +104,25 @@ impl megalodon::Megalodon for Mastodon {
 
         let res = self
             .client
-            .post::<oauth::AppDataFromServer>("/api/v1/apps", &params)
+            .post::<oauth::AppDataFromServer>("/api/v1/apps", &params, None)
             .await?;
         Ok(oauth::AppData::from(res.json.into()))
+    }
+
+    async fn verify_app_credentials(
+        &self,
+    ) -> Result<Response<MegalodonEntities::Application>, Error> {
+        let res = self
+            .client
+            .get::<entities::Application>("/api/v1/apps/verify_credentials", None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Application>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
     }
 
     async fn fetch_access_token(
@@ -127,7 +141,7 @@ impl megalodon::Megalodon for Mastodon {
 
         let res = self
             .client
-            .post::<oauth::TokenDataFromServer>("/oauth/token", &params)
+            .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
         Ok(oauth::TokenData::from(res.json.into()))
     }
@@ -137,7 +151,7 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
         let res = self
             .client
-            .get::<entities::Account>("/api/v1/accounts/verify_credentials")
+            .get::<entities::Account>("/api/v1/accounts/verify_credentials", None)
             .await?;
         Ok(Response::<MegalodonEntities::Account>::new(
             res.json.into(),
@@ -150,7 +164,7 @@ impl megalodon::Megalodon for Mastodon {
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
-            .get::<entities::Instance>("/api/v1/instance")
+            .get::<entities::Instance>("/api/v1/instance", None)
             .await?;
 
         Ok(Response::<MegalodonEntities::Instance>::new(
