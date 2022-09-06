@@ -21,8 +21,9 @@ pub trait Megalodon {
         options: &AppInputOptions,
     ) -> Result<AppData, Error>;
 
-    async fn verify_app_credentials(&self) -> Result<Response<entities::Application>, Error>;
-
+    // ======================================
+    // apps/oauth
+    // ======================================
     /// Fetch OAuth access token.
     /// Get an access token based client_id, client_secret and authorization_code.
     async fn fetch_access_token(
@@ -32,6 +33,25 @@ pub trait Megalodon {
         code: String,
         redirect_uri: String,
     ) -> Result<TokenData, Error>;
+
+    /// Refresh OAuth access token.
+    /// Send refresh token and get new access token.
+    async fn refresh_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        refresh_token: String,
+    ) -> Result<TokenData, Error>;
+
+    /// Revoke an access token.
+    async fn revoke_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        access_token: String,
+    ) -> Result<Response<()>, Error>;
+
+    async fn verify_app_credentials(&self) -> Result<Response<entities::Application>, Error>;
 
     async fn verify_account_credentials(&self) -> Result<Response<entities::Account>, Error>;
 

@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use super::api_client::APIClient;
 use super::entities;
-use crate::oauth::TokenData;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
 };
@@ -109,6 +108,64 @@ impl megalodon::Megalodon for Mastodon {
         Ok(oauth::AppData::from(res.json.into()))
     }
 
+    async fn fetch_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        code: String,
+        redirect_uri: String,
+    ) -> Result<oauth::TokenData, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        params.insert("client_id", client_id);
+        params.insert("client_secret", client_secret);
+        params.insert("code", code);
+        params.insert("redirect_uri", redirect_uri);
+        params.insert("grant_type", "authorization_code".to_string());
+
+        let res = self
+            .client
+            .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
+            .await?;
+        Ok(oauth::TokenData::from(res.json.into()))
+    }
+
+    async fn refresh_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        refresh_token: String,
+    ) -> Result<oauth::TokenData, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        params.insert("client_id", client_id);
+        params.insert("client_secret", client_secret);
+        params.insert("refresh_token", refresh_token);
+        params.insert("grant_type", "authorization_code".to_string());
+
+        let res = self
+            .client
+            .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
+            .await?;
+        Ok(oauth::TokenData::from(res.json.into()))
+    }
+
+    async fn revoke_access_token(
+        &self,
+        client_id: String,
+        client_secret: String,
+        access_token: String,
+    ) -> Result<Response<()>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        params.insert("client_id", client_id);
+        params.insert("client_secret", client_secret);
+        params.insert("token", access_token);
+
+        let res = self
+            .client
+            .post::<()>("/oauth/revoke", &params, None)
+            .await?;
+        Ok(res)
+    }
+
     async fn verify_app_credentials(
         &self,
     ) -> Result<Response<MegalodonEntities::Application>, Error> {
@@ -123,27 +180,6 @@ impl megalodon::Megalodon for Mastodon {
             res.status_text,
             res.header,
         ))
-    }
-
-    async fn fetch_access_token(
-        &self,
-        client_id: String,
-        client_secret: String,
-        code: String,
-        redirect_uri: String,
-    ) -> Result<TokenData, Error> {
-        let mut params = HashMap::<&str, String>::new();
-        params.insert("client_id", client_id);
-        params.insert("client_secret", client_secret);
-        params.insert("code", code);
-        params.insert("redirect_uri", redirect_uri);
-        params.insert("grant_type", "authorization_code".to_string());
-
-        let res = self
-            .client
-            .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
-            .await?;
-        Ok(oauth::TokenData::from(res.json.into()))
     }
 
     async fn verify_account_credentials(
