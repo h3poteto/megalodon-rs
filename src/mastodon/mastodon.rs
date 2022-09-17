@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use super::api_client::APIClient;
 use super::entities;
+use crate::megalodon::CredentialsOptions;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
 };
@@ -182,6 +183,39 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn register_account(
+        &self,
+        username: String,
+        email: String,
+        password: String,
+        agreement: String,
+        locale: String,
+        reason: Option<String>,
+    ) -> Result<Response<MegalodonEntities::Token>, Error> {
+        let mut params = HashMap::<&str, String>::from([
+            ("username", username),
+            ("email", email),
+            ("password", password),
+            ("agreement", agreement),
+            ("locale", locale),
+        ]);
+        if let Some(reason) = reason {
+            params.insert("reason", reason);
+        }
+
+        let res = self
+            .client
+            .post::<entities::Token>("/api/v1/accounts", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Token>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn verify_account_credentials(
         &self,
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
@@ -191,6 +225,1023 @@ impl megalodon::Megalodon for Mastodon {
             .await?;
         Ok(Response::<MegalodonEntities::Account>::new(
             res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn update_credentials(
+        &self,
+        options: Option<&CredentialsOptions>,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        if let Some(options) = options {
+            if let Some(discoverable) = options.discoverable {
+                params.insert("discoverable", discoverable.to_string());
+            }
+            if let Some(bot) = options.bot {
+                params.insert("bot", bot.to_string());
+            }
+            if let Some(display_name) = &options.display_name {
+                params.insert("display_name", display_name.clone());
+            }
+            if let Some(note) = &options.note {
+                params.insert("note", note.clone());
+            }
+            if let Some(avatar) = &options.avatar {
+                params.insert("avatar", avatar.clone());
+            }
+            if let Some(header) = &options.header {
+                params.insert("header", header.clone());
+            }
+            if let Some(locked) = options.locked {
+                params.insert("locked", locked.to_string());
+            }
+            if let Some(source) = &options.source {
+                params.insert("source", serde_json::to_string(&source).unwrap());
+            }
+            if let Some(fields_attributes) = &options.fields_attributes {
+                params.insert(
+                    "fields_attributes",
+                    serde_json::to_string(&fields_attributes).unwrap(),
+                );
+            }
+        }
+
+        let res = self
+            .client
+            .patch::<entities::Account>("/api/v1/accounts/update_credentials", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Account>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_account(&self, id: String) -> Result<Response<MegalodonEntities::Account>, Error> {
+        let res = self
+            .client
+            .get::<entities::Account>(format!("/api/v1/accounts/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Account>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_account_statuses(
+        &self,
+        id: String,
+        options: Option<&megalodon::AccountStatusesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(pinned) = options.pinned {
+                params.push(format!("pinned={}", pinned));
+            }
+            if let Some(exclude_replies) = options.exclude_replies {
+                params.push(format!("exclude_replies={}", exclude_replies));
+            }
+            if let Some(exclude_reblogs) = options.exclude_reblogs {
+                params.push(format!("exclude_reblogs={}", exclude_reblogs));
+            }
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+        }
+        let mut url = format!("/api/v1/accounts/{}/statuses", id);
+        if params.len() > 0 {
+            url = url + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(url.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|s| s.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn subscribe_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::from([("notify", true.to_string())]);
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/follow", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unsubscribe_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::from([("notify", false.to_string())]);
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/follow", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_account_followers(
+        &self,
+        id: String,
+        options: Option<&megalodon::AccountFollowersInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+        }
+        let mut url = format!("/api/v1/accounts/{}/followers", id);
+        if params.len() > 0 {
+            url = url + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(&url, None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_account_following(
+        &self,
+        id: String,
+        options: Option<&megalodon::AccountFollowersInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+        }
+        let mut url = format!("/api/v1/accounts/{}/following", id);
+        if params.len() > 0 {
+            url = url + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(&url, None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_account_lists(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<MegalodonEntities::List>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::List>>(format!("/api/v1/accounts/{}/lists", id).as_ref(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::List>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_identity_proofs(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<MegalodonEntities::IdentityProof>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::IdentityProof>>(
+                format!("/api/v1/accounts/{}/identity_proofs", id).as_ref(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::IdentityProof>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn follow_account(
+        &self,
+        id: String,
+        options: Option<&megalodon::FollowInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        if let Some(options) = options {
+            if let Some(reblog) = options.reblog {
+                params.insert("reblog", reblog.to_string());
+            }
+        }
+
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/follow", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unfollow_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/unfollow", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn block_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/block", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unblock_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/unblock", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn mute_account(
+        &self,
+        id: String,
+        notifications: bool,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::from([("notifications", notifications.to_string())]);
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/mute", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unmute_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts{}/unmute", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn pin_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/pin", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unpin_account(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/unpin", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_relationships(
+        &self,
+        ids: Vec<String>,
+    ) -> Result<Response<Vec<MegalodonEntities::Relationship>>, Error> {
+        let mut params = Vec::<String>::new();
+        for id in ids.iter() {
+            params.push(format!("id[]={}", id));
+        }
+        let path = "/api/v1/accounts/relationships?".to_string() + params.join("&").as_str();
+        let res = self
+            .client
+            .get::<Vec<entities::Relationship>>(path.as_ref(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Relationship>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn search_account(
+        &self,
+        q: String,
+        options: Option<&megalodon::SearchAccountInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::from([format!("q={}", q)]);
+        if let Some(options) = options {
+            if let Some(following) = options.following {
+                params.push(format!("following={}", following));
+            }
+            if let Some(resolve) = options.resolve {
+                params.push(format!("resolve={}", resolve));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+        }
+        let mut path = "/api/v1/accounts/search".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_bookmarks(
+        &self,
+        options: Option<&megalodon::GetBookmarksInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/bookmarks".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_favourites(
+        &self,
+        options: Option<&megalodon::GetFavouritesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/favourites".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_mutes(
+        &self,
+        options: Option<&megalodon::GetMutesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/mutes".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_blocks(
+        &self,
+        options: Option<&megalodon::GetBlocksInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/blocks".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_domain_blocks(
+        &self,
+        options: Option<&megalodon::GetDomainBlocksInputOptions>,
+    ) -> Result<Response<Vec<String>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/domain_blocks".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self.client.get::<Vec<String>>(path.as_str(), None).await?;
+
+        Ok(Response::<Vec<String>>::new(
+            res.json,
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn block_domain(&self, domain: String) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, String>::from([("domain", domain)]);
+        let res = self
+            .client
+            .post::<()>("/api/v1/domain_blocks", &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn unblock_domain(&self, domain: String) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, String>::from([("domain", domain)]);
+        let res = self
+            .client
+            .delete::<()>("/api/v1/domain_blocks", &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn get_filters(&self) -> Result<Response<Vec<MegalodonEntities::Filter>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Filter>>("/api/v1/filters", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Filter>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_filter(&self, id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
+        let res = self
+            .client
+            .get::<entities::Filter>(format!("/api/v1/filters/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn create_filter(
+        &self,
+        phrase: String,
+        context: Vec<MegalodonEntities::filter::FilterContext>,
+        options: Option<&megalodon::FilterInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Filter>, Error> {
+        let mut params = HashMap::<&str, String>::from([
+            ("phrase", phrase),
+            ("context", serde_json::to_string(&context).unwrap()),
+        ]);
+        if let Some(options) = options {
+            if let Some(irreversible) = options.irreversible {
+                params.insert("irreversible", irreversible.to_string());
+            }
+            if let Some(whole_word) = options.whole_word {
+                params.insert("whole_word", whole_word.to_string());
+            }
+            if let Some(expires_in) = options.expires_in {
+                params.insert("expires_in", expires_in.to_string());
+            }
+        }
+        let res = self
+            .client
+            .post::<entities::Filter>("/api/v1/filters", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn update_filter(
+        &self,
+        id: String,
+        phrase: String,
+        context: Vec<MegalodonEntities::filter::FilterContext>,
+        options: Option<&megalodon::FilterInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Filter>, Error> {
+        let mut params = HashMap::<&str, String>::from([
+            ("phrase", phrase),
+            ("context", serde_json::to_string(&context).unwrap()),
+        ]);
+        if let Some(options) = options {
+            if let Some(irreversible) = options.irreversible {
+                params.insert("irreversible", irreversible.to_string());
+            }
+            if let Some(whole_word) = options.whole_word {
+                params.insert("whole_word", whole_word.to_string());
+            }
+            if let Some(expires_in) = options.expires_in {
+                params.insert("expires_in", expires_in.to_string());
+            }
+        }
+        let res = self
+            .client
+            .put::<entities::Filter>(format!("/api/v1/filters/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_filter(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, String>::new();
+        let res = self
+            .client
+            .delete::<()>(format!("/api/v1/filters/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn report(
+        &self,
+        account_id: String,
+        comment: String,
+        options: Option<&megalodon::ReportInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Report>, Error> {
+        let mut params =
+            HashMap::<&str, String>::from([("account_id", account_id), ("comment", comment)]);
+        if let Some(options) = options {
+            if let Some(status_ids) = &options.status_ids {
+                params.insert("status_ids", serde_json::to_string(&status_ids).unwrap());
+            }
+            if let Some(forward) = options.forward {
+                params.insert("forward", forward.to_string());
+            }
+        }
+        let res = self
+            .client
+            .post::<entities::Report>("/api/v1/reports", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Report>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_follow_requests(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(limit) = limit {
+            params.push(format!("limit={}", limit));
+        }
+        let mut path = "/api/v1/follow_requests".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn accept_follow_request(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/follow_requests/{}/authorize", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn reject_follow_request(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/follow_requests/{}/reject", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_endorsements(
+        &self,
+        options: Option<&megalodon::GetEndorsementsInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+        }
+        let mut path = "/api/v1/endorsements".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_featured_tags(
+        &self,
+    ) -> Result<Response<Vec<MegalodonEntities::FeaturedTag>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::FeaturedTag>>("/api/v1/featured_tags", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::FeaturedTag>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn create_featured_tag(
+        &self,
+        name: String,
+    ) -> Result<Response<MegalodonEntities::FeaturedTag>, Error> {
+        let params = HashMap::<&str, String>::from([("name", name)]);
+        let res = self
+            .client
+            .post::<entities::FeaturedTag>("/api/v1/featured_tags", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::FeaturedTag>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_featured_tag(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>(
+                format!("/api/v1/featured_tags/{}", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn get_suggested_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Tag>>("/api/v1/featured_tags/suggestions", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Tag>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_suggestions(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(limit) = limit {
+            params.push(format!("limit={}", limit));
+        }
+        let mut path = "/api/v1/suggestions".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
             res.status,
             res.status_text,
             res.header,

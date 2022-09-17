@@ -3,7 +3,7 @@ use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
 use crate::{entities, mastodon};
 use async_trait::async_trait;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[async_trait]
 pub trait Megalodon {
@@ -51,9 +51,231 @@ pub trait Megalodon {
         access_token: String,
     ) -> Result<Response<()>, Error>;
 
+    // ======================================
+    // apps
+    // ======================================
+
     async fn verify_app_credentials(&self) -> Result<Response<entities::Application>, Error>;
 
+    // ======================================
+    // accounts
+    // ======================================
+
+    async fn register_account(
+        &self,
+        username: String,
+        email: String,
+        password: String,
+        agreement: String,
+        locale: String,
+        reason: Option<String>,
+    ) -> Result<Response<entities::Token>, Error>;
+
     async fn verify_account_credentials(&self) -> Result<Response<entities::Account>, Error>;
+
+    async fn update_credentials(
+        &self,
+        options: Option<&CredentialsOptions>,
+    ) -> Result<Response<entities::Account>, Error>;
+
+    async fn get_account(&self, id: String) -> Result<Response<entities::Account>, Error>;
+
+    async fn get_account_statuses(
+        &self,
+        id: String,
+        options: Option<&AccountStatusesInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn subscribe_account(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn unsubscribe_account(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn get_account_followers(
+        &self,
+        id: String,
+        options: Option<&AccountFollowersInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn get_account_following(
+        &self,
+        id: String,
+        options: Option<&AccountFollowersInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn get_account_lists(&self, id: String) -> Result<Response<Vec<entities::List>>, Error>;
+
+    async fn get_identity_proofs(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<entities::IdentityProof>>, Error>;
+
+    async fn follow_account(
+        &self,
+        id: String,
+        options: Option<&FollowInputOptions>,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn unfollow_account(&self, id: String)
+        -> Result<Response<entities::Relationship>, Error>;
+
+    async fn block_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn unblock_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn mute_account(
+        &self,
+        id: String,
+        notifications: bool,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn unmute_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn pin_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn unpin_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn get_relationships(
+        &self,
+        ids: Vec<String>,
+    ) -> Result<Response<Vec<entities::Relationship>>, Error>;
+
+    async fn search_account(
+        &self,
+        q: String,
+        options: Option<&SearchAccountInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    // ======================================
+    // accounts/bookmarks
+    // ======================================
+    async fn get_bookmarks(
+        &self,
+        options: Option<&GetBookmarksInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    // ======================================
+    // accounts/favourites
+    // ======================================
+    async fn get_favourites(
+        &self,
+        options: Option<&GetFavouritesInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    // ======================================
+    // accounts/mutes
+    // ======================================
+    async fn get_mutes(
+        &self,
+        options: Option<&GetMutesInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    // ======================================
+    // accounts/blocks
+    // ======================================
+    async fn get_blocks(
+        &self,
+        options: Option<&GetBlocksInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    // ======================================
+    // accounts/domain_blocks
+    // ======================================
+    async fn get_domain_blocks(
+        &self,
+        options: Option<&GetDomainBlocksInputOptions>,
+    ) -> Result<Response<Vec<String>>, Error>;
+
+    async fn block_domain(&self, domain: String) -> Result<Response<()>, Error>;
+
+    async fn unblock_domain(&self, domain: String) -> Result<Response<()>, Error>;
+
+    // ======================================
+    // accounts/filters
+    // ======================================
+    async fn get_filters(&self) -> Result<Response<Vec<entities::Filter>>, Error>;
+
+    async fn get_filter(&self, id: String) -> Result<Response<entities::Filter>, Error>;
+
+    async fn create_filter(
+        &self,
+        phrase: String,
+        context: Vec<entities::filter::FilterContext>,
+        options: Option<&FilterInputOptions>,
+    ) -> Result<Response<entities::Filter>, Error>;
+
+    async fn update_filter(
+        &self,
+        id: String,
+        phrase: String,
+        context: Vec<entities::filter::FilterContext>,
+        options: Option<&FilterInputOptions>,
+    ) -> Result<Response<entities::Filter>, Error>;
+
+    async fn delete_filter(&self, id: String) -> Result<Response<()>, Error>;
+
+    // ======================================
+    // accounts/reports
+    // ======================================
+    async fn report(
+        &self,
+        account_id: String,
+        comment: String,
+        options: Option<&ReportInputOptions>,
+    ) -> Result<Response<entities::Report>, Error>;
+
+    // ======================================
+    // accounts/follow_requests
+    // ======================================
+    async fn get_follow_requests(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn accept_follow_request(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    async fn reject_follow_request(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::Relationship>, Error>;
+
+    // ======================================
+    // accounts/endorsements
+    // ======================================
+    async fn get_endorsements(
+        &self,
+        options: Option<&GetEndorsementsInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    // ======================================
+    // accounts/featured_tags
+    // ======================================
+    async fn get_featured_tags(&self) -> Result<Response<Vec<entities::FeaturedTag>>, Error>;
+
+    async fn create_featured_tag(
+        &self,
+        name: String,
+    ) -> Result<Response<entities::FeaturedTag>, Error>;
+
+    async fn delete_featured_tag(&self, id: String) -> Result<Response<()>, Error>;
+
+    async fn get_suggested_tags(&self) -> Result<Response<Vec<entities::Tag>>, Error>;
+
+    // ======================================
+    // accounts/suggestions
+    // ======================================
+    async fn get_suggestions(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
 
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
@@ -62,6 +284,99 @@ pub struct AppInputOptions {
     pub scopes: Option<Vec<String>>,
     pub redirect_uris: Option<String>,
     pub website: Option<String>,
+}
+
+pub struct CredentialsOptions {
+    pub discoverable: Option<bool>,
+    pub bot: Option<bool>,
+    pub display_name: Option<String>,
+    pub note: Option<String>,
+    pub avatar: Option<String>,
+    pub header: Option<String>,
+    pub locked: Option<bool>,
+    pub source: Option<CredentialsSource>,
+    pub fields_attributes: Option<Vec<CredentialsFieldAttribute>>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct CredentialsSource {
+    pub privacy: Option<String>,
+    pub sensitive: Option<bool>,
+    pub language: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct CredentialsFieldAttribute {
+    pub name: String,
+    pub value: String,
+}
+
+pub struct AccountStatusesInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+    pub pinned: Option<bool>,
+    pub exclude_replies: Option<bool>,
+    pub exclude_reblogs: Option<bool>,
+    pub only_media: Option<bool>,
+}
+
+pub struct AccountFollowersInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+}
+
+pub struct FollowInputOptions {
+    pub reblog: Option<bool>,
+}
+
+pub struct SearchAccountInputOptions {
+    pub following: Option<bool>,
+    pub resolve: Option<bool>,
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+}
+
+pub type GetBookmarksInputOptions = GetArrayWithSinceOptions;
+
+pub type GetFavouritesInputOptions = GetArrayOptions;
+
+pub type GetMutesInputOptions = GetArrayOptions;
+
+pub type GetBlocksInputOptions = GetArrayOptions;
+
+pub type GetDomainBlocksInputOptions = GetArrayOptions;
+
+pub struct GetArrayOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub min_id: Option<String>,
+}
+
+pub struct GetArrayWithSinceOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+    pub min_id: Option<String>,
+}
+
+pub struct FilterInputOptions {
+    pub irreversible: Option<bool>,
+    pub whole_word: Option<bool>,
+    pub expires_in: Option<u64>,
+}
+
+pub struct ReportInputOptions {
+    pub status_ids: Option<Vec<String>>,
+    pub forward: Option<bool>,
+}
+
+pub struct GetEndorsementsInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
