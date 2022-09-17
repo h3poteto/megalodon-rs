@@ -1248,6 +1248,363 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn post_status(
+        &self,
+        status: String,
+        options: Option<&megalodon::PostStatusInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let mut params = HashMap::<&str, String>::from([("status", status)]);
+        if let Some(options) = options {
+            if let Some(media_ids) = &options.media_ids {
+                params.insert("media_ids", serde_json::to_string(&media_ids).unwrap());
+            }
+            if let Some(in_reply_to_id) = &options.in_reply_to_id {
+                params.insert("in_reply_to_id", in_reply_to_id.clone());
+            }
+            if let Some(sensitive) = options.sensitive {
+                params.insert("sensitive", sensitive.to_string());
+            }
+            if let Some(spoiler_text) = &options.spoiler_text {
+                params.insert("spoiler_text", spoiler_text.clone());
+            }
+            if let Some(visibility) = &options.visibility {
+                params.insert("visibility", visibility.to_string());
+            }
+            if let Some(scheduled_at) = options.scheduled_at {
+                params.insert("scheduled_at", scheduled_at.to_rfc3339());
+            }
+            if let Some(language) = &options.language {
+                params.insert("language", language.clone());
+            }
+            if let Some(quote_id) = &options.quote_id {
+                params.insert("quote_id", quote_id.clone());
+            }
+            if let Some(poll) = &options.poll {
+                params.insert("poll", serde_json::to_string(&poll).unwrap());
+            }
+        }
+        let res = self
+            .client
+            .post::<entities::Status>("/api/v1/statuses", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let res = self
+            .client
+            .get::<entities::Status>(format!("/api/v1/statuses/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_status(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn get_status_context(
+        &self,
+        id: String,
+        options: Option<&megalodon::GetStatusContextInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Context>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("sinde_id={}", since_id));
+            }
+        }
+        let mut path = format!("/api/v1/statuses/{}/context", id).to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<entities::Context>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Context>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_status_reblogged_by(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(
+                format!("/api/v1/statuses/{}/reblogged_by", id).as_str(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_status_favourited_by(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(
+                format!("/api/v1/statuses/{}/favourited_by", id).as_str(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn favourite_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/favourite", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unfavourite_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unfavourite", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn reblog_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/reblog", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unreblog_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unreblog", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn bookmark_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/bookmark", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unbookmark_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unbookmark", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn mute_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/mute", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unmute_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unmute", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn pin_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/pin", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unpin_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unpin", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

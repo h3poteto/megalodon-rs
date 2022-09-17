@@ -3,6 +3,7 @@ use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
 use crate::{entities, mastodon};
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[async_trait]
@@ -277,6 +278,55 @@ pub trait Megalodon {
         limit: Option<u32>,
     ) -> Result<Response<Vec<entities::Account>>, Error>;
 
+    // ======================================
+    // statuses
+    // ======================================
+    async fn post_status(
+        &self,
+        status: String,
+        options: Option<&PostStatusInputOptions>,
+    ) -> Result<Response<entities::Status>, Error>;
+
+    async fn get_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn delete_status(&self, id: String) -> Result<Response<()>, Error>;
+
+    async fn get_status_context(
+        &self,
+        id: String,
+        options: Option<&GetStatusContextInputOptions>,
+    ) -> Result<Response<entities::Context>, Error>;
+
+    async fn get_status_reblogged_by(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn get_status_favourited_by(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn favourite_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn unfavourite_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn reblog_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn unreblog_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn bookmark_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn unbookmark_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn mute_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn unmute_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn pin_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
+    async fn unpin_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -374,6 +424,32 @@ pub struct ReportInputOptions {
 }
 
 pub struct GetEndorsementsInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+}
+
+pub struct PostStatusInputOptions {
+    pub media_ids: Option<Vec<String>>,
+    pub poll: Option<PollOptions>,
+    pub in_reply_to_id: Option<String>,
+    pub sensitive: Option<bool>,
+    pub spoiler_text: Option<String>,
+    pub visibility: Option<entities::status::StatusVisibility>,
+    pub scheduled_at: Option<DateTime<Utc>>,
+    pub language: Option<String>,
+    pub quote_id: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct PollOptions {
+    pub options: Vec<String>,
+    pub expires_in: Option<u64>,
+    pub multiple: Option<bool>,
+    pub hide_totals: Option<bool>,
+}
+
+pub struct GetStatusContextInputOptions {
     pub limit: Option<u32>,
     pub max_id: Option<String>,
     pub since_id: Option<String>,

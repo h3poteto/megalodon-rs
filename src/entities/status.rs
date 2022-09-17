@@ -1,5 +1,8 @@
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
+use crate::error::Error;
 use chrono::{DateTime, Utc};
+use core::fmt;
+use std::str::FromStr;
 
 pub struct Status {
     pub id: String,
@@ -40,4 +43,29 @@ pub enum StatusVisibility {
     Unlisted,
     Private,
     Direct,
+}
+
+impl fmt::Display for StatusVisibility {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            StatusVisibility::Public => write!(f, "public"),
+            StatusVisibility::Unlisted => write!(f, "unlisted"),
+            StatusVisibility::Private => write!(f, "private"),
+            StatusVisibility::Direct => write!(f, "direct"),
+        }
+    }
+}
+
+impl FromStr for StatusVisibility {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "public" => Ok(StatusVisibility::Public),
+            "unlisted" => Ok(StatusVisibility::Unlisted),
+            "private" => Ok(StatusVisibility::Private),
+            "direct" => Ok(StatusVisibility::Direct),
+            _ => Err(Error::new(s.to_owned())),
+        }
+    }
 }
