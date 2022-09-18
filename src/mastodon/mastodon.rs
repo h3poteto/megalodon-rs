@@ -1820,6 +1820,209 @@ impl megalodon::Megalodon for Mastodon {
         Ok(res)
     }
 
+    async fn get_public_timeline(
+        &self,
+        options: Option<&megalodon::GetPublicTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::from([format!("local={}", false)]);
+        if let Some(options) = options {
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/timelines/public".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_local_timeline(
+        &self,
+        options: Option<&megalodon::GetLocalTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::from([format!("local={}", true)]);
+        if let Some(options) = options {
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/timelines/public".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_tag_timeline(
+        &self,
+        hashtag: String,
+        options: Option<&megalodon::GetTagTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+            if let Some(local) = options.local {
+                params.push(format!("local={}", local));
+            }
+        }
+        let mut path = format!("/api/v1/timelines/tag/{}", hashtag);
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_home_timeline(
+        &self,
+        options: Option<&megalodon::GetHomeTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+            if let Some(local) = options.local {
+                params.push(format!("local={}", local));
+            }
+        }
+        let mut path = "/api/v1/timelines/home".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_list_timeline(
+        &self,
+        list_id: String,
+        options: Option<&megalodon::GetListTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(only_media) = options.only_media {
+                params.push(format!("only_media={}", only_media));
+            }
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = format!("/api/v1/timelines/list/{}", list_id);
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

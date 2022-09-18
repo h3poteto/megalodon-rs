@@ -374,6 +374,36 @@ pub trait Megalodon {
 
     async fn cancel_scheduled_status(&self, id: String) -> Result<Response<()>, Error>;
 
+    // ======================================
+    // timeilnes
+    // ======================================
+    async fn get_public_timeline(
+        &self,
+        options: Option<&GetPublicTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn get_local_timeline(
+        &self,
+        options: Option<&GetLocalTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn get_tag_timeline(
+        &self,
+        hashtag: String,
+        options: Option<&GetTagTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn get_home_timeline(
+        &self,
+        options: Option<&GetHomeTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn get_list_timeline(
+        &self,
+        list_id: String,
+        options: Option<&GetListTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -514,6 +544,29 @@ pub struct UpdateMediaInputOptions {
 }
 
 pub type GetScheduledStatusesInputOptions = GetArrayWithSinceOptions;
+
+pub type GetPublicTimelineInputOptions = GetTimelineOptions;
+pub type GetLocalTimelineInputOptions = GetTimelineOptions;
+pub type GetTagTimelineInputOptions = GetTimelineOptionsWithLocal;
+pub type GetHomeTimelineInputOptions = GetTimelineOptionsWithLocal;
+pub type GetListTimelineInputOptions = GetTimelineOptions;
+
+pub struct GetTimelineOptions {
+    pub only_media: Option<bool>,
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+    pub min_id: Option<String>,
+}
+
+pub struct GetTimelineOptionsWithLocal {
+    pub only_media: Option<bool>,
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+    pub min_id: Option<String>,
+    pub local: Option<bool>,
+}
 
 #[derive(Debug, Deserialize)]
 struct Instance {
