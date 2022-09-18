@@ -1685,6 +1685,44 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_poll(&self, id: String) -> Result<Response<MegalodonEntities::Poll>, Error> {
+        let res = self
+            .client
+            .get::<entities::Poll>(format!("/api/v1/polls/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Poll>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn vote_poll(
+        &self,
+        id: String,
+        choices: Vec<u32>,
+    ) -> Result<Response<MegalodonEntities::Poll>, Error> {
+        let params =
+            HashMap::<&str, String>::from([("choices", serde_json::to_string(&choices).unwrap())]);
+        let res = self
+            .client
+            .post::<entities::Poll>(
+                format!("/api/v1/polls/{}/votes", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Poll>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

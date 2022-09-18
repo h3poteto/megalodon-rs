@@ -342,6 +342,17 @@ pub trait Megalodon {
         options: Option<&UpdateMediaInputOptions>,
     ) -> Result<Response<entities::Attachment>, Error>;
 
+    // ======================================
+    // statuses/polls
+    // ======================================
+    async fn get_poll(&self, id: String) -> Result<Response<entities::Poll>, Error>;
+
+    async fn vote_poll(
+        &self,
+        id: String,
+        choices: Vec<u32>,
+    ) -> Result<Response<entities::Poll>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
