@@ -454,6 +454,17 @@ pub trait Megalodon {
         account_ids: Vec<String>,
     ) -> Result<Response<()>, Error>;
 
+    // ======================================
+    // timeilnes/markers
+    // ======================================
+    async fn get_markers(&self, timeline: Vec<String>)
+        -> Result<Response<entities::Marker>, Error>;
+
+    async fn save_markers(
+        &self,
+        options: Option<&SaveMarkersInputOptions>,
+    ) -> Result<Response<entities::Marker>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -618,6 +629,16 @@ pub struct GetTimelineOptionsWithLocal {
     pub since_id: Option<String>,
     pub min_id: Option<String>,
     pub local: Option<bool>,
+}
+
+pub struct SaveMarkersInputOptions {
+    pub home: Option<Marker>,
+    pub notifications: Option<Marker>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct Marker {
+    pub last_reading_id: String,
 }
 
 #[derive(Debug, Deserialize)]

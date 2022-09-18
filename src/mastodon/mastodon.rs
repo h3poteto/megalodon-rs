@@ -2244,6 +2244,60 @@ impl megalodon::Megalodon for Mastodon {
         Ok(res)
     }
 
+    async fn get_markers(
+        &self,
+        timeline: Vec<String>,
+    ) -> Result<Response<MegalodonEntities::Marker>, Error> {
+        let params = Vec::<String>::from([format!(
+            "timeline={}",
+            serde_json::to_string(&timeline).unwrap()
+        )]);
+        let mut path = "/api/v1/markers".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<entities::Marker>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Marker>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn save_markers(
+        &self,
+        options: Option<&megalodon::SaveMarkersInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Marker>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        if let Some(options) = options {
+            if let Some(home) = &options.home {
+                params.insert("home", serde_json::to_string(&home).unwrap());
+            }
+            if let Some(notifications) = &options.notifications {
+                params.insert(
+                    "notifications",
+                    serde_json::to_string(&notifications).unwrap(),
+                );
+            }
+        }
+        let res = self
+            .client
+            .post::<entities::Marker>("/api/v1/makers", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Marker>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
