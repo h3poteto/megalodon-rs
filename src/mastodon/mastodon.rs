@@ -2505,6 +2505,30 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<String>>("/api/v1/instance/peers", None)
+            .await?;
+        Ok(res)
+    }
+
+    async fn get_instance_activity(
+        &self,
+    ) -> Result<Response<Vec<MegalodonEntities::Activity>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Activity>>("/api/v1/instance/activity", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Activity>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

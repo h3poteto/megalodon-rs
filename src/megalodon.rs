@@ -515,6 +515,10 @@ pub trait Megalodon {
     // instance
     // ======================================
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
+
+    async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error>;
+
+    async fn get_instance_activity(&self) -> Result<Response<Vec<entities::Activity>>, Error>;
 }
 
 pub struct AppInputOptions {
