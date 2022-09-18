@@ -527,6 +527,14 @@ pub trait Megalodon {
         &self,
         limit: Option<u32>,
     ) -> Result<Response<Vec<entities::Tag>>, Error>;
+
+    // ======================================
+    // instance/directory
+    // ======================================
+    async fn get_instance_directory(
+        &self,
+        options: Option<&GetInstanceDirectoryInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
 }
 
 pub struct AppInputOptions {
@@ -774,6 +782,39 @@ pub struct SearchInputOptions {
     pub following: Option<bool>,
     pub account_id: Option<String>,
     pub exclude_unreviewed: Option<bool>,
+}
+
+pub struct GetInstanceDirectoryInputOptions {
+    pub limit: Option<u32>,
+    pub offset: Option<u64>,
+    pub order: Option<Order>,
+    pub local: Option<bool>,
+}
+
+pub enum Order {
+    Active,
+    New,
+}
+
+impl fmt::Display for Order {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Order::Active => write!(f, "active"),
+            Order::New => write!(f, "new"),
+        }
+    }
+}
+
+impl FromStr for Order {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Order::Active),
+            "new" => Ok(Order::New),
+            _ => Err(Error::new(s.to_owned())),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]

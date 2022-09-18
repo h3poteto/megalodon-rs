@@ -2554,6 +2554,42 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_instance_directory(
+        &self,
+        options: Option<&megalodon::GetInstanceDirectoryInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(offset) = options.offset {
+                params.push(format!("offset={}", offset));
+            }
+            if let Some(order) = &options.order {
+                params.push(format!("order={}", order));
+            }
+            if let Some(local) = options.local {
+                params.push(format!("local={}", local));
+            }
+        }
+        let mut path = "/api/v1/directory".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
