@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::api_client::APIClient;
 use super::entities;
 use crate::megalodon::CredentialsOptions;
@@ -11,6 +9,10 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use sha1::{Digest, Sha1};
+use std::collections::HashMap;
+use tokio::fs::File;
+use tokio_util::codec::{BytesCodec, FramedRead};
 
 pub struct Mastodon {
     client: APIClient,
@@ -1598,6 +1600,84 @@ impl megalodon::Megalodon for Mastodon {
             .await?;
 
         Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn upload_media(
+        &self,
+        file_path: String,
+        options: Option<&megalodon::UploadMediaInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Attachment>, Error> {
+        let file = File::open(file_path.clone()).await?;
+
+        let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
+
+        let stream = FramedRead::new(file, BytesCodec::new());
+        let file_body = reqwest::Body::wrap_stream(stream);
+        let part = reqwest::multipart::Part::stream(file_body).file_name(file_name);
+
+        let mut form = reqwest::multipart::Form::new().part("file", part);
+        if let Some(options) = options {
+            if let Some(description) = &options.description {
+                form = form.text("description", description.clone());
+            }
+            if let Some(focus) = &options.focus {
+                form = form.text("focus", focus.clone());
+            }
+        }
+
+        let res = self
+            .client
+            .post_multipart::<entities::Attachment>("/api/v1/media", form, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Attachment>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn update_media(
+        &self,
+        id: String,
+        options: Option<&megalodon::UpdateMediaInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Attachment>, Error> {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(options) = options {
+            if let Some(description) = &options.description {
+                form = form.text("description", description.clone());
+            }
+            if let Some(focus) = &options.focus {
+                form = form.text("focus", focus.clone());
+            }
+            if let Some(file_path) = &options.file_path {
+                let file = File::open(file_path).await?;
+
+                let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
+
+                let stream = FramedRead::new(file, BytesCodec::new());
+                let file_body = reqwest::Body::wrap_stream(stream);
+                let part = reqwest::multipart::Part::stream(file_body).file_name(file_name);
+                form = form.part("file", part);
+            }
+        }
+
+        let res = self
+            .client
+            .put_multipart::<entities::Attachment>(
+                format!("/api/v1/media/{}", id).as_str(),
+                form,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Attachment>::new(
             res.json.into(),
             res.status,
             res.status_text,

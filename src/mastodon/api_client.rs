@@ -83,6 +83,34 @@ impl APIClient {
         Ok(res)
     }
 
+    pub async fn post_multipart<T>(
+        &self,
+        path: &str,
+        params: reqwest::multipart::Form,
+        headers: Option<HeaderMap>,
+    ) -> Result<Response<T>, MegalodonError>
+    where
+        T: DeserializeOwned + Debug,
+    {
+        let url = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url)?;
+        let client = reqwest::Client::builder()
+            .user_agent(&self.user_agent)
+            .build()?;
+
+        let mut req = client.post(url);
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
+        }
+        if let Some(headers) = headers {
+            req = req.headers(headers);
+        }
+
+        let res = req.multipart(params).send().await?;
+        let res = Response::<T>::from_reqwest(res).await?;
+        Ok(res)
+    }
+
     pub async fn put<T>(
         &self,
         path: &str,
@@ -107,6 +135,34 @@ impl APIClient {
         }
 
         let res = req.form(params).send().await?;
+        let res = Response::<T>::from_reqwest(res).await?;
+        Ok(res)
+    }
+
+    pub async fn put_multipart<T>(
+        &self,
+        path: &str,
+        params: reqwest::multipart::Form,
+        headers: Option<HeaderMap>,
+    ) -> Result<Response<T>, MegalodonError>
+    where
+        T: DeserializeOwned + Debug,
+    {
+        let url = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url)?;
+        let client = reqwest::Client::builder()
+            .user_agent(&self.user_agent)
+            .build()?;
+
+        let mut req = client.put(url);
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
+        }
+        if let Some(headers) = headers {
+            req = req.headers(headers);
+        }
+
+        let res = req.multipart(params).send().await?;
         let res = Response::<T>::from_reqwest(res).await?;
         Ok(res)
     }

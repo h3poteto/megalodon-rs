@@ -11,6 +11,7 @@ pub struct Error {
 pub enum Kind {
     ParseError,
     RequestError,
+    StandardError,
 }
 
 impl Error {
@@ -57,11 +58,23 @@ impl From<url::ParseError> for Error {
     }
 }
 
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Error {
+        Self {
+            url: None,
+            status: None,
+            message: err.to_string(),
+            kind: Kind::StandardError,
+        }
+    }
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.kind {
             Kind::ParseError => f.write_str("parse error")?,
             Kind::RequestError => f.write_str("request error")?,
+            Kind::StandardError => f.write_str("standard error")?,
         }
 
         write!(f, "message {}", self.message)?;

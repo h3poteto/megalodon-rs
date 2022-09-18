@@ -327,6 +327,21 @@ pub trait Megalodon {
 
     async fn unpin_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
 
+    // ======================================
+    // statuses/media
+    // ======================================
+    async fn upload_media(
+        &self,
+        file_path: String,
+        options: Option<&UploadMediaInputOptions>,
+    ) -> Result<Response<entities::Attachment>, Error>;
+
+    async fn update_media(
+        &self,
+        id: String,
+        options: Option<&UpdateMediaInputOptions>,
+    ) -> Result<Response<entities::Attachment>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -453,6 +468,17 @@ pub struct GetStatusContextInputOptions {
     pub limit: Option<u32>,
     pub max_id: Option<String>,
     pub since_id: Option<String>,
+}
+
+pub struct UploadMediaInputOptions {
+    pub description: Option<String>,
+    pub focus: Option<String>,
+}
+
+pub struct UpdateMediaInputOptions {
+    pub file_path: Option<String>,
+    pub description: Option<String>,
+    pub focus: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
