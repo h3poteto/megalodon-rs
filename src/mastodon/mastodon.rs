@@ -1,5 +1,6 @@
 use super::api_client::APIClient;
 use super::entities;
+use crate::error;
 use crate::megalodon::CredentialsOptions;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
@@ -2603,6 +2604,57 @@ impl megalodon::Megalodon for Mastodon {
             res.status,
             res.status_text,
             res.header,
+        ))
+    }
+
+    async fn create_emoji_reaction(
+        &self,
+        _id: String,
+        _emoji: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        Err(Error::new(
+            None,
+            None,
+            "Mastodon doest not support".to_string(),
+            error::Kind::NoImplementedError,
+        ))
+    }
+
+    async fn delete_emoji_reaction(
+        &self,
+        _id: String,
+        _emoji: String,
+    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+        Err(Error::new(
+            None,
+            None,
+            "Mastodon doest not support".to_string(),
+            error::Kind::NoImplementedError,
+        ))
+    }
+
+    async fn get_emoji_reactions(
+        &self,
+        _id: String,
+    ) -> Result<Response<Vec<MegalodonEntities::Reaction>>, Error> {
+        Err(Error::new(
+            None,
+            None,
+            "Mastodon doest not support".to_string(),
+            error::Kind::NoImplementedError,
+        ))
+    }
+
+    async fn get_emoji_reaction(
+        &self,
+        _id: String,
+        _emoji: String,
+    ) -> Result<Response<MegalodonEntities::Reaction>, Error> {
+        Err(Error::new(
+            None,
+            None,
+            "Mastodon doest not support".to_string(),
+            error::Kind::NoImplementedError,
         ))
     }
 

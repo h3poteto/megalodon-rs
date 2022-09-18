@@ -1,5 +1,5 @@
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
-use crate::error::Error;
+use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::fmt;
 use std::str::FromStr;
@@ -65,7 +65,7 @@ impl FromStr for StatusVisibility {
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
             "direct" => Ok(StatusVisibility::Direct),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }

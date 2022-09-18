@@ -12,15 +12,16 @@ pub enum Kind {
     ParseError,
     RequestError,
     StandardError,
+    NoImplementedError,
 }
 
 impl Error {
-    pub fn new(message: String) -> Error {
+    pub fn new(url: Option<String>, status: Option<u16>, message: String, kind: Kind) -> Error {
         Self {
-            url: None,
-            status: None,
+            url,
+            status,
             message,
-            kind: Kind::ParseError,
+            kind,
         }
     }
 }
@@ -75,6 +76,7 @@ impl fmt::Display for Error {
             Kind::ParseError => f.write_str("parse error")?,
             Kind::RequestError => f.write_str("request error")?,
             Kind::StandardError => f.write_str("standard error")?,
+            Kind::NoImplementedError => f.write_str("no implemented error")?,
         }
 
         write!(f, "message {}", self.message)?;

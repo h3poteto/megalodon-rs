@@ -1,7 +1,7 @@
 use core::fmt;
 use std::str::FromStr;
 
-use crate::error::Error;
+use crate::error::{Error, Kind};
 use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
 use crate::{entities, mastodon};
@@ -540,6 +540,32 @@ pub trait Megalodon {
     // instance/custom_emojis
     // ======================================
     async fn get_instance_custom_emojis(&self) -> Result<Response<Vec<entities::Emoji>>, Error>;
+
+    // ======================================
+    // Emoji reactions
+    // ======================================
+    async fn create_emoji_reaction(
+        &self,
+        id: String,
+        emoji: String,
+    ) -> Result<Response<entities::Status>, Error>;
+
+    async fn delete_emoji_reaction(
+        &self,
+        id: String,
+        emoji: String,
+    ) -> Result<Response<entities::Status>, Error>;
+
+    async fn get_emoji_reactions(
+        &self,
+        id: String,
+    ) -> Result<Response<Vec<entities::Reaction>>, Error>;
+
+    async fn get_emoji_reaction(
+        &self,
+        id: String,
+        emoji: String,
+    ) -> Result<Response<entities::Reaction>, Error>;
 }
 
 pub struct AppInputOptions {
@@ -773,7 +799,7 @@ impl FromStr for SearchType {
             "accounts" => Ok(SearchType::Accounts),
             "hashtags" => Ok(SearchType::Hashtags),
             "statuses" => Ok(SearchType::Statuses),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }
@@ -817,7 +843,7 @@ impl FromStr for Order {
         match s {
             "active" => Ok(Order::Active),
             "new" => Ok(Order::New),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }

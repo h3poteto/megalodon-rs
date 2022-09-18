@@ -1,5 +1,5 @@
 use super::{Account, Emoji, Status};
-use crate::error::Error;
+use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
 use serde::{de, ser};
@@ -51,7 +51,7 @@ impl FromStr for NotificationType {
             "poll" => Ok(NotificationType::Poll),
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }
