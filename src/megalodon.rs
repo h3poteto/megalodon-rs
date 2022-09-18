@@ -519,6 +519,14 @@ pub trait Megalodon {
     async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error>;
 
     async fn get_instance_activity(&self) -> Result<Response<Vec<entities::Activity>>, Error>;
+
+    // ======================================
+    // instance/trends
+    // ======================================
+    async fn get_instance_trends(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<entities::Tag>>, Error>;
 }
 
 pub struct AppInputOptions {

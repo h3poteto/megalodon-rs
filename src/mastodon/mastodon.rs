@@ -2529,6 +2529,31 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_instance_trends(
+        &self,
+        limit: Option<u32>,
+    ) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(limit) = limit {
+            params.push(format!("limit={}", limit));
+        }
+        let mut path = "/api/v1/trends".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Tag>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Tag>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
