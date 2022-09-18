@@ -1990,9 +1990,6 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(options) = options {
-            if let Some(only_media) = options.only_media {
-                params.push(format!("only_media={}", only_media));
-            }
             if let Some(limit) = options.limit {
                 params.push(format!("limit={}", limit));
             }
@@ -2017,6 +2014,78 @@ impl megalodon::Megalodon for Mastodon {
 
         Ok(Response::<Vec<MegalodonEntities::Status>>::new(
             res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_conversation_timeline(
+        &self,
+        options: Option<&megalodon::GetConversationTimelineInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/conversations".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_conversation(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>(
+                format!("/api/v1/conversations/{}", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn read_conversation(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Conversation>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Conversation>(
+                format!("/api/v1/conversations/{}/read", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Conversation>::new(
+            res.json.into(),
             res.status,
             res.status_text,
             res.header,

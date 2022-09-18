@@ -404,6 +404,21 @@ pub trait Megalodon {
         options: Option<&GetListTimelineInputOptions>,
     ) -> Result<Response<Vec<entities::Status>>, Error>;
 
+    // ======================================
+    // timeilnes/conversations
+    // ======================================
+    async fn get_conversation_timeline(
+        &self,
+        options: Option<&GetConversationTimelineInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
+    async fn delete_conversation(&self, id: String) -> Result<Response<()>, Error>;
+
+    async fn read_conversation(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::Conversation>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -549,7 +564,8 @@ pub type GetPublicTimelineInputOptions = GetTimelineOptions;
 pub type GetLocalTimelineInputOptions = GetTimelineOptions;
 pub type GetTagTimelineInputOptions = GetTimelineOptionsWithLocal;
 pub type GetHomeTimelineInputOptions = GetTimelineOptionsWithLocal;
-pub type GetListTimelineInputOptions = GetTimelineOptions;
+pub type GetListTimelineInputOptions = GetArrayWithSinceOptions;
+pub type GetConversationTimelineInputOptions = GetArrayWithSinceOptions;
 
 pub struct GetTimelineOptions {
     pub only_media: Option<bool>,
