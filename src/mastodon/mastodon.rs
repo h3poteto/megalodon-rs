@@ -2590,6 +2590,22 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_instance_custom_emojis(
+        &self,
+    ) -> Result<Response<Vec<MegalodonEntities::Emoji>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Emoji>>("/api/v1/custom_emojis", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Emoji>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

@@ -535,6 +535,11 @@ pub trait Megalodon {
         &self,
         options: Option<&GetInstanceDirectoryInputOptions>,
     ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    // ======================================
+    // instance/custom_emojis
+    // ======================================
+    async fn get_instance_custom_emojis(&self) -> Result<Response<Vec<entities::Emoji>>, Error>;
 }
 
 pub struct AppInputOptions {
