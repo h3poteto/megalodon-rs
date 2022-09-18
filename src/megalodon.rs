@@ -465,6 +465,21 @@ pub trait Megalodon {
         options: Option<&SaveMarkersInputOptions>,
     ) -> Result<Response<entities::Marker>, Error>;
 
+    // ======================================
+    // notifications
+    // ======================================
+    async fn get_notifications(
+        &self,
+        options: Option<&GetNotificationsInputOptions>,
+    ) -> Result<Response<Vec<entities::Notification>>, Error>;
+
+    async fn get_notification(&self, id: String)
+        -> Result<Response<entities::Notification>, Error>;
+
+    async fn dismiss_notifications(&self) -> Result<Response<()>, Error>;
+
+    async fn dismiss_notification(&self, id: String) -> Result<Response<()>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -639,6 +654,15 @@ pub struct SaveMarkersInputOptions {
 #[derive(Debug, Serialize)]
 pub struct Marker {
     pub last_reading_id: String,
+}
+
+pub struct GetNotificationsInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub since_id: Option<String>,
+    pub min_id: Option<String>,
+    pub exclude_types: Option<Vec<entities::notification::NotificationType>>,
+    pub account_id: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

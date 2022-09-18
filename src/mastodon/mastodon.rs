@@ -2298,6 +2298,91 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_notifications(
+        &self,
+        options: Option<&megalodon::GetNotificationsInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Notification>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+            if let Some(exclude_types) = &options.exclude_types {
+                params.push(format!(
+                    "exclude_types={}",
+                    serde_json::to_string(exclude_types).unwrap()
+                ));
+            }
+            if let Some(account_id) = &options.account_id {
+                params.push(format!("account_id={}", account_id));
+            }
+        }
+        let mut path = "/api/v1/notifications".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Notification>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Notification>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_notification(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Notification>, Error> {
+        let res = self
+            .client
+            .get::<entities::Notification>(format!("/api/v1/notifications/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Notification>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn dismiss_notifications(&self) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<()>("/api/v1/notifications/clear", &params, None)
+            .await?;
+        Ok(res)
+    }
+
+    async fn dismiss_notification(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<()>(
+                format!("/api/v1/notifications/{}/dismiss", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(res)
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
