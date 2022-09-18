@@ -2092,6 +2092,158 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_lists(&self) -> Result<Response<Vec<MegalodonEntities::List>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::List>>("/api/v1/lists", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::List>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_list(&self, id: String) -> Result<Response<MegalodonEntities::List>, Error> {
+        let res = self
+            .client
+            .get::<entities::List>(format!("/api/v1/lists/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::List>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn create_list(&self, title: String) -> Result<Response<MegalodonEntities::List>, Error> {
+        let params = HashMap::<&str, String>::from([("title", title)]);
+        let res = self
+            .client
+            .post::<entities::List>("/api/v1/lists", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::List>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn update_list(
+        &self,
+        id: String,
+        title: String,
+    ) -> Result<Response<MegalodonEntities::List>, Error> {
+        let params = HashMap::<&str, String>::from([("title", title)]);
+        let res = self
+            .client
+            .put::<entities::List>(format!("/api/v1/lists/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::List>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_list(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>(format!("/api/v1/lists/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
+    async fn get_accounts_in_list(
+        &self,
+        id: String,
+        options: Option<&megalodon::GetAccountsInListInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = format!("/api/v1/lists/{}/accounts", id);
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn add_accounts_to_list(
+        &self,
+        id: String,
+        account_ids: Vec<String>,
+    ) -> Result<Response<MegalodonEntities::List>, Error> {
+        let params = HashMap::<&str, String>::from([(
+            "account_ids",
+            serde_json::to_string(&account_ids).unwrap(),
+        )]);
+        let res = self
+            .client
+            .post::<entities::List>(
+                format!("/api/v1/lists/{}/accounts", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::List>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_accounts_from_list(
+        &self,
+        id: String,
+        account_ids: Vec<String>,
+    ) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, String>::from([(
+            "account_ids",
+            serde_json::to_string(&account_ids).unwrap(),
+        )]);
+        let res = self
+            .client
+            .delete::<()>(
+                format!("/api/v1/lists/{}/accounts", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+        Ok(res)
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

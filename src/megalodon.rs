@@ -419,6 +419,41 @@ pub trait Megalodon {
         id: String,
     ) -> Result<Response<entities::Conversation>, Error>;
 
+    // ======================================
+    // timeilnes/lists
+    // ======================================
+    async fn get_lists(&self) -> Result<Response<Vec<entities::List>>, Error>;
+
+    async fn get_list(&self, id: String) -> Result<Response<entities::List>, Error>;
+
+    async fn create_list(&self, title: String) -> Result<Response<entities::List>, Error>;
+
+    async fn update_list(
+        &self,
+        id: String,
+        title: String,
+    ) -> Result<Response<entities::List>, Error>;
+
+    async fn delete_list(&self, id: String) -> Result<Response<()>, Error>;
+
+    async fn get_accounts_in_list(
+        &self,
+        id: String,
+        options: Option<&GetAccountsInListInputOptions>,
+    ) -> Result<Response<Vec<entities::Account>>, Error>;
+
+    async fn add_accounts_to_list(
+        &self,
+        id: String,
+        account_ids: Vec<String>,
+    ) -> Result<Response<entities::List>, Error>;
+
+    async fn delete_accounts_from_list(
+        &self,
+        id: String,
+        account_ids: Vec<String>,
+    ) -> Result<Response<()>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -566,6 +601,7 @@ pub type GetTagTimelineInputOptions = GetTimelineOptionsWithLocal;
 pub type GetHomeTimelineInputOptions = GetTimelineOptionsWithLocal;
 pub type GetListTimelineInputOptions = GetArrayWithSinceOptions;
 pub type GetConversationTimelineInputOptions = GetArrayWithSinceOptions;
+pub type GetAccountsInListInputOptions = GetArrayOptions;
 
 pub struct GetTimelineOptions {
     pub only_media: Option<bool>,
