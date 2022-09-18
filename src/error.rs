@@ -103,6 +103,9 @@ impl fmt::Debug for Error {
         if let Some(ref url) = self.url {
             builder.field("url", url);
         }
+        if let Some(ref status) = self.status {
+            builder.field("status", status);
+        }
 
         builder.finish()
     }

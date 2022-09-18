@@ -1,5 +1,5 @@
 use crate::default::DEFAULT_UA;
-use crate::error::Error as MegalodonError;
+use crate::error::{Error as MegalodonError, Kind};
 use crate::response::Response;
 use reqwest::header::HeaderMap;
 use reqwest::Url;
@@ -36,8 +36,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -51,8 +51,30 @@ impl APIClient {
         }
 
         let res = req.send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn post<T>(
@@ -64,8 +86,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -79,8 +101,30 @@ impl APIClient {
         }
 
         let res = req.form(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn post_multipart<T>(
@@ -92,8 +136,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -107,8 +151,30 @@ impl APIClient {
         }
 
         let res = req.multipart(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn put<T>(
@@ -120,8 +186,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -135,8 +201,30 @@ impl APIClient {
         }
 
         let res = req.form(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn put_multipart<T>(
@@ -148,8 +236,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -163,8 +251,30 @@ impl APIClient {
         }
 
         let res = req.multipart(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn patch<T>(
@@ -176,8 +286,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -191,8 +301,30 @@ impl APIClient {
         }
 
         let res = req.form(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 
     pub async fn delete<T>(
@@ -204,8 +336,8 @@ impl APIClient {
     where
         T: DeserializeOwned + Debug,
     {
-        let url = format!("{}{}", self.base_url, path);
-        let url = Url::parse(&*url)?;
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
         let client = reqwest::Client::builder()
             .user_agent(&self.user_agent)
             .build()?;
@@ -219,7 +351,29 @@ impl APIClient {
         }
 
         let res = req.form(params).send().await?;
-        let res = Response::<T>::from_reqwest(res).await?;
-        Ok(res)
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    text,
+                    Kind::RequestError,
+                )),
+                Err(_err) => Err(MegalodonError::new(
+                    Some(url_str),
+                    Some(status.as_u16()),
+                    "Unknown error".to_string(),
+                    Kind::RequestError,
+                )),
+            },
+        }
     }
 }
