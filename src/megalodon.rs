@@ -1,3 +1,6 @@
+use core::fmt;
+use std::str::FromStr;
+
 use crate::error::Error;
 use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
@@ -498,6 +501,19 @@ pub trait Megalodon {
 
     async fn delete_push_subscription(&self) -> Result<Response<()>, Error>;
 
+    // ======================================
+    // search
+    // ======================================
+    async fn search(
+        &self,
+        q: String,
+        r#type: &SearchType,
+        options: Option<&SearchInputOptions>,
+    ) -> Result<Response<entities::Results>, Error>;
+
+    // ======================================
+    // instance
+    // ======================================
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -706,6 +722,46 @@ pub struct DataAlerts {
     pub reblog: Option<bool>,
     pub mention: Option<bool>,
     pub poll: Option<bool>,
+}
+
+pub enum SearchType {
+    Accounts,
+    Hashtags,
+    Statuses,
+}
+
+impl fmt::Display for SearchType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            SearchType::Accounts => write!(f, "accounts"),
+            SearchType::Hashtags => write!(f, "hashtags"),
+            SearchType::Statuses => write!(f, "statuses"),
+        }
+    }
+}
+
+impl FromStr for SearchType {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "accounts" => Ok(SearchType::Accounts),
+            "hashtags" => Ok(SearchType::Hashtags),
+            "statuses" => Ok(SearchType::Statuses),
+            _ => Err(Error::new(s.to_owned())),
+        }
+    }
+}
+
+pub struct SearchInputOptions {
+    pub limit: Option<u32>,
+    pub max_id: Option<String>,
+    pub min_id: Option<String>,
+    pub resolve: Option<bool>,
+    pub offset: Option<u64>,
+    pub following: Option<bool>,
+    pub account_id: Option<String>,
+    pub exclude_unreviewed: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]

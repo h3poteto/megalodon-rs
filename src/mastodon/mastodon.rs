@@ -2455,6 +2455,56 @@ impl megalodon::Megalodon for Mastodon {
         Ok(res)
     }
 
+    async fn search(
+        &self,
+        q: String,
+        r#type: &megalodon::SearchType,
+        options: Option<&megalodon::SearchInputOptions>,
+    ) -> Result<Response<MegalodonEntities::Results>, Error> {
+        let mut params = Vec::<String>::from([format!("q={}", q), format!("type={}", r#type)]);
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+            if let Some(resolve) = options.resolve {
+                params.push(format!("resolve={}", resolve));
+            }
+            if let Some(offset) = options.offset {
+                params.push(format!("offset={}", offset));
+            }
+            if let Some(following) = options.following {
+                params.push(format!("following={}", following));
+            }
+            if let Some(account_id) = &options.account_id {
+                params.push(format!("account_id={}", account_id));
+            }
+            if let Some(exclude_unreviewed) = options.exclude_unreviewed {
+                params.push(format!("exclude_unreviewed={}", exclude_unreviewed));
+            }
+        }
+        let mut path = "/api/v2/search".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<entities::Results>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Results>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client
