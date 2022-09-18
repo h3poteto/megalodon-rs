@@ -3,15 +3,6 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    match instance("https://fedibird.com").await {
-        Ok(response) => {
-            println!("{:#?}", response);
-        }
-        Err(err) => {
-            println!("{:#?}", err);
-        }
-    }
-
     match env::var("MASTODON_ACCESS_TOKEN") {
         Ok(token) => match verify_credentials("https://fedibird.com", token).await {
             Ok(response) => {
@@ -26,13 +17,6 @@ async fn main() {
         }
     }
 }
-
-async fn instance(url: &str) -> Result<entities::Instance, error::Error> {
-    let client = generator(SNS::Mastodon, url.to_string(), None, None);
-    let res = client.get_instance().await?;
-    Ok(res.json())
-}
-
 async fn verify_credentials(
     url: &str,
     access_token: String,

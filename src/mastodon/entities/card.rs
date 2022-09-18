@@ -3,7 +3,7 @@ use core::fmt;
 use serde::{de, ser, Deserialize};
 use std::str::FromStr;
 
-use crate::error::Error;
+use crate::error::{Error, Kind};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Card {
@@ -49,7 +49,7 @@ impl FromStr for CardType {
             "photo" => Ok(CardType::Photo),
             "video" => Ok(CardType::Video),
             "rich" => Ok(CardType::Rich),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }

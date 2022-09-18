@@ -1,7 +1,8 @@
 use core::fmt;
 use std::str::FromStr;
 
-use crate::{entities as MegalodonEntities, error::Error};
+use crate::entities as MegalodonEntities;
+use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use serde::{de, ser, Deserialize};
 
@@ -43,7 +44,7 @@ impl FromStr for FilterContext {
             "notifications" => Ok(FilterContext::Notifications),
             "public" => Ok(FilterContext::Public),
             "thread" => Ok(FilterContext::Thread),
-            _ => Err(Error::new(s.to_owned())),
+            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
         }
     }
 }

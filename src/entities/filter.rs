@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use serde::Serialize;
 
 pub struct Filter {
     pub id: String,
@@ -9,6 +10,7 @@ pub struct Filter {
     pub whole_word: bool,
 }
 
+#[derive(Debug, Serialize)]
 pub enum FilterContext {
     Home,
     Notifications,

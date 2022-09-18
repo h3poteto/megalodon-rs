@@ -2,6 +2,7 @@ use reqwest::header::HeaderMap;
 use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 
+#[derive(Debug, Clone)]
 pub struct Response<T> {
     pub json: T,
     pub status: u16,

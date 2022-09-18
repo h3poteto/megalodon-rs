@@ -8,9 +8,12 @@ edition = "2021"
 [dependencies]
 chrono = { version = "0.4", features = ["serde"]}
 async-trait = "0.1.57"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.11", features = ["json", "multipart", "stream"] }
 tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7.3", features = ["codec"] }
 serde_json = "1.0.67"
 serde = { version = "1.0.137", features = ["derive"]}
 url = "2.2.2"
 oauth2 = { version = "4.2" }
+sha1 = { version = "0.10" }
+hex = { version = "0.4" }
