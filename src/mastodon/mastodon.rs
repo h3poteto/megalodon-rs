@@ -2383,6 +2383,78 @@ impl megalodon::Megalodon for Mastodon {
         Ok(res)
     }
 
+    async fn subscribe_push_notification(
+        &self,
+        subscription: &megalodon::SubscribePushNotificationInputSubscription,
+        data: Option<&megalodon::SubscribePushNotificationInputData>,
+    ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
+        let mut params = HashMap::<&str, String>::from([(
+            "subscription",
+            serde_json::to_string(&subscription).unwrap(),
+        )]);
+        if let Some(data) = data {
+            params.insert("data", serde_json::to_string(&data).unwrap());
+        }
+        let res = self
+            .client
+            .post::<entities::PushSubscription>("/api/v1/push/subscription", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::PushSubscription>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_push_subscription(
+        &self,
+    ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
+        let res = self
+            .client
+            .get::<entities::PushSubscription>("/api/v1/push/subscription", None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::PushSubscription>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn update_push_subscription(
+        &self,
+        data: Option<&megalodon::SubscribePushNotificationInputData>,
+    ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        if let Some(data) = data {
+            params.insert("data", serde_json::to_string(&data).unwrap());
+        }
+        let res = self
+            .client
+            .put::<entities::PushSubscription>("/api/v1/push/subscription", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::PushSubscription>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn delete_push_subscription(&self) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>("/api/v1/push/subscription", &params, None)
+            .await?;
+
+        Ok(res)
+    }
+
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
         let res = self
             .client

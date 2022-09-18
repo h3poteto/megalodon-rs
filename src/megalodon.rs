@@ -480,6 +480,24 @@ pub trait Megalodon {
 
     async fn dismiss_notification(&self, id: String) -> Result<Response<()>, Error>;
 
+    // ======================================
+    // notifications/push
+    // ======================================
+    async fn subscribe_push_notification(
+        &self,
+        subscription: &SubscribePushNotificationInputSubscription,
+        data: Option<&SubscribePushNotificationInputData>,
+    ) -> Result<Response<entities::PushSubscription>, Error>;
+
+    async fn get_push_subscription(&self) -> Result<Response<entities::PushSubscription>, Error>;
+
+    async fn update_push_subscription(
+        &self,
+        data: Option<&SubscribePushNotificationInputData>,
+    ) -> Result<Response<entities::PushSubscription>, Error>;
+
+    async fn delete_push_subscription(&self) -> Result<Response<()>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -663,6 +681,31 @@ pub struct GetNotificationsInputOptions {
     pub min_id: Option<String>,
     pub exclude_types: Option<Vec<entities::notification::NotificationType>>,
     pub account_id: Option<String>,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct SubscribePushNotificationInputSubscription {
+    pub endpoint: String,
+    pub keys: SubscriptionKeys,
+}
+#[derive(Debug, Serialize, Clone)]
+pub struct SubscriptionKeys {
+    pub p256h: String,
+    pub auth: String,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct SubscribePushNotificationInputData {
+    pub alerts: Option<DataAlerts>,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct DataAlerts {
+    pub follow: Option<bool>,
+    pub favourite: Option<bool>,
+    pub reblog: Option<bool>,
+    pub mention: Option<bool>,
+    pub poll: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
