@@ -5,6 +5,7 @@ use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
 };
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
@@ -1721,6 +1722,102 @@ impl megalodon::Megalodon for Mastodon {
             res.status_text,
             res.header,
         ))
+    }
+
+    async fn get_scheduled_statuses(
+        &self,
+        options: Option<&megalodon::GetScheduledStatusesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::ScheduledStatus>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/scheduled_statuses".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::ScheduledStatus>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::ScheduledStatus>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn get_scheduled_status(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
+        let res = self
+            .client
+            .get::<entities::ScheduledStatus>(
+                format!("/api/v1/scheduled_statuses/{}", id).as_str(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::ScheduledStatus>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn schedule_status(
+        &self,
+        id: String,
+        scheduled_at: Option<DateTime<Utc>>,
+    ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
+        let mut params = HashMap::<&str, String>::new();
+        if let Some(scheduled_at) = scheduled_at {
+            params.insert("scheduled_at", scheduled_at.to_rfc3339());
+        }
+        let res = self
+            .client
+            .put::<entities::ScheduledStatus>(
+                format!("/api/v1/scheduled_statuses/{}", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::ScheduledStatus>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn cancel_scheduled_status(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .delete::<()>(
+                format!("/api/v1/scheduled_statuses/{}", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(res)
     }
 
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {

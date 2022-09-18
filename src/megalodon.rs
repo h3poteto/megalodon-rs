@@ -353,6 +353,27 @@ pub trait Megalodon {
         choices: Vec<u32>,
     ) -> Result<Response<entities::Poll>, Error>;
 
+    // ======================================
+    // statuses/scheduled_statuses
+    // ======================================
+    async fn get_scheduled_statuses(
+        &self,
+        options: Option<&GetScheduledStatusesInputOptions>,
+    ) -> Result<Response<Vec<entities::ScheduledStatus>>, Error>;
+
+    async fn get_scheduled_status(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::ScheduledStatus>, Error>;
+
+    async fn schedule_status(
+        &self,
+        id: String,
+        scheduled_at: Option<DateTime<Utc>>,
+    ) -> Result<Response<entities::ScheduledStatus>, Error>;
+
+    async fn cancel_scheduled_status(&self, id: String) -> Result<Response<()>, Error>;
+
     async fn get_instance(&self) -> Result<Response<entities::Instance>, Error>;
 }
 
@@ -491,6 +512,8 @@ pub struct UpdateMediaInputOptions {
     pub description: Option<String>,
     pub focus: Option<String>,
 }
+
+pub type GetScheduledStatusesInputOptions = GetArrayWithSinceOptions;
 
 #[derive(Debug, Deserialize)]
 struct Instance {
