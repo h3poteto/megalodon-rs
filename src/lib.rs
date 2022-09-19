@@ -6,7 +6,7 @@ pub mod megalodon;
 pub mod oauth;
 pub mod response;
 
-pub use megalodon::detector;
-pub use megalodon::generator;
-pub use megalodon::Megalodon;
-pub use megalodon::SNS;
+pub use self::megalodon::detector;
+pub use self::megalodon::generator;
+pub use self::megalodon::Megalodon;
+pub use self::megalodon::SNS;
