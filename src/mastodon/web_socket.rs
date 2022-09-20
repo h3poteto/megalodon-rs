@@ -42,16 +42,27 @@ impl WebSocket {
             let mes = serde_json::from_str::<RawMessage>(text)?;
             match &*mes.event {
                 "update" => {
-                    // TODO: Print debug message when error
-                    let res = serde_json::from_str::<entities::Status>(&mes.payload)?;
+                    let res =
+                        serde_json::from_str::<entities::Status>(&mes.payload).map_err(|e| {
+                            println!("failed to parse: {}", &mes.payload);
+                            e
+                        })?;
                     Ok(Message::Update(res.into()))
                 }
                 "notification" => {
-                    let res = serde_json::from_str::<entities::Notification>(&mes.payload)?;
+                    let res = serde_json::from_str::<entities::Notification>(&mes.payload)
+                        .map_err(|e| {
+                            println!("failed to parse: {}", &mes.payload);
+                            e
+                        })?;
                     Ok(Message::Notification(res.into()))
                 }
                 "conversation" => {
-                    let res = serde_json::from_str::<entities::Conversation>(&mes.payload)?;
+                    let res = serde_json::from_str::<entities::Conversation>(&mes.payload)
+                        .map_err(|e| {
+                            println!("failed to parse: {}", &mes.payload);
+                            e
+                        })?;
                     Ok(Message::Conversation(res.into()))
                 }
                 "delete" => Ok(Message::Delete(mes.payload)),
@@ -99,10 +110,18 @@ impl Streaming for WebSocket {
         loop {
             let msg = socket.read_message().expect("Error reading message");
             if msg.is_ping() {
-                socket.write_message(WebSocketMessage::Pong(Vec::<u8>::new()));
+                let _ = socket
+                    .write_message(WebSocketMessage::Pong(Vec::<u8>::new()))
+                    .map_err(|e| {
+                        println!("{:#?}", e);
+                        e
+                    });
             }
             if msg.is_close() {
-                socket.close(None);
+                let _ = socket.close(None).map_err(|e| {
+                    println!("{:#?}", e);
+                    e
+                });
                 return;
             }
             match self.parse(msg) {
