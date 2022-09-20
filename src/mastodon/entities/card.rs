@@ -49,7 +49,7 @@ impl FromStr for CardType {
             "photo" => Ok(CardType::Photo),
             "video" => Ok(CardType::Video),
             "rich" => Ok(CardType::Rich),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

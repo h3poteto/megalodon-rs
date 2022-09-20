@@ -1,6 +1,7 @@
 use super::PollOption;
 use chrono::{DateTime, Utc};
 
+#[derive(Debug, Clone)]
 pub struct Poll {
     pub id: String,
     pub expires_at: Option<DateTime<Utc>>,

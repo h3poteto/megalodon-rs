@@ -5,6 +5,7 @@ use core::str::FromStr;
 use serde::{de, ser};
 use std::fmt;
 
+#[derive(Debug, Clone)]
 pub struct Notification {
     pub account: Account,
     pub created_at: DateTime<Utc>,
@@ -51,7 +52,7 @@ impl FromStr for NotificationType {
             "poll" => Ok(NotificationType::Poll),
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

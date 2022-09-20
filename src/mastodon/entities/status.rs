@@ -38,7 +38,7 @@ pub struct Status {
     language: Option<String>,
     pinned: Option<bool>,
     emoji_reactions: Vec<Reaction>,
-    quote: bool,
+    quote: Option<bool>,
     bookmarked: bool,
 }
 
@@ -70,7 +70,7 @@ impl FromStr for StatusVisibility {
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
             "direct" => Ok(StatusVisibility::Direct),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

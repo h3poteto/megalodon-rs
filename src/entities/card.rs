@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Card {
     pub url: String,
     pub title: String,
@@ -13,6 +14,7 @@ pub struct Card {
     pub height: Option<u32>,
 }
 
+#[derive(Debug, Clone)]
 pub enum CardType {
     Link,
     Photo,

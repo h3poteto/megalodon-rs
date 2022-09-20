@@ -5,5 +5,5 @@ use serde::Deserialize;
 pub struct Field {
     pub name: String,
     pub value: String,
-    pub verified_at: DateTime<Utc>,
+    pub verified_at: Option<DateTime<Utc>>,
 }

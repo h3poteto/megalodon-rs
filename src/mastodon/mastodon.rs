@@ -1,10 +1,11 @@
 use super::api_client::APIClient;
 use super::entities;
-use crate::error;
+use super::web_socket::WebSocket;
 use crate::megalodon::CredentialsOptions;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
 };
+use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -19,6 +20,7 @@ use tokio_util::codec::{BytesCodec, FramedRead};
 pub struct Mastodon {
     client: APIClient,
     base_url: String,
+    access_token: Option<String>,
 }
 
 impl Mastodon {
@@ -27,8 +29,12 @@ impl Mastodon {
         access_token: Option<String>,
         user_agent: Option<String>,
     ) -> Mastodon {
-        let client = APIClient::new(base_url.clone(), access_token, user_agent);
-        Mastodon { client, base_url }
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent);
+        Mastodon {
+            client,
+            base_url,
+            access_token,
+        }
     }
 
     async fn generate_auth_url(
@@ -2506,6 +2512,20 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
+        let res = self
+            .client
+            .get::<entities::Instance>("/api/v1/instance", None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Instance>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error> {
         let res = self
             .client
@@ -2612,11 +2632,11 @@ impl megalodon::Megalodon for Mastodon {
         _id: String,
         _emoji: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        Err(Error::new(
-            None,
-            None,
+        Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
@@ -2625,11 +2645,11 @@ impl megalodon::Megalodon for Mastodon {
         _id: String,
         _emoji: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        Err(Error::new(
-            None,
-            None,
+        Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
@@ -2637,11 +2657,11 @@ impl megalodon::Megalodon for Mastodon {
         &self,
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Reaction>>, Error> {
-        Err(Error::new(
-            None,
-            None,
+        Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
@@ -2650,25 +2670,26 @@ impl megalodon::Megalodon for Mastodon {
         _id: String,
         _emoji: String,
     ) -> Result<Response<MegalodonEntities::Reaction>, Error> {
-        Err(Error::new(
-            None,
-            None,
+        Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
-    async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
-        let res = self
-            .client
-            .get::<entities::Instance>("/api/v1/instance", None)
-            .await?;
+    fn user_streaming(
+        &self,
+        streaming_url: String,
+        params: Option<Vec<String>>,
+    ) -> Box<dyn Streaming> {
+        let c = WebSocket::new(
+            streaming_url + "/api/v1/streaming",
+            String::from("user"),
+            params,
+            self.access_token.clone(),
+        );
 
-        Ok(Response::<MegalodonEntities::Instance>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
-        ))
+        Box::new(c)
     }
 }

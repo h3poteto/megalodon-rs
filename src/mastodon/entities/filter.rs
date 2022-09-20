@@ -44,7 +44,7 @@ impl FromStr for FilterContext {
             "notifications" => Ok(FilterContext::Notifications),
             "public" => Ok(FilterContext::Public),
             "thread" => Ok(FilterContext::Thread),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

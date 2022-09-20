@@ -6,7 +6,7 @@ use serde::Deserialize;
 pub struct Field {
     name: String,
     value: String,
-    verified_at: DateTime<Utc>,
+    verified_at: Option<DateTime<Utc>>,
 }
 
 impl From<MegalodonEntities::Field> for Field {
