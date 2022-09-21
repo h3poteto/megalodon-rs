@@ -274,6 +274,11 @@ pub trait Megalodon {
     async fn get_suggested_tags(&self) -> Result<Response<Vec<entities::Tag>>, Error>;
 
     // ======================================
+    // accounts/preferences
+    // ======================================
+    async fn get_preferences(&self) -> Result<Response<entities::Preferences>, Error>;
+
+    // ======================================
     // accounts/suggestions
     // ======================================
     async fn get_suggestions(
