@@ -4,6 +4,7 @@ use chrono::{DateTime, Utc};
 use core::fmt;
 use std::str::FromStr;
 
+#[derive(Debug, Clone)]
 pub struct Status {
     pub id: String,
     pub uri: String,
@@ -34,10 +35,11 @@ pub struct Status {
     pub language: Option<String>,
     pub pinned: Option<bool>,
     pub emoji_reactions: Vec<Reaction>,
-    pub quote: bool,
+    pub quote: Option<bool>,
     pub bookmarked: bool,
 }
 
+#[derive(Debug, Clone)]
 pub enum StatusVisibility {
     Public,
     Unlisted,
@@ -65,7 +67,7 @@ impl FromStr for StatusVisibility {
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
             "direct" => Ok(StatusVisibility::Direct),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

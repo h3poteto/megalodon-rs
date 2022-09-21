@@ -39,7 +39,7 @@ impl FromStr for ExpandMedia {
             "default" => Ok(ExpandMedia::Default),
             "show_all" => Ok(ExpandMedia::ShowAll),
             "hide_all" => Ok(ExpandMedia::HideAll),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }

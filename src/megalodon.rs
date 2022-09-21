@@ -4,7 +4,7 @@ use std::str::FromStr;
 use crate::error::{Error, Kind};
 use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
-use crate::{entities, mastodon};
+use crate::{entities, mastodon, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -566,6 +566,15 @@ pub trait Megalodon {
         id: String,
         emoji: String,
     ) -> Result<Response<entities::Reaction>, Error>;
+
+    // ======================================
+    // Streaming
+    // ======================================
+    fn user_streaming(
+        &self,
+        streaming_url: String,
+        params: Option<Vec<String>>,
+    ) -> Box<dyn Streaming>;
 }
 
 pub struct AppInputOptions {
@@ -799,7 +808,7 @@ impl FromStr for SearchType {
             "accounts" => Ok(SearchType::Accounts),
             "hashtags" => Ok(SearchType::Hashtags),
             "statuses" => Ok(SearchType::Statuses),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }
@@ -843,12 +852,12 @@ impl FromStr for Order {
         match s {
             "active" => Ok(Order::Active),
             "new" => Ok(Order::New),
-            _ => Err(Error::new(None, None, s.to_owned(), Kind::ParseError)),
+            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct Instance {
     title: String,
     uri: String,

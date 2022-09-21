@@ -1,5 +1,6 @@
 use super::Account;
 
+#[derive(Debug, Clone)]
 pub struct Reaction {
     pub count: u32,
     pub me: bool,

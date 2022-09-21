@@ -61,17 +61,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -111,17 +111,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -161,17 +161,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -211,17 +211,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -261,17 +261,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -311,17 +311,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }
@@ -361,17 +361,17 @@ impl APIClient {
                 Ok(res)
             }
             _ => match res.text().await {
-                Ok(text) => Err(MegalodonError::new(
-                    Some(url_str),
-                    Some(status.as_u16()),
+                Ok(text) => Err(MegalodonError::new_own(
                     text,
-                    Kind::RequestError,
-                )),
-                Err(_err) => Err(MegalodonError::new(
+                    Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
-                    Kind::RequestError,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
                 )),
             },
         }

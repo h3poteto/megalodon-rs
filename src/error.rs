@@ -1,6 +1,15 @@
 use std::fmt;
 
-pub struct Error {
+pub enum Error {
+    ParseError(url::ParseError),
+    RequestError(reqwest::Error),
+    StandardError(std::io::Error),
+    WebSocketError(tungstenite::error::Error),
+    JsonError(serde_json::Error),
+    OwnError(OwnError),
+}
+
+pub struct OwnError {
     url: Option<String>,
     status: Option<u16>,
     message: String,
@@ -9,74 +18,84 @@ pub struct Error {
 
 #[derive(Debug)]
 pub enum Kind {
-    ParseError,
-    RequestError,
-    StandardError,
     NoImplementedError,
+    ParseError,
+    HTTPStatusError,
 }
 
 impl Error {
-    pub fn new(url: Option<String>, status: Option<u16>, message: String, kind: Kind) -> Error {
-        Self {
-            url,
-            status,
+    pub fn new_own(message: String, kind: Kind, url: Option<String>, status: Option<u16>) -> Error {
+        Error::OwnError(OwnError {
             message,
             kind,
-        }
+            url,
+            status,
+        })
     }
 }
 
 impl From<reqwest::Error> for Error {
     fn from(err: reqwest::Error) -> Error {
-        let url;
-        match err.url() {
-            Some(u) => url = Some(u.as_str().to_string()),
-            None => url = None,
-        }
-        let status;
-        match err.status() {
-            Some(s) => status = Some(s.as_u16()),
-            None => status = None,
-        }
-
-        Self {
-            url,
-            status,
-            message: err.to_string(),
-            kind: Kind::RequestError,
-        }
+        Error::RequestError(err)
     }
 }
 
 impl From<url::ParseError> for Error {
     fn from(err: url::ParseError) -> Error {
-        Self {
-            url: None,
-            status: None,
-            message: err.to_string(),
-            kind: Kind::ParseError,
-        }
+        Error::ParseError(err)
     }
 }
 
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Error {
-        Self {
-            url: None,
-            status: None,
-            message: err.to_string(),
-            kind: Kind::StandardError,
-        }
+        Error::StandardError(err)
+    }
+}
+
+impl From<tungstenite::error::Error> for Error {
+    fn from(err: tungstenite::error::Error) -> Error {
+        Error::WebSocketError(err)
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Error {
+        Error::JsonError(err)
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Error::OwnError(err) => err.fmt(f),
+            Error::ParseError(err) => err.fmt(f),
+            Error::RequestError(err) => err.fmt(f),
+            Error::StandardError(err) => err.fmt(f),
+            Error::WebSocketError(err) => err.fmt(f),
+            Error::JsonError(err) => err.fmt(f),
+        }
+    }
+}
+
+impl fmt::Debug for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Error::OwnError(err) => err.fmt(f),
+            Error::ParseError(err) => err.fmt(f),
+            Error::RequestError(err) => err.fmt(f),
+            Error::StandardError(err) => err.fmt(f),
+            Error::WebSocketError(err) => err.fmt(f),
+            Error::JsonError(err) => err.fmt(f),
+        }
+    }
+}
+
+impl fmt::Display for OwnError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.kind {
-            Kind::ParseError => f.write_str("parse error")?,
-            Kind::RequestError => f.write_str("request error")?,
-            Kind::StandardError => f.write_str("standard error")?,
-            Kind::NoImplementedError => f.write_str("no implemented error")?,
+            Kind::NoImplementedError => f.write_str("no implemented error: ")?,
+            Kind::ParseError => f.write_str("parse error: ")?,
+            Kind::HTTPStatusError => f.write_str("http status error: ")?,
         }
 
         write!(f, "message {}", self.message)?;
@@ -84,18 +103,17 @@ impl fmt::Display for Error {
         if let Some(ref url) = self.url {
             write!(f, "for URL {}", url)?;
         }
-
         if let Some(ref status) = self.status {
-            write!(f, "status code {}", status)?;
+            write!(f, "status {}", status)?;
         }
 
         Ok(())
     }
 }
 
-impl fmt::Debug for Error {
+impl fmt::Debug for OwnError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut builder = f.debug_struct("megalodon::Error");
+        let mut builder = f.debug_struct("megalodon::OwnError");
 
         builder.field("kind", &self.kind);
         builder.field("message", &self.message);
