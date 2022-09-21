@@ -1233,6 +1233,20 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_preferences(&self) -> Result<Response<MegalodonEntities::Preferences>, Error> {
+        let res = self
+            .client
+            .get::<entities::Preferences>("/api/v1/preferences", None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Preferences>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_suggestions(
         &self,
         limit: Option<u32>,
