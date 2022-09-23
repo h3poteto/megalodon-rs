@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    runs-on: github-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
