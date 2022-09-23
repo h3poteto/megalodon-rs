@@ -1,14 +1,28 @@
+//! Own errors
 use std::fmt;
 
+/// Possible megalodon errors.
 pub enum Error {
+    /// ParseError from [`url::ParseError`].
+    /// This error will be raised when provided URL is invalid.
     ParseError(url::ParseError),
+    /// RequestError from [`reqwest::Error`].
+    /// This error will be raised when the request is invalid or failed to parse the response in reqwest.
     RequestError(reqwest::Error),
+    /// StandardError from [`std::io::Error`].
+    /// This error will be raised when some standard error has occur.
     StandardError(std::io::Error),
+    /// WebSocketError from [`tungstenite::error::Error`].
+    /// This error will be raised when tungstenite WebSocket raises an error.
     WebSocketError(tungstenite::error::Error),
+    /// JsonError from [`serde_json::Error`].
+    /// This error will be raised when failed to parse some json.
     JsonError(serde_json::Error),
+    /// OwnError is megalodon own errors.
     OwnError(OwnError),
 }
 
+/// Megalodon own errors.
 pub struct OwnError {
     url: Option<String>,
     status: Option<u16>,
@@ -16,14 +30,20 @@ pub struct OwnError {
     kind: Kind,
 }
 
+/// Error kind of [`OwnError`].
 #[derive(Debug)]
 pub enum Kind {
+    /// The implementation is not found.
+    /// When this error is raised, the method has not yet implemented.
     NoImplementedError,
+    /// Failed to parse something.
     ParseError,
+    /// The request responds http response with error code.
     HTTPStatusError,
 }
 
 impl Error {
+    /// Create a new [`OwnError`] struct.
     pub fn new_own(message: String, kind: Kind, url: Option<String>, status: Option<u16>) -> Error {
         Error::OwnError(OwnError {
             message,

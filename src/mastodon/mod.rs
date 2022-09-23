@@ -1,6 +1,10 @@
-pub mod api_client;
-pub mod entities;
+//! Mastodon related modules
+
+mod api_client;
+mod entities;
+/// Mastodon API client.
 pub mod mastodon;
-pub mod web_socket;
+mod oauth;
+mod web_socket;
 
 pub use mastodon::Mastodon;

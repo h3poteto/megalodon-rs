@@ -1,9 +1,10 @@
 use super::api_client::APIClient;
 use super::entities;
+use super::oauth;
 use super::web_socket::WebSocket;
-use crate::megalodon::CredentialsOptions;
 use crate::{
-    default, entities as MegalodonEntities, error::Error, megalodon, oauth, response::Response,
+    default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
+    response::Response,
 };
 use crate::{error, Streaming};
 use async_trait::async_trait;
@@ -17,6 +18,8 @@ use std::collections::HashMap;
 use tokio::fs::File;
 use tokio_util::codec::{BytesCodec, FramedRead};
 
+/// Mastodon API Client which satisfies megalodon trait.
+#[derive(Debug, Clone)]
 pub struct Mastodon {
     client: APIClient,
     base_url: String,
@@ -24,6 +27,7 @@ pub struct Mastodon {
 }
 
 impl Mastodon {
+    /// Create a new [`Mastodon`].
     pub fn new(
         base_url: String,
         access_token: Option<String>,
@@ -71,7 +75,7 @@ impl megalodon::Megalodon for Mastodon {
         &self,
         client_name: String,
         options: &megalodon::AppInputOptions,
-    ) -> Result<oauth::AppData, Error> {
+    ) -> Result<MegalodonOAuth::AppData, Error> {
         let mut scope = default::DEFAULT_SCOPES.to_vec();
         if let Some(scopes) = &options.scopes {
             scope = scopes.iter().map(|s| s.as_ref()).collect();
@@ -94,7 +98,7 @@ impl megalodon::Megalodon for Mastodon {
         &self,
         client_name: String,
         options: &megalodon::AppInputOptions,
-    ) -> Result<oauth::AppData, Error> {
+    ) -> Result<MegalodonOAuth::AppData, Error> {
         let mut scope = default::DEFAULT_SCOPES.to_vec();
         if let Some(scopes) = &options.scopes {
             scope = scopes.iter().map(|s| s.as_ref()).collect();
@@ -116,7 +120,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::AppDataFromServer>("/api/v1/apps", &params, None)
             .await?;
-        Ok(oauth::AppData::from(res.json.into()))
+        Ok(MegalodonOAuth::AppData::from(res.json.into()))
     }
 
     async fn fetch_access_token(
@@ -125,7 +129,7 @@ impl megalodon::Megalodon for Mastodon {
         client_secret: String,
         code: String,
         redirect_uri: String,
-    ) -> Result<oauth::TokenData, Error> {
+    ) -> Result<MegalodonOAuth::TokenData, Error> {
         let mut params = HashMap::<&str, String>::new();
         params.insert("client_id", client_id);
         params.insert("client_secret", client_secret);
@@ -137,7 +141,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(oauth::TokenData::from(res.json.into()))
+        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
     }
 
     async fn refresh_access_token(
@@ -145,7 +149,7 @@ impl megalodon::Megalodon for Mastodon {
         client_id: String,
         client_secret: String,
         refresh_token: String,
-    ) -> Result<oauth::TokenData, Error> {
+    ) -> Result<MegalodonOAuth::TokenData, Error> {
         let mut params = HashMap::<&str, String>::new();
         params.insert("client_id", client_id);
         params.insert("client_secret", client_secret);
@@ -156,7 +160,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(oauth::TokenData::from(res.json.into()))
+        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
     }
 
     async fn revoke_access_token(
@@ -243,7 +247,7 @@ impl megalodon::Megalodon for Mastodon {
 
     async fn update_credentials(
         &self,
-        options: Option<&CredentialsOptions>,
+        options: Option<&megalodon::UpdateCredentialsInputOptions>,
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
         let mut params = HashMap::<&str, String>::new();
         if let Some(options) = options {
@@ -309,7 +313,7 @@ impl megalodon::Megalodon for Mastodon {
     async fn get_account_statuses(
         &self,
         id: String,
-        options: Option<&megalodon::AccountStatusesInputOptions>,
+        options: Option<&megalodon::GetAccountStatusesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(options) = options {
@@ -504,7 +508,7 @@ impl megalodon::Megalodon for Mastodon {
     async fn follow_account(
         &self,
         id: String,
-        options: Option<&megalodon::FollowInputOptions>,
+        options: Option<&megalodon::FollowAccountInputOptions>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         let mut params = HashMap::<&str, String>::new();
         if let Some(options) = options {

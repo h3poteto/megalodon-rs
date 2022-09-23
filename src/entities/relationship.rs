@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Relationship {
     pub id: String,
     pub following: bool,

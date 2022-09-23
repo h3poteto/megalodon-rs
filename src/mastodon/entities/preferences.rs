@@ -249,11 +249,11 @@ impl<'de> de::Deserialize<'de> for Preferences {
 impl Into<MegalodonEntities::Preferences> for Preferences {
     fn into(self) -> MegalodonEntities::Preferences {
         MegalodonEntities::Preferences {
-            posting_default_visibility: self.posting_default_visibility,
-            posting_default_sensitive: self.posting_default_sensitive,
-            posting_default_language: self.posting_default_language,
+            posting_default_visibility: self.posting_default_visibility.into(),
+            posting_default_sensitive: self.posting_default_sensitive.into(),
+            posting_default_language: self.posting_default_language.into(),
             reading_expand_media: self.reading_expand_media.into(),
-            reading_expand_spoilers: self.reading_expand_spoilers,
+            reading_expand_spoilers: self.reading_expand_spoilers.into(),
         }
     }
 }

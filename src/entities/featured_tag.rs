@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 
+#[derive(Debug, Clone)]
 pub struct FeaturedTag {
     pub id: String,
     pub name: String,
