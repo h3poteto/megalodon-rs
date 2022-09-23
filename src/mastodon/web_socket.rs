@@ -5,6 +5,7 @@ use serde::Deserialize;
 use tungstenite::{connect, Message as WebSocketMessage};
 use url::Url;
 
+#[derive(Debug, Clone)]
 pub struct WebSocket {
     url: String,
     stream: String,
@@ -14,7 +15,6 @@ pub struct WebSocket {
 
 #[derive(Deserialize)]
 struct RawMessage {
-    stream: Vec<String>,
     event: String,
     payload: String,
 }

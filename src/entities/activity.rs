@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Activity {
     pub week: String,
     pub statuses: String,

@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 
+#[derive(Debug, Clone)]
 pub struct IdentityProof {
     pub provider: String,
     pub provider_username: String,

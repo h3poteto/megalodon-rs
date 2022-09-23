@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Report {
     pub id: String,
     pub action_taken: String,

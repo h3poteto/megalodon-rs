@@ -7,6 +7,7 @@ use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+#[derive(Debug, Clone)]
 pub struct APIClient {
     access_token: Option<String>,
     base_url: String,

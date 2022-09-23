@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct PushSubscription {
     pub id: String,
     pub endpoint: String,
@@ -5,6 +6,7 @@ pub struct PushSubscription {
     pub alerts: Alerts,
 }
 
+#[derive(Debug, Clone)]
 pub struct Alerts {
     pub follow: bool,
     pub favourite: bool,

@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Token {
     pub access_token: String,
     pub token_type: String,

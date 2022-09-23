@@ -1,6 +1,7 @@
 use super::StatusVisibility;
 use chrono::{DateTime, Utc};
 
+#[derive(Debug, Clone)]
 pub struct StatusParams {
     pub text: String,
     pub in_reply_to_id: Option<String>,

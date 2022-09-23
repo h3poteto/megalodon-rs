@@ -2,8 +2,8 @@ use core::fmt;
 use serde::{de, ser};
 use std::str::FromStr;
 
+use super::StatusVisibility;
 use crate::error::{Error, Kind};
-use crate::mastodon::entities::StatusVisibility;
 
 #[derive(Debug, Clone)]
 pub struct Preferences {
