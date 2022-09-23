@@ -2,6 +2,9 @@
 name = "megalodon"
 version = "0.1.0"
 edition = "2021"
+authors = ["Akira Fukushima <h3.poteto@gmail.com>"]
+description = "Mastodon and Pleroma API client library for Rust."
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
