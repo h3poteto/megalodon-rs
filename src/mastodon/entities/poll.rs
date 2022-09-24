@@ -1,4 +1,4 @@
-use super::PollOption;
+use super::{Emoji, PollOption};
 use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -9,9 +9,11 @@ pub struct Poll {
     expires_at: Option<DateTime<Utc>>,
     expired: bool,
     multiple: bool,
-    votes_count: bool,
+    votes_count: u32,
+    voters_count: Option<u32>,
     options: Vec<PollOption>,
-    voted: bool,
+    voted: Option<bool>,
+    emojis: Vec<Emoji>,
 }
 
 impl Into<MegalodonEntities::Poll> for Poll {
@@ -22,8 +24,10 @@ impl Into<MegalodonEntities::Poll> for Poll {
             expired: self.expired,
             multiple: self.multiple,
             votes_count: self.votes_count,
+            voters_count: self.voters_count,
             options: self.options.into_iter().map(|i| i.into()).collect(),
             voted: self.voted,
+            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
         }
     }
 }
