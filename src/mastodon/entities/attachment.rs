@@ -37,10 +37,10 @@ pub struct AttachmentMeta {
 #[derive(Debug, Deserialize, Clone)]
 pub struct MetaSub {
     // For Image, Gifv, Video
-    width: u32,
-    height: u32,
-    size: String,
-    aspect: f64,
+    width: Option<u32>,
+    height: Option<u32>,
+    size: Option<String>,
+    aspect: Option<f64>,
 
     // For Gifv, Video
     frame_rate: Option<String>,

@@ -1,4 +1,4 @@
-use super::{Account, Emoji, Status};
+use super::{Account, Status};
 use crate::error::{Error, Kind};
 
 use crate::entities as MegalodonEntities;
@@ -13,7 +13,6 @@ pub struct Notification {
     created_at: DateTime<Utc>,
     id: String,
     status: Option<Status>,
-    emoji: Option<Emoji>,
     r#type: NotificationType,
 }
 
@@ -106,7 +105,7 @@ impl Into<MegalodonEntities::Notification> for Notification {
             created_at: self.created_at,
             id: self.id,
             status: self.status.map(|i| i.into()),
-            emoji: self.emoji.map(|i| i.into()),
+            emoji: None,
             r#type: self.r#type.into(),
         }
     }

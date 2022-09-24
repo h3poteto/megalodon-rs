@@ -8,7 +8,7 @@ use std::str::FromStr;
 pub struct Status {
     pub id: String,
     pub uri: String,
-    pub url: String,
+    pub url: Option<String>,
     pub account: Account,
     pub in_reply_to_id: Option<String>,
     pub in_reply_to_account_id: Option<String>,
@@ -34,9 +34,9 @@ pub struct Status {
     pub application: Option<Application>,
     pub language: Option<String>,
     pub pinned: Option<bool>,
-    pub emoji_reactions: Vec<Reaction>,
-    pub quote: Option<bool>,
-    pub bookmarked: bool,
+    pub emoji_reactions: Option<Vec<Reaction>>,
+    pub quote: bool,
+    pub bookmarked: Option<bool>,
 }
 
 #[derive(Debug, Clone)]

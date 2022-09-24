@@ -1,7 +1,7 @@
 use core::fmt;
 use std::str::FromStr;
 
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
+use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Tag};
 use crate::entities as MegalodonEntities;
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
@@ -11,13 +11,12 @@ use serde::{de, ser, Deserialize};
 pub struct Status {
     id: String,
     uri: String,
-    url: String,
+    url: Option<String>,
     account: Account,
     in_reply_to_id: Option<String>,
     in_reply_to_account_id: Option<String>,
     reblog: Option<Box<Status>>,
     content: String,
-    plain_content: Option<String>,
     created_at: DateTime<Utc>,
     emojis: Vec<Emoji>,
     replies_count: u32,
@@ -37,9 +36,8 @@ pub struct Status {
     application: Option<Application>,
     language: Option<String>,
     pinned: Option<bool>,
-    emoji_reactions: Vec<Reaction>,
-    quote: Option<bool>,
-    bookmarked: bool,
+    quote: Option<Box<Status>>,
+    bookmarked: Option<bool>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -111,9 +109,14 @@ impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
 impl Into<MegalodonEntities::Status> for Status {
     fn into(self) -> MegalodonEntities::Status {
         let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
+        let mut quoted = false;
         if let Some(reblog) = self.reblog {
             let rs: Status = *reblog;
             reblog_status = Some(Box::new(rs.into()));
+        } else if let Some(quote) = self.quote {
+            let rs: Status = *quote;
+            reblog_status = Some(Box::new(rs.into()));
+            quoted = true;
         }
 
         MegalodonEntities::Status {
@@ -125,7 +128,7 @@ impl Into<MegalodonEntities::Status> for Status {
             in_reply_to_account_id: self.in_reply_to_account_id,
             reblog: reblog_status,
             content: self.content,
-            plain_content: self.plain_content,
+            plain_content: None,
             created_at: self.created_at,
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             replies_count: self.replies_count,
@@ -149,8 +152,8 @@ impl Into<MegalodonEntities::Status> for Status {
             application: self.application.map(|i| i.into()),
             language: self.language,
             pinned: self.pinned,
-            emoji_reactions: self.emoji_reactions.into_iter().map(|i| i.into()).collect(),
-            quote: self.quote,
+            emoji_reactions: None,
+            quote: quoted,
             bookmarked: self.bookmarked,
         }
     }
