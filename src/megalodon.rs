@@ -683,11 +683,22 @@ pub trait Megalodon {
     // Streaming
     // ======================================
     /// Get user streaming object.
-    fn user_streaming(
-        &self,
-        streaming_url: String,
-        params: Option<Vec<String>>,
-    ) -> Box<dyn Streaming>;
+    fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming>;
+
+    /// Get public streaming object.
+    fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming>;
+
+    /// Get local streaming object.
+    fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming>;
+
+    /// Get direct streaming object.
+    fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming>;
+
+    /// Get tag streaming object.
+    fn tag_streaming(&self, streaming_url: String, tag: String) -> Box<dyn Streaming>;
+
+    /// Get list streaming object.
+    fn list_streaming(&self, streaming_url: String, list_id: String) -> Box<dyn Streaming>;
 }
 
 /// Input options for [`Megalodon::register_app`] and [`Megalodon::create_app`].
