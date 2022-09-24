@@ -10,6 +10,8 @@ This library is Rust version of [megalodon](https://github.com/h3poteto/megalodo
   - [x] Mastodon
   - [ ] Pleroma
 - [ ] Streaming with WebSocket
+  - [x] Mastodon
+  - [ ] Pleroma
 - [ ] Proxy support
 
 
