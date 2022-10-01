@@ -1,4 +1,4 @@
-use super::{Account, Emoji, Status};
+use super::{Account, Status};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
@@ -11,7 +11,7 @@ pub struct Notification {
     pub created_at: DateTime<Utc>,
     pub id: String,
     pub status: Option<Status>,
-    pub emoji: Option<Emoji>,
+    pub emoji: Option<String>,
     pub r#type: NotificationType,
 }
 
@@ -22,8 +22,10 @@ pub enum NotificationType {
     Mention,
     Reblog,
     Favourite,
-    Poll,
+    PollVote,
+    PollExpired,
     Status,
+    EmojiReaction,
 }
 
 impl fmt::Display for NotificationType {
@@ -33,9 +35,11 @@ impl fmt::Display for NotificationType {
             NotificationType::Mention => write!(f, "mention"),
             NotificationType::Reblog => write!(f, "reblog"),
             NotificationType::Favourite => write!(f, "favourite"),
-            NotificationType::Poll => write!(f, "poll"),
+            NotificationType::PollVote => write!(f, "poll_vote"),
+            NotificationType::PollExpired => write!(f, "poll_expired"),
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Status => write!(f, "status"),
+            NotificationType::EmojiReaction => write!(f, "emoji_reaction"),
         }
     }
 }
@@ -49,9 +53,10 @@ impl FromStr for NotificationType {
             "mention" => Ok(NotificationType::Mention),
             "reblog" => Ok(NotificationType::Reblog),
             "favourite" => Ok(NotificationType::Favourite),
-            "poll" => Ok(NotificationType::Poll),
+            "poll_vote" => Ok(NotificationType::PollVote),
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
+            "emoji_reaction" => Ok(NotificationType::EmojiReaction),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
