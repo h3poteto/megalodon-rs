@@ -18,6 +18,8 @@ pub struct TokenDataFromServer {
     token_type: String,
     scope: String,
     created_at: u64,
+    expires_in: Option<u64>,
+    refresh_token: Option<String>,
 }
 
 impl Into<oauth::AppData> for AppDataFromServer {
@@ -40,8 +42,8 @@ impl Into<oauth::TokenData> for TokenDataFromServer {
             self.token_type,
             self.scope,
             self.created_at,
-            None,
-            None,
+            self.expires_in,
+            self.refresh_token,
         )
     }
 }
