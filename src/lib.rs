@@ -51,6 +51,7 @@ pub mod error;
 pub mod mastodon;
 pub mod megalodon;
 pub mod oauth;
+pub mod pleroma;
 pub mod response;
 pub mod streaming;
 

@@ -14,6 +14,7 @@ pub struct Notification {
     id: String,
     status: Option<Status>,
     r#type: NotificationType,
+    emoji: Option<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -24,7 +25,7 @@ pub enum NotificationType {
     Reblog,
     Favourite,
     Poll,
-    Status,
+    PleromaEmojiReaction,
 }
 
 impl fmt::Display for NotificationType {
@@ -34,9 +35,9 @@ impl fmt::Display for NotificationType {
             NotificationType::Mention => write!(f, "mention"),
             NotificationType::Reblog => write!(f, "reblog"),
             NotificationType::Favourite => write!(f, "favourite"),
+            NotificationType::PleromaEmojiReaction => write!(f, "pleroma:emoji_reaction"),
             NotificationType::Poll => write!(f, "poll"),
             NotificationType::FollowRequest => write!(f, "follow_request"),
-            NotificationType::Status => write!(f, "status"),
         }
     }
 }
@@ -50,9 +51,9 @@ impl FromStr for NotificationType {
             "mention" => Ok(NotificationType::Mention),
             "reblog" => Ok(NotificationType::Reblog),
             "favourite" => Ok(NotificationType::Favourite),
+            "pleroma:emoji_reaction" => Ok(NotificationType::PleromaEmojiReaction),
             "poll" => Ok(NotificationType::Poll),
             "follow_request" => Ok(NotificationType::FollowRequest),
-            "status" => Ok(NotificationType::Status),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
@@ -93,7 +94,9 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 MegalodonEntities::notification::NotificationType::Favourite
             }
             NotificationType::Poll => MegalodonEntities::notification::NotificationType::PollVote,
-            NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
+            NotificationType::PleromaEmojiReaction => {
+                MegalodonEntities::notification::NotificationType::EmojiReaction
+            }
         }
     }
 }
@@ -105,7 +108,7 @@ impl Into<MegalodonEntities::Notification> for Notification {
             created_at: self.created_at,
             id: self.id,
             status: self.status.map(|i| i.into()),
-            emoji: None,
+            emoji: self.emoji,
             r#type: self.r#type.into(),
         }
     }
