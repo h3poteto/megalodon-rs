@@ -63,7 +63,7 @@ pub struct PleromaOptions {
     pub thread_muted: Option<bool>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct PleromaContent {
     pub text_plain: String,
 }
@@ -259,5 +259,24 @@ impl<'de> de::Deserialize<'de> for PleromaContent {
         }
 
         deserializer.deserialize_struct("PleromaContent", FIELDS, PleromaContentVisitor)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_pleroma_content_deserialize() {
+        let text = r#"{"text/plain":"posted status example"}"#;
+
+        let r = serde_json::from_str::<PleromaContent>(text);
+        assert!(r.is_ok());
+        assert_eq!(
+            r.unwrap(),
+            PleromaContent {
+                text_plain: String::from("posted status example")
+            }
+        );
     }
 }
