@@ -8,12 +8,12 @@ The `megalodon` is a client library for Mastodon and Pleroma. It provides REST A
 This library is Rust version of [megalodon](https://github.com/h3poteto/megalodon).
 
 ## Features
-- [ ] REST API
+- [x] REST API
   - [x] Mastodon
-  - [ ] Pleroma
-- [ ] Streaming with WebSocket
+  - [x] Pleroma
+- [x] Streaming with WebSocket
   - [x] Mastodon
-  - [ ] Pleroma
+  - [x] Pleroma
 - [ ] Proxy support
 
 
