@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use super::Account;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Reaction {
     pub count: u32,
     pub me: bool,
