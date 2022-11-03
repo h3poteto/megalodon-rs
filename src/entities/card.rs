@@ -1,4 +1,6 @@
-#[derive(Debug, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Card {
     pub url: String,
     pub title: String,
@@ -14,7 +16,7 @@ pub struct Card {
     pub height: Option<u32>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum CardType {
     Link,
     Photo,

@@ -2,10 +2,10 @@ use super::{Account, Status};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
-use serde::{de, ser};
+use serde::{de, Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Notification {
     pub account: Account,
     pub created_at: DateTime<Utc>,
@@ -62,7 +62,7 @@ impl FromStr for NotificationType {
     }
 }
 
-impl ser::Serialize for NotificationType {
+impl Serialize for NotificationType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -71,7 +71,7 @@ impl ser::Serialize for NotificationType {
     }
 }
 
-impl<'de> de::Deserialize<'de> for NotificationType {
+impl<'de> Deserialize<'de> for NotificationType {
     fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
     where
         D: de::Deserializer<'de>,

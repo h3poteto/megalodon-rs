@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use super::History;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Tag {
     pub name: String,
     pub url: String,

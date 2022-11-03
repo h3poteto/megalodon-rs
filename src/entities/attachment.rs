@@ -1,10 +1,10 @@
 use core::fmt;
-use serde::{de, ser, Deserialize};
+use serde::{de, ser, Deserialize, Serialize};
 use std::str::FromStr;
 
 use crate::error::Error;
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Attachment {
     pub id: String,
     pub r#type: AttachmentType,
@@ -17,7 +17,7 @@ pub struct Attachment {
     pub blurhash: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AttachmentMeta {
     pub original: Option<MetaSub>,
     pub small: Option<MetaSub>,
@@ -34,7 +34,7 @@ pub struct AttachmentMeta {
     pub audio_channel: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct MetaSub {
     // For Image, Gifv, Video
     pub width: Option<u32>,
@@ -50,7 +50,7 @@ pub struct MetaSub {
     pub bitrate: Option<u32>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Focus {
     pub x: f64,
     pub y: f64,
@@ -100,7 +100,7 @@ impl ser::Serialize for AttachmentType {
     }
 }
 
-impl<'de> de::Deserialize<'de> for AttachmentType {
+impl<'de> Deserialize<'de> for AttachmentType {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,

@@ -1,11 +1,11 @@
 use core::fmt;
-use serde::{de, ser};
+use serde::{de, Deserialize, Serialize};
 use std::str::FromStr;
 
 use super::StatusVisibility;
 use crate::error::{Error, Kind};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Preferences {
     pub posting_default_visibility: StatusVisibility,
     pub posting_default_sensitive: bool,
@@ -44,7 +44,7 @@ impl FromStr for ExpandMedia {
     }
 }
 
-impl ser::Serialize for ExpandMedia {
+impl Serialize for ExpandMedia {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

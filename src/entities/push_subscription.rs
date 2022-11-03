@@ -1,4 +1,6 @@
-#[derive(Debug, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct PushSubscription {
     pub id: String,
     pub endpoint: String,
@@ -6,7 +8,7 @@ pub struct PushSubscription {
     pub alerts: Alerts,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Alerts {
     pub follow: bool,
     pub favourite: bool,

@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use chrono::{DateTime, Utc};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct FeaturedTag {
     pub id: String,
     pub name: String,

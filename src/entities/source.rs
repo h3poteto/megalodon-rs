@@ -1,7 +1,7 @@
 use super::Field;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Source {
     pub privacy: Option<String>,
     pub sensitive: Option<bool>,

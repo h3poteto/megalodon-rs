@@ -1,10 +1,12 @@
+use serde::{Deserialize, Serialize};
+
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Status {
     pub id: String,
     pub uri: String,
@@ -39,7 +41,7 @@ pub struct Status {
     pub bookmarked: Option<bool>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum StatusVisibility {
     Public,
     Unlisted,
