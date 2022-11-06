@@ -112,8 +112,12 @@ pub fn generator(
     base_url: String,
     access_token: Option<String>,
     user_agent: Option<String>,
-) -> Box<dyn Megalodon> {
+) -> Box<dyn Megalodon + Send + Sync> {
     match sns {
+        SNS::Pleroma => {
+            let pleroma = pleroma::Pleroma::new(base_url, access_token, user_agent);
+            Box::new(pleroma)
+        }
         _ => {
             let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent);
             Box::new(mastodon)
