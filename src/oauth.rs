@@ -1,8 +1,8 @@
 //! OAuth related modules
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Registered application data from server.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct AppData {
     /// Application ID.
     pub id: String,
@@ -43,7 +43,7 @@ impl AppData {
 }
 
 /// Token data in server.
-#[derive(Debug, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct TokenData {
     /// Access token for the authorized user.
     pub access_token: String,
