@@ -5,6 +5,8 @@ edition = "2021"
 authors = ["Akira Fukushima <h3.poteto@gmail.com>"]
 description = "Mastodon and Pleroma API client library for Rust."
 license = "MIT"
+repository = "https://github.com/h3poteto/megalodon-rs"
+homepage = "https://github.com/h3poteto/megalodon-rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
