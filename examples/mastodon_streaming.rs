@@ -2,12 +2,13 @@ use megalodon::{generator, streaming::Message};
 use std::env;
 
 fn main() {
+    env_logger::init();
     match env::var("MASTODON_ACCESS_TOKEN") {
         Ok(token) => {
             streaming("wss://streaming.fedibird.com", token);
         }
         Err(err) => {
-            println!("{:#?}", err);
+            log::error!("{:#?}", err);
         }
     }
 }

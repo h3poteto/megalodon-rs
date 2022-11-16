@@ -44,7 +44,7 @@ impl WebSocket {
                 "update" => {
                     let res =
                         serde_json::from_str::<entities::Status>(&mes.payload).map_err(|e| {
-                            println!("failed to parse: {}", &mes.payload);
+                            log::error!("failed to parse: {}", &mes.payload);
                             e
                         })?;
                     Ok(Message::Update(res.into()))
@@ -52,7 +52,7 @@ impl WebSocket {
                 "notification" => {
                     let res = serde_json::from_str::<entities::Notification>(&mes.payload)
                         .map_err(|e| {
-                            println!("failed to parse: {}", &mes.payload);
+                            log::error!("failed to parse: {}", &mes.payload);
                             e
                         })?;
                     Ok(Message::Notification(res.into()))
@@ -60,7 +60,7 @@ impl WebSocket {
                 "conversation" => {
                     let res = serde_json::from_str::<entities::Conversation>(&mes.payload)
                         .map_err(|e| {
-                            println!("failed to parse: {}", &mes.payload);
+                            log::error!("failed to parse: {}", &mes.payload);
                             e
                         })?;
                     Ok(Message::Conversation(res.into()))
@@ -95,16 +95,15 @@ impl Streaming for WebSocket {
         }
         let mut url = self.url.clone();
         url = url + "?" + parameter.join("&").as_str();
-        println!("{:#?}", url);
 
         let (mut socket, response) =
             connect(Url::parse(url.as_str()).unwrap()).expect("Can't connect");
 
-        println!("Connected to {}", url);
-        println!("Response HTTP code: {}", response.status());
-        println!("Response contains the following headers:");
+        log::debug!("Connected to {}", url);
+        log::debug!("Response HTTP code: {}", response.status());
+        log::debug!("Response contains the following headers:");
         for (ref header, _value) in response.headers() {
-            println!("* {}", header);
+            log::debug!("* {}", header);
         }
 
         loop {
@@ -113,13 +112,13 @@ impl Streaming for WebSocket {
                 let _ = socket
                     .write_message(WebSocketMessage::Pong(Vec::<u8>::new()))
                     .map_err(|e| {
-                        println!("{:#?}", e);
+                        log::error!("{:#?}", e);
                         e
                     });
             }
             if msg.is_close() {
                 let _ = socket.close(None).map_err(|e| {
-                    println!("{:#?}", e);
+                    log::error!("{:#?}", e);
                     e
                 });
                 return;
@@ -129,7 +128,7 @@ impl Streaming for WebSocket {
                     callback(message);
                 }
                 Err(err) => {
-                    println!("{}", err);
+                    log::warn!("{}", err);
                 }
             }
         }
