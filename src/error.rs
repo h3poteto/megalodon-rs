@@ -2,27 +2,36 @@
 use std::fmt;
 
 /// Possible megalodon errors.
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// ParseError from [`url::ParseError`].
     /// This error will be raised when provided URL is invalid.
-    ParseError(url::ParseError),
+    #[error(transparent)]
+    ParseError(#[from] url::ParseError),
     /// RequestError from [`reqwest::Error`].
     /// This error will be raised when the request is invalid or failed to parse the response in reqwest.
-    RequestError(reqwest::Error),
+    #[error(transparent)]
+    RequestError(#[from] reqwest::Error),
     /// StandardError from [`std::io::Error`].
     /// This error will be raised when some standard error has occur.
-    StandardError(std::io::Error),
+    #[error(transparent)]
+    StandardError(#[from] std::io::Error),
     /// WebSocketError from [`tungstenite::error::Error`].
     /// This error will be raised when tungstenite WebSocket raises an error.
-    WebSocketError(tungstenite::error::Error),
+    #[error(transparent)]
+    WebSocketError(#[from] tungstenite::error::Error),
     /// JsonError from [`serde_json::Error`].
     /// This error will be raised when failed to parse some json.
-    JsonError(serde_json::Error),
+    #[error(transparent)]
+    JsonError(#[from] serde_json::Error),
     /// OwnError is megalodon own errors.
-    OwnError(OwnError),
+    #[error(transparent)]
+    OwnError(#[from] OwnError),
 }
 
 /// Megalodon own errors.
+#[derive(thiserror::Error)]
+#[error("{kind}: {message} {} {}", .url.as_ref().map(AsRef::as_ref).unwrap_or(""), .status.map(|u| u.to_string()).unwrap_or("".to_string()))]
 pub struct OwnError {
     url: Option<String>,
     status: Option<u16>,
@@ -31,14 +40,17 @@ pub struct OwnError {
 }
 
 /// Error kind of [`OwnError`].
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Kind {
     /// The implementation is not found.
     /// When this error is raised, the method has not yet implemented.
+    #[error("no implemented error")]
     NoImplementedError,
     /// Failed to parse something.
+    #[error("parse error")]
     ParseError,
     /// The request responds http response with error code.
+    #[error("http status error")]
     HTTPStatusError,
 }
 
@@ -51,83 +63,6 @@ impl Error {
             url,
             status,
         })
-    }
-}
-
-impl From<reqwest::Error> for Error {
-    fn from(err: reqwest::Error) -> Error {
-        Error::RequestError(err)
-    }
-}
-
-impl From<url::ParseError> for Error {
-    fn from(err: url::ParseError) -> Error {
-        Error::ParseError(err)
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(err: std::io::Error) -> Error {
-        Error::StandardError(err)
-    }
-}
-
-impl From<tungstenite::error::Error> for Error {
-    fn from(err: tungstenite::error::Error) -> Error {
-        Error::WebSocketError(err)
-    }
-}
-
-impl From<serde_json::Error> for Error {
-    fn from(err: serde_json::Error) -> Error {
-        Error::JsonError(err)
-    }
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Error::OwnError(err) => err.fmt(f),
-            Error::ParseError(err) => err.fmt(f),
-            Error::RequestError(err) => err.fmt(f),
-            Error::StandardError(err) => err.fmt(f),
-            Error::WebSocketError(err) => err.fmt(f),
-            Error::JsonError(err) => err.fmt(f),
-        }
-    }
-}
-
-impl fmt::Debug for Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Error::OwnError(err) => err.fmt(f),
-            Error::ParseError(err) => err.fmt(f),
-            Error::RequestError(err) => err.fmt(f),
-            Error::StandardError(err) => err.fmt(f),
-            Error::WebSocketError(err) => err.fmt(f),
-            Error::JsonError(err) => err.fmt(f),
-        }
-    }
-}
-
-impl fmt::Display for OwnError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.kind {
-            Kind::NoImplementedError => f.write_str("no implemented error: ")?,
-            Kind::ParseError => f.write_str("parse error: ")?,
-            Kind::HTTPStatusError => f.write_str("http status error: ")?,
-        }
-
-        write!(f, "message {}", self.message)?;
-
-        if let Some(ref url) = self.url {
-            write!(f, "for URL {}", url)?;
-        }
-        if let Some(ref status) = self.status {
-            write!(f, "status {}", status)?;
-        }
-
-        Ok(())
     }
 }
 

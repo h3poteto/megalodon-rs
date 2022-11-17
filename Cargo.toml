@@ -26,3 +26,4 @@ tungstenite = { version = "0.17", features = ["native-tls"] }
 urlencoding = { version = "2.1" }
 log = "0.4"
 env_logger = "0.8"
+thiserror = "1"
