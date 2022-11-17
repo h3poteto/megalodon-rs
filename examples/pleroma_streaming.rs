@@ -2,12 +2,13 @@ use megalodon::{generator, streaming::Message};
 use std::env;
 
 fn main() {
+    env_logger::init();
     match env::var("PLEROMA_ACCESS_TOKEN") {
         Ok(token) => {
             streaming("wss://pleroma.io", token);
         }
         Err(err) => {
-            println!("{:#?}", err);
+            log::error!("{:#?}", err);
         }
     }
 }
