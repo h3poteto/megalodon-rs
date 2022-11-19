@@ -44,7 +44,11 @@ impl WebSocket {
                 "update" => {
                     let res =
                         serde_json::from_str::<entities::Status>(&mes.payload).map_err(|e| {
-                            log::error!("failed to parse: {}", &mes.payload);
+                            log::error!(
+                                "failed to parse status: {}\n{}",
+                                e.to_string(),
+                                &mes.payload
+                            );
                             e
                         })?;
                     Ok(Message::Update(res.into()))
@@ -52,7 +56,11 @@ impl WebSocket {
                 "notification" => {
                     let res = serde_json::from_str::<entities::Notification>(&mes.payload)
                         .map_err(|e| {
-                            log::error!("failed to parse: {}", &mes.payload);
+                            log::error!(
+                                "failed to parse notification: {}\n{}",
+                                e.to_string(),
+                                &mes.payload
+                            );
                             e
                         })?;
                     Ok(Message::Notification(res.into()))
@@ -60,7 +68,11 @@ impl WebSocket {
                 "conversation" => {
                     let res = serde_json::from_str::<entities::Conversation>(&mes.payload)
                         .map_err(|e| {
-                            log::error!("failed to parse: {}", &mes.payload);
+                            log::error!(
+                                "failed to parse conversation: {}\n{}",
+                                e.to_string(),
+                                &mes.payload
+                            );
                             e
                         })?;
                     Ok(Message::Conversation(res.into()))
