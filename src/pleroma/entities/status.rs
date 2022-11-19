@@ -52,13 +52,13 @@ pub enum StatusVisibility {
 pub struct PleromaOptions {
     pub content: Option<PleromaContent>,
     pub spiler_text: Option<PleromaContent>,
-    pub conversation_id: Option<String>,
-    pub direct_conversation_id: Option<String>,
+    pub conversation_id: Option<i64>,
+    pub direct_conversation_id: Option<i64>,
     pub emoji_reactions: Option<Vec<Emoji>>,
     pub expires_at: Option<DateTime<Utc>>,
     pub in_reply_to_account_acct: Option<String>,
     pub local: bool,
-    pub parent_visible: bool,
+    pub parent_visible: Option<bool>,
     pub pinned_at: Option<DateTime<Utc>>,
     pub thread_muted: Option<bool>,
 }

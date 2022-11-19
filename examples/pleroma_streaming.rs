@@ -33,7 +33,7 @@ fn streaming(url: &str, access_token: String) {
             println!("{:#?}", mes);
         }
         Message::Delete(mes) => {
-            println!("{:#?}", mes);
+            println!("message is deleted {:#?}", mes);
         }
         Message::Heartbeat() => {
             println!("heartbeat");
