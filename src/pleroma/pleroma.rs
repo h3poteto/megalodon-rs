@@ -2267,10 +2267,11 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         timeline: Vec<String>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
-        let params = Vec::<String>::from([format!(
-            "timeline={}",
-            serde_json::to_string(&timeline).unwrap()
-        )]);
+        let params: Vec<String> = timeline
+            .into_iter()
+            .map(|t| format!("timeline[]={}", t))
+            .collect();
+
         let mut path = "/api/v1/markers".to_string();
         if params.len() > 0 {
             path = path + "?" + params.join("&").as_str();

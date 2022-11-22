@@ -18,8 +18,8 @@ struct InnerMarker {
 impl Into<MegalodonEntities::Marker> for Marker {
     fn into(self) -> MegalodonEntities::Marker {
         MegalodonEntities::Marker {
-            home: self.home.into(),
-            notifications: self.notifications.into(),
+            home: Some(self.home.into()),
+            notifications: Some(self.notifications.into()),
         }
     }
 }
@@ -30,6 +30,7 @@ impl Into<MegalodonEntities::marker::InnerMarker> for InnerMarker {
             last_read_id: self.last_read_id,
             version: self.version,
             updated_at: self.updated_at,
+            unread_count: None,
         }
     }
 }
