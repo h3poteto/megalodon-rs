@@ -1,6 +1,6 @@
 use std::env;
 
-use megalodon::{entities, error, generator};
+use megalodon::{entities::{self}, error, generator};
 
 #[tokio::main]
 async fn main() {
