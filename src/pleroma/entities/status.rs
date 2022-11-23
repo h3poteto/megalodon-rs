@@ -1,7 +1,7 @@
 use core::fmt;
 use std::str::FromStr;
 
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Tag};
+use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
 use crate::entities as MegalodonEntities;
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
@@ -54,7 +54,7 @@ pub struct PleromaOptions {
     pub spiler_text: Option<PleromaContent>,
     pub conversation_id: Option<i64>,
     pub direct_conversation_id: Option<i64>,
-    pub emoji_reactions: Option<Vec<Emoji>>,
+    pub emoji_reactions: Option<Vec<Reaction>>,
     pub expires_at: Option<DateTime<Utc>>,
     pub in_reply_to_account_acct: Option<String>,
     pub local: bool,
@@ -147,7 +147,7 @@ impl Into<MegalodonEntities::Status> for Status {
             in_reply_to_account_id: self.in_reply_to_account_id,
             reblog: reblog_status,
             content: self.content,
-            plain_content: None,
+            plain_content: self.pleroma.content.map(|c| c.text_plain),
             created_at: self.created_at,
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             replies_count: self.replies_count,
@@ -171,7 +171,10 @@ impl Into<MegalodonEntities::Status> for Status {
             application: self.application.map(|i| i.into()),
             language: self.language,
             pinned: self.pinned,
-            emoji_reactions: None,
+            emoji_reactions: self
+                .pleroma
+                .emoji_reactions
+                .map(|v| v.into_iter().map(|e| e.into()).collect()),
             quote: quoted,
             bookmarked: self.bookmarked,
         }
