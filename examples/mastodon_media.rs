@@ -7,7 +7,7 @@ async fn main() {
     match env::var("MASTODON_ACCESS_TOKEN") {
         Ok(token) => {
             let file_path = "./sample.jpg".to_string();
-            let res = upload_media("https://fedibird.com", token, file_path).await;
+            let res = upload_media("https://fedibird.com", token.to_owned(), file_path).await;
             match res {
                 Ok(res) => {
                     println!("{:#?}", res);
