@@ -4,6 +4,7 @@ use crate::response::Response;
 use reqwest::header::HeaderMap;
 use reqwest::Url;
 use serde::de::DeserializeOwned;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
@@ -81,7 +82,7 @@ impl APIClient {
     pub async fn post<T>(
         &self,
         path: &str,
-        params: &HashMap<&str, String>,
+        params: &HashMap<&str, Value>,
         headers: Option<HeaderMap>,
     ) -> Result<Response<T>, MegalodonError>
     where
@@ -101,7 +102,7 @@ impl APIClient {
             req = req.headers(headers);
         }
 
-        let res = req.form(params).send().await?;
+        let res = req.json(params).send().await?;
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -181,7 +182,7 @@ impl APIClient {
     pub async fn put<T>(
         &self,
         path: &str,
-        params: &HashMap<&str, String>,
+        params: &HashMap<&str, Value>,
         headers: Option<HeaderMap>,
     ) -> Result<Response<T>, MegalodonError>
     where
@@ -281,7 +282,7 @@ impl APIClient {
     pub async fn patch<T>(
         &self,
         path: &str,
-        params: &HashMap<&str, String>,
+        params: &HashMap<&str, Value>,
         headers: Option<HeaderMap>,
     ) -> Result<Response<T>, MegalodonError>
     where
@@ -331,7 +332,7 @@ impl APIClient {
     pub async fn delete<T>(
         &self,
         path: &str,
-        params: &HashMap<&str, String>,
+        params: &HashMap<&str, Value>,
         headers: Option<HeaderMap>,
     ) -> Result<Response<T>, MegalodonError>
     where
