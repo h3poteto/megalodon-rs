@@ -1289,7 +1289,6 @@ impl megalodon::Megalodon for Mastodon {
         options: Option<&megalodon::PostStatusInputOptions>,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
         let mut params = HashMap::<&str, Value>::from([("status", serde_json::Value::String(status))]);
-        // let mut params = HashMap::<&str, Value>::from([("status", status)]);
         if let Some(options) = options {
             if let Some(media_ids) = &options.media_ids {
                 if let Some(json_media_ids) = serde_json::to_value(media_ids).ok() {
