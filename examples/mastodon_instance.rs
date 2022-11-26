@@ -1,8 +1,15 @@
 use megalodon::{entities, error, generator, SNS};
+use std::env;
 
 #[tokio::main]
 async fn main() {
-    match instance("https://fedibird.com").await {
+    env_logger::init();
+
+    let Ok(url) = env::var("MASTODON_URL") else {
+        println!("Specify MASTODON_URL!!");
+        return
+    };
+    match instance(url.as_str()).await {
         Ok(response) => {
             println!("{:#?}", response);
         }

@@ -3,15 +3,20 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    match env::var("MASTODON_ACCESS_TOKEN") {
-        Ok(token) => match verify_credentials("https://fedibird.com", token).await {
-            Ok(response) => {
-                println!("{:#?}", response);
-            }
-            Err(err) => {
-                println!("{:#?}", err);
-            }
-        },
+    env_logger::init();
+
+    let Ok(url) = env::var("MASTODON_URL") else {
+        println!("Specify MASTODON_URL!!");
+        return
+    };
+    let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
+        println!("Specify MASTODON_ACCESS_TOKEN!!");
+        return
+    };
+    match verify_credentials(url.as_str(), token).await {
+        Ok(response) => {
+            println!("{:#?}", response);
+        }
         Err(err) => {
             println!("{:#?}", err);
         }

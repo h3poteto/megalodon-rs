@@ -1,24 +1,26 @@
-use std::env;
-
 use megalodon::{entities, error, generator};
+use std::env;
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    match env::var("PLEROMA_ACCESS_TOKEN") {
-        Ok(token) => {
-            let res = get_markers("https://pleroma.io", token).await;
-            match res {
-                Ok(res) => {
-                    println!("{:#?}", res);
-                }
-                Err(err) => {
-                    println!("{:#?}", err);
-                }
-            }
+
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return
+    };
+    let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
+        println!("Specify PLEROMA_ACCESS_TOKEN!!");
+        return
+    };
+
+    let res = get_markers(url.as_str(), token).await;
+    match res {
+        Ok(res) => {
+            println!("{:#?}", res);
         }
         Err(err) => {
-            println!("{:#?}", err)
+            println!("{:#?}", err);
         }
     }
 }

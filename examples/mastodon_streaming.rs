@@ -3,14 +3,17 @@ use std::env;
 
 fn main() {
     env_logger::init();
-    match env::var("MASTODON_ACCESS_TOKEN") {
-        Ok(token) => {
-            streaming("wss://streaming.fedibird.com", token);
-        }
-        Err(err) => {
-            log::error!("{:#?}", err);
-        }
-    }
+
+    let Ok(url) = env::var("MASTODON_STREAMING_URL") else {
+        println!("Specify MASTODON_STREAMING_URL!!");
+        return
+    };
+    let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
+        println!("Specify MASTODON_ACCESS_TOKEN!!");
+        return
+    };
+
+    streaming(url.as_str(), token);
 }
 
 fn streaming(url: &str, access_token: String) {

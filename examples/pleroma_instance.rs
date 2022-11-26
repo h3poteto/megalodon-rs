@@ -1,8 +1,15 @@
 use megalodon::{entities, error, generator, SNS};
+use std::env;
 
 #[tokio::main]
 async fn main() {
-    match instance("https://pleroma.io").await {
+    env_logger::init();
+
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return
+    };
+    match instance(url.as_str()).await {
         Ok(response) => {
             println!("{:#?}", response);
         }
