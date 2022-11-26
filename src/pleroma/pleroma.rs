@@ -13,6 +13,7 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
 use tokio::fs::File;
@@ -105,12 +106,12 @@ impl megalodon::Megalodon for Pleroma {
             redirect_uris = uris.as_ref();
         }
 
-        let mut params = HashMap::<&str, String>::new();
-        params.insert("client_name", client_name);
-        params.insert("redirect_uris", redirect_uris.to_string());
-        params.insert("scopes", scope.join(" "));
+        let mut params = HashMap::<&str, Value>::new();
+        params.insert("client_name", Value::String(client_name));
+        params.insert("redirect_uris", Value::String(redirect_uris.to_string()));
+        params.insert("scopes", Value::String(scope.join(" ")));
         if let Some(website) = &options.website {
-            params.insert("website", website.clone());
+            params.insert("website", Value::String(website.clone()));
         }
 
         let res = self
@@ -127,12 +128,15 @@ impl megalodon::Megalodon for Pleroma {
         code: String,
         redirect_uri: String,
     ) -> Result<MegalodonOAuth::TokenData, Error> {
-        let mut params = HashMap::<&str, String>::new();
-        params.insert("client_id", client_id);
-        params.insert("client_secret", client_secret);
-        params.insert("code", code);
-        params.insert("redirect_uri", redirect_uri);
-        params.insert("grant_type", "authorization_code".to_string());
+        let mut params = HashMap::<&str, Value>::new();
+        params.insert("client_id", Value::String(client_id));
+        params.insert("client_secret", Value::String(client_secret));
+        params.insert("code", Value::String(code));
+        params.insert("redirect_uri", Value::String(redirect_uri));
+        params.insert(
+            "grant_type",
+            Value::String("authorization_code".to_string()),
+        );
 
         let res = self
             .client
@@ -147,11 +151,14 @@ impl megalodon::Megalodon for Pleroma {
         client_secret: String,
         refresh_token: String,
     ) -> Result<MegalodonOAuth::TokenData, Error> {
-        let mut params = HashMap::<&str, String>::new();
-        params.insert("client_id", client_id);
-        params.insert("client_secret", client_secret);
-        params.insert("refresh_token", refresh_token);
-        params.insert("grant_type", "authorization_code".to_string());
+        let mut params = HashMap::<&str, Value>::new();
+        params.insert("client_id", Value::String(client_id));
+        params.insert("client_secret", Value::String(client_secret));
+        params.insert("refresh_token", Value::String(refresh_token));
+        params.insert(
+            "grant_type",
+            Value::String("authorization_code".to_string()),
+        );
 
         let res = self
             .client
@@ -166,10 +173,10 @@ impl megalodon::Megalodon for Pleroma {
         client_secret: String,
         access_token: String,
     ) -> Result<Response<()>, Error> {
-        let mut params = HashMap::<&str, String>::new();
-        params.insert("client_id", client_id);
-        params.insert("client_secret", client_secret);
-        params.insert("token", access_token);
+        let mut params = HashMap::<&str, Value>::new();
+        params.insert("client_id", Value::String(client_id));
+        params.insert("client_secret", Value::String(client_secret));
+        params.insert("token", Value::String(access_token));
 
         let res = self
             .client
@@ -203,15 +210,15 @@ impl megalodon::Megalodon for Pleroma {
         locale: String,
         reason: Option<String>,
     ) -> Result<Response<MegalodonEntities::Token>, Error> {
-        let mut params = HashMap::<&str, String>::from([
-            ("username", username),
-            ("email", email),
-            ("password", password),
-            ("agreement", agreement),
-            ("locale", locale),
+        let mut params = HashMap::<&str, Value>::from([
+            ("username", Value::String(username)),
+            ("email", Value::String(email)),
+            ("password", Value::String(password)),
+            ("agreement", Value::String(agreement)),
+            ("locale", Value::String(locale)),
         ]);
         if let Some(reason) = reason {
-            params.insert("reason", reason);
+            params.insert("reason", Value::String(reason));
         }
 
         let res = self
@@ -246,37 +253,39 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         options: Option<&megalodon::UpdateCredentialsInputOptions>,
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
-        let mut params = HashMap::<&str, String>::new();
+        let mut params = HashMap::<&str, Value>::new();
         if let Some(options) = options {
             if let Some(discoverable) = options.discoverable {
-                params.insert("discoverable", discoverable.to_string());
+                params.insert("discoverable", Value::String(discoverable.to_string()));
             }
             if let Some(bot) = options.bot {
-                params.insert("bot", bot.to_string());
+                params.insert("bot", Value::String(bot.to_string()));
             }
             if let Some(display_name) = &options.display_name {
-                params.insert("display_name", display_name.clone());
+                params.insert("display_name", Value::String(display_name.clone()));
             }
             if let Some(note) = &options.note {
-                params.insert("note", note.clone());
+                params.insert("note", Value::String(note.clone()));
             }
             if let Some(avatar) = &options.avatar {
-                params.insert("avatar", avatar.clone());
+                params.insert("avatar", Value::String(avatar.clone()));
             }
             if let Some(header) = &options.header {
-                params.insert("header", header.clone());
+                params.insert("header", Value::String(header.clone()));
             }
             if let Some(locked) = options.locked {
-                params.insert("locked", locked.to_string());
+                params.insert("locked", Value::String(locked.to_string()));
             }
             if let Some(source) = &options.source {
-                params.insert("source", serde_json::to_string(&source).unwrap());
+                if let Some(json_source) = serde_json::to_value(&source).ok() {
+                    params.insert("source", json_source);
+                }
             }
             if let Some(fields_attributes) = &options.fields_attributes {
-                params.insert(
-                    "fields_attributes",
-                    serde_json::to_string(&fields_attributes).unwrap(),
-                );
+                if let Some(json_fields_attributes) = serde_json::to_value(&fields_attributes).ok()
+                {
+                    params.insert("fields_attributes", json_fields_attributes);
+                }
             }
         }
 
@@ -357,7 +366,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -379,7 +388,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -507,10 +516,10 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         options: Option<&megalodon::FollowAccountInputOptions>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let mut params = HashMap::<&str, String>::new();
+        let mut params = HashMap::<&str, Value>::new();
         if let Some(options) = options {
             if let Some(reblog) = options.reblog {
-                params.insert("reblog", reblog.to_string());
+                params.insert("reblog", Value::String(reblog.to_string()));
             }
         }
 
@@ -535,7 +544,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -557,7 +566,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -579,7 +588,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -602,7 +611,10 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         notifications: bool,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::from([("notifications", notifications.to_string())]);
+        let params = HashMap::<&str, Value>::from([(
+            "notifications",
+            Value::String(notifications.to_string()),
+        )]);
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -624,7 +636,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -646,7 +658,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -668,7 +680,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -914,7 +926,7 @@ impl megalodon::Megalodon for Pleroma {
     }
 
     async fn block_domain(&self, domain: String) -> Result<Response<()>, Error> {
-        let params = HashMap::<&str, String>::from([("domain", domain)]);
+        let params = HashMap::<&str, Value>::from([("domain", Value::String(domain))]);
         let res = self
             .client
             .post::<()>("/api/v1/domain_blocks", &params, None)
@@ -924,7 +936,7 @@ impl megalodon::Megalodon for Pleroma {
     }
 
     async fn unblock_domain(&self, domain: String) -> Result<Response<()>, Error> {
-        let params = HashMap::<&str, String>::from([("domain", domain)]);
+        let params = HashMap::<&str, Value>::from([("domain", Value::String(domain))]);
         let res = self
             .client
             .delete::<()>("/api/v1/domain_blocks", &params, None)
@@ -967,19 +979,22 @@ impl megalodon::Megalodon for Pleroma {
         context: Vec<MegalodonEntities::filter::FilterContext>,
         options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
-        let mut params = HashMap::<&str, String>::from([
-            ("phrase", phrase),
-            ("context", serde_json::to_string(&context).unwrap()),
+        let mut params = HashMap::<&str, Value>::from([
+            ("phrase", Value::String(phrase)),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
         ]);
         if let Some(options) = options {
             if let Some(irreversible) = options.irreversible {
-                params.insert("irreversible", irreversible.to_string());
+                params.insert("irreversible", Value::String(irreversible.to_string()));
             }
             if let Some(whole_word) = options.whole_word {
-                params.insert("whole_word", whole_word.to_string());
+                params.insert("whole_word", Value::String(whole_word.to_string()));
             }
             if let Some(expires_in) = options.expires_in {
-                params.insert("expires_in", expires_in.to_string());
+                params.insert("expires_in", Value::String(expires_in.to_string()));
             }
         }
         let res = self
@@ -1002,19 +1017,22 @@ impl megalodon::Megalodon for Pleroma {
         context: Vec<MegalodonEntities::filter::FilterContext>,
         options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
-        let mut params = HashMap::<&str, String>::from([
-            ("phrase", phrase),
-            ("context", serde_json::to_string(&context).unwrap()),
+        let mut params = HashMap::<&str, Value>::from([
+            ("phrase", Value::String(phrase)),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
         ]);
         if let Some(options) = options {
             if let Some(irreversible) = options.irreversible {
-                params.insert("irreversible", irreversible.to_string());
+                params.insert("irreversible", Value::String(irreversible.to_string()));
             }
             if let Some(whole_word) = options.whole_word {
-                params.insert("whole_word", whole_word.to_string());
+                params.insert("whole_word", Value::String(whole_word.to_string()));
             }
             if let Some(expires_in) = options.expires_in {
-                params.insert("expires_in", expires_in.to_string());
+                params.insert("expires_in", Value::String(expires_in.to_string()));
             }
         }
         let res = self
@@ -1031,7 +1049,7 @@ impl megalodon::Megalodon for Pleroma {
     }
 
     async fn delete_filter(&self, id: String) -> Result<Response<()>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .delete::<()>(format!("/api/v1/filters/{}", id).as_str(), &params, None)
@@ -1046,14 +1064,18 @@ impl megalodon::Megalodon for Pleroma {
         comment: String,
         options: Option<&megalodon::ReportInputOptions>,
     ) -> Result<Response<MegalodonEntities::Report>, Error> {
-        let mut params =
-            HashMap::<&str, String>::from([("account_id", account_id), ("comment", comment)]);
+        let mut params = HashMap::<&str, Value>::from([
+            ("account_id", Value::String(account_id)),
+            ("comment", Value::String(comment)),
+        ]);
         if let Some(options) = options {
             if let Some(status_ids) = &options.status_ids {
-                params.insert("status_ids", serde_json::to_string(&status_ids).unwrap());
+                if let Some(json_status_ids) = serde_json::to_value(&status_ids).ok() {
+                    params.insert("status_ids", json_status_ids);
+                }
             }
             if let Some(forward) = options.forward {
-                params.insert("forward", forward.to_string());
+                params.insert("forward", Value::String(forward.to_string()));
             }
         }
         let res = self
@@ -1192,7 +1214,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         name: String,
     ) -> Result<Response<MegalodonEntities::FeaturedTag>, Error> {
-        let params = HashMap::<&str, String>::from([("name", name)]);
+        let params = HashMap::<&str, Value>::from([("name", Value::String(name))]);
         let res = self
             .client
             .post::<entities::FeaturedTag>("/api/v1/featured_tags", &params, None)
@@ -1278,31 +1300,39 @@ impl megalodon::Megalodon for Pleroma {
         status: String,
         options: Option<&megalodon::PostStatusInputOptions>,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        let mut params = HashMap::<&str, String>::from([("status", status)]);
+        let mut params = HashMap::<&str, Value>::from([("status", Value::String(status))]);
         if let Some(options) = options {
             if let Some(media_ids) = &options.media_ids {
-                params.insert("media_ids", serde_json::to_string(&media_ids).unwrap());
+                if let Some(json_media_ids) = serde_json::to_value(&media_ids).ok() {
+                    params.insert("media_ids", json_media_ids);
+                }
             }
             if let Some(in_reply_to_id) = &options.in_reply_to_id {
-                params.insert("in_reply_to_id", in_reply_to_id.clone());
+                params.insert("in_reply_to_id", Value::String(in_reply_to_id.to_string()));
             }
             if let Some(sensitive) = options.sensitive {
-                params.insert("sensitive", sensitive.to_string());
+                params.insert("sensitive", Value::String(sensitive.to_string()));
             }
             if let Some(spoiler_text) = &options.spoiler_text {
-                params.insert("spoiler_text", spoiler_text.clone());
+                params.insert("spoiler_text", Value::String(spoiler_text.clone()));
             }
             if let Some(visibility) = &options.visibility {
-                params.insert("visibility", visibility.to_string());
+                params.insert(
+                    "visibility",
+                    serde_json::to_value(visibility.to_string()).unwrap(),
+                );
             }
             if let Some(scheduled_at) = options.scheduled_at {
-                params.insert("scheduled_at", scheduled_at.to_rfc3339());
+                params.insert(
+                    "scheduled_at",
+                    serde_json::to_value(scheduled_at.to_rfc3339()).unwrap(),
+                );
             }
             if let Some(language) = &options.language {
-                params.insert("language", language.clone());
+                params.insert("language", Value::String(language.clone()));
             }
             if let Some(poll) = &options.poll {
-                params.insert("poll", serde_json::to_string(&poll).unwrap());
+                params.insert("poll", serde_json::to_value(&poll).unwrap());
             }
         }
         let res = self
@@ -1724,8 +1754,10 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         choices: Vec<u32>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
-        let params =
-            HashMap::<&str, String>::from([("choices", serde_json::to_string(&choices).unwrap())]);
+        let params = HashMap::<&str, Value>::from([(
+            "choices",
+            serde_json::to_value(&choices).ok().unwrap_or_default(),
+        )]);
         let res = self
             .client
             .post::<entities::Poll>(
@@ -1804,9 +1836,9 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         scheduled_at: Option<DateTime<Utc>>,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
-        let mut params = HashMap::<&str, String>::new();
+        let mut params = HashMap::<&str, Value>::new();
         if let Some(scheduled_at) = scheduled_at {
-            params.insert("scheduled_at", scheduled_at.to_rfc3339());
+            params.insert("scheduled_at", Value::String(scheduled_at.to_rfc3339()));
         }
         let res = self
             .client
@@ -2140,7 +2172,7 @@ impl megalodon::Megalodon for Pleroma {
     }
 
     async fn create_list(&self, title: String) -> Result<Response<MegalodonEntities::List>, Error> {
-        let params = HashMap::<&str, String>::from([("title", title)]);
+        let params = HashMap::<&str, Value>::from([("title", Value::String(title))]);
         let res = self
             .client
             .post::<entities::List>("/api/v1/lists", &params, None)
@@ -2159,7 +2191,7 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         title: String,
     ) -> Result<Response<MegalodonEntities::List>, Error> {
-        let params = HashMap::<&str, String>::from([("title", title)]);
+        let params = HashMap::<&str, Value>::from([("title", Value::String(title))]);
         let res = self
             .client
             .put::<entities::List>(format!("/api/v1/lists/{}", id).as_str(), &params, None)
@@ -2222,9 +2254,9 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         account_ids: Vec<String>,
     ) -> Result<Response<MegalodonEntities::List>, Error> {
-        let params = HashMap::<&str, String>::from([(
+        let params = HashMap::<&str, Value>::from([(
             "account_ids",
-            serde_json::to_string(&account_ids).unwrap(),
+            serde_json::to_value(&account_ids).ok().unwrap_or_default(),
         )]);
         let res = self
             .client
@@ -2248,9 +2280,9 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         account_ids: Vec<String>,
     ) -> Result<Response<()>, Error> {
-        let params = HashMap::<&str, String>::from([(
+        let params = HashMap::<&str, Value>::from([(
             "account_ids",
-            serde_json::to_string(&account_ids).unwrap(),
+            serde_json::to_value(&account_ids).ok().unwrap_or_default(),
         )]);
         let res = self
             .client
@@ -2293,16 +2325,17 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         options: Option<&megalodon::SaveMarkersInputOptions>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
-        let mut params = HashMap::<&str, String>::new();
+        let mut params = HashMap::<&str, Value>::new();
         if let Some(options) = options {
             if let Some(home) = &options.home {
-                params.insert("home", serde_json::to_string(&home).unwrap());
+                if let Some(json_home) = serde_json::to_value(&home).ok() {
+                    params.insert("home", json_home);
+                }
             }
             if let Some(notifications) = &options.notifications {
-                params.insert(
-                    "notifications",
-                    serde_json::to_string(&notifications).unwrap(),
-                );
+                if let Some(json_notifications) = serde_json::to_value(&notifications).ok() {
+                    params.insert("notifications", json_notifications);
+                }
             }
         }
         let res = self
@@ -2408,12 +2441,14 @@ impl megalodon::Megalodon for Pleroma {
         subscription: &megalodon::SubscribePushNotificationInputSubscription,
         data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
-        let mut params = HashMap::<&str, String>::from([(
+        let mut params = HashMap::<&str, Value>::from([(
             "subscription",
-            serde_json::to_string(&subscription).unwrap(),
+            serde_json::to_value(&subscription).ok().unwrap_or_default(),
         )]);
         if let Some(data) = data {
-            params.insert("data", serde_json::to_string(&data).unwrap());
+            if let Some(json_data) = serde_json::to_value(&data).ok() {
+                params.insert("data", json_data);
+            }
         }
         let res = self
             .client
@@ -2448,9 +2483,11 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
-        let mut params = HashMap::<&str, String>::new();
+        let mut params = HashMap::<&str, Value>::new();
         if let Some(data) = data {
-            params.insert("data", serde_json::to_string(&data).unwrap());
+            if let Some(json_data) = serde_json::to_value(&data).ok() {
+                params.insert("data", json_data);
+            }
         }
         let res = self
             .client
@@ -2645,7 +2682,7 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         emoji: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .put::<entities::Status>(
@@ -2672,7 +2709,7 @@ impl megalodon::Megalodon for Pleroma {
         id: String,
         emoji: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        let params = HashMap::<&str, String>::new();
+        let params = HashMap::<&str, Value>::new();
         let res = self
             .client
             .delete::<entities::Status>(
