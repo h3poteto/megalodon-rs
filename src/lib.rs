@@ -44,6 +44,7 @@
 //! ```
 
 use serde::Deserialize;
+use std::{fmt, str::FromStr};
 
 pub mod default;
 pub mod entities;
@@ -104,6 +105,29 @@ pub enum SNS {
     Pleroma,
     /// SNS is Misskey.
     Misskey,
+}
+
+impl fmt::Display for SNS {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            SNS::Mastodon => write!(f, "mastodon"),
+            SNS::Pleroma => write!(f, "pleroma"),
+            SNS::Misskey => write!(f, "misskey"),
+        }
+    }
+}
+
+impl FromStr for SNS {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "mastodon" => Ok(SNS::Mastodon),
+            "pleroma" => Ok(SNS::Pleroma),
+            "misskey" => Ok(SNS::Misskey),
+            &_ => Err(format!("Unknown sns: {}", s)),
+        }
+    }
 }
 
 /// Generate an API client which satisfies megalodon trait.
