@@ -3,15 +3,21 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    match env::var("PLEROMA_ACCESS_TOKEN") {
-        Ok(token) => match verify_credentials("https://pleroma.io", token).await {
-            Ok(response) => {
-                println!("{:#?}", response);
-            }
-            Err(err) => {
-                println!("{:#?}", err);
-            }
-        },
+    env_logger::init();
+
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return
+    };
+    let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
+        println!("Specify PLEROMA_ACCESS_TOKEN!!");
+        return
+    };
+
+    match verify_credentials(url.as_str(), token).await {
+        Ok(response) => {
+            println!("{:#?}", response);
+        }
         Err(err) => {
             println!("{:#?}", err);
         }

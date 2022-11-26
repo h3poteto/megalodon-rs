@@ -1,24 +1,27 @@
+use megalodon::{entities, error, generator};
 use std::env;
-
-use megalodon::{entities::{self}, error, generator};
 
 #[tokio::main]
 async fn main() {
-    match env::var("MASTODON_ACCESS_TOKEN") {
-        Ok(token) => {
-            let file_path = "./sample.jpg".to_string();
-            let res = upload_media("https://fedibird.com", token.to_owned(), file_path).await;
-            match res {
-                Ok(res) => {
-                    println!("{:#?}", res);
-                }
-                Err(err) => {
-                    println!("{:#?}", err);
-                }
-            }
+    env_logger::init();
+
+    let Ok(url) = env::var("MASTODON_URL") else {
+        println!("Specify MASTODON_URL!!");
+        return
+    };
+    let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
+        println!("Specify MASTODON_ACCESS_TOKEN!!");
+        return
+    };
+
+    let file_path = "./sample.jpg".to_string();
+    let res = upload_media(url.as_str(), token.to_owned(), file_path).await;
+    match res {
+        Ok(res) => {
+            println!("{:#?}", res);
         }
         Err(err) => {
-            println!("{:#?}", err)
+            println!("{:#?}", err);
         }
     }
 }

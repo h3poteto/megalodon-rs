@@ -1,46 +1,44 @@
-use std::env;
-
 use megalodon::{
     entities::{self, StatusVisibility},
     error, generator,
     megalodon::PostStatusInputOptions,
 };
+use std::env;
 
 #[tokio::main]
 async fn main() {
-    match env::var("PLEROMA_ACCESS_TOKEN") {
-        Ok(token) => {
-            let file_path = "./sample.jpg".to_string();
-            let res = upload_media(
-                "https://pleroma.io",
-                token.to_owned(),
-                file_path.to_string(),
-            )
-            .await;
+    env_logger::init();
+
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return
+    };
+    let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
+        println!("Specify PLEROMA_ACCESS_TOKEN!!");
+        return
+    };
+
+    let file_path = "./sample.jpg".to_string();
+    let res = upload_media(url.as_str(), token.to_owned(), file_path.to_string()).await;
+    match res {
+        Ok(res) => {
+            let media_id_1 = res.id;
+            let file_path = "./sample2.jpg".to_string();
+            let res = upload_media(url.as_str(), token.to_owned(), file_path).await;
             match res {
                 Ok(res) => {
-                    let media_id_1 = res.id;
-                    let file_path = "./sample2.jpg".to_string();
-                    let res = upload_media("https://pleroma.io", token.to_owned(), file_path).await;
-                    match res {
+                    let media_id_2 = res.id;
+                    let media_ids = vec![media_id_1, media_id_2];
+                    match post_status(
+                        url.as_str(),
+                        token,
+                        "Post with attached media",
+                        Some(media_ids),
+                    )
+                    .await
+                    {
                         Ok(res) => {
-                            let media_id_2 = res.id;
-                            let media_ids = vec![media_id_1, media_id_2];
-                            match post_status(
-                                "https://pleroma.io",
-                                token,
-                                "Post with attached media",
-                                Some(media_ids),
-                            )
-                            .await
-                            {
-                                Ok(res) => {
-                                    println!("{:#?}", res);
-                                }
-                                Err(err) => {
-                                    println!("{:#?}", err);
-                                }
-                            }
+                            println!("{:#?}", res);
                         }
                         Err(err) => {
                             println!("{:#?}", err);
@@ -53,7 +51,7 @@ async fn main() {
             }
         }
         Err(err) => {
-            println!("{:#?}", err)
+            println!("{:#?}", err);
         }
     }
 }

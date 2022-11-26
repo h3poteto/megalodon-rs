@@ -3,14 +3,17 @@ use std::env;
 
 fn main() {
     env_logger::init();
-    match env::var("PLEROMA_ACCESS_TOKEN") {
-        Ok(token) => {
-            streaming("wss://pleroma.io", token);
-        }
-        Err(err) => {
-            log::error!("{:#?}", err);
-        }
-    }
+
+    let Ok(url) = env::var("PLEROMA_STREAMING_URL") else {
+        println!("Specify PLEROMA_STREAMING_URL!!");
+        return
+    };
+    let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
+        println!("Specify PLEROMA_ACCESS_TOKEN!!");
+        return
+    };
+
+    streaming(url.as_str(), token);
 }
 
 fn streaming(url: &str, access_token: String) {

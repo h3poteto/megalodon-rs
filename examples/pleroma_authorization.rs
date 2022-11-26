@@ -1,13 +1,16 @@
 use megalodon::generator;
+use std::env;
 
 #[tokio::main]
 async fn main() {
-    let client = generator(
-        megalodon::SNS::Pleroma,
-        "https://pleroma.io".to_string(),
-        None,
-        None,
-    );
+    env_logger::init();
+
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return
+    };
+
+    let client = generator(megalodon::SNS::Pleroma, url, None, None);
     let options = megalodon::megalodon::AppInputOptions {
         redirect_uris: None,
         scopes: Some(
