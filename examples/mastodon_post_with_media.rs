@@ -88,14 +88,10 @@ async fn post_status(
             status.to_string(),
             Some(&PostStatusInputOptions {
                 media_ids: media_id,
-                poll: None,
-                in_reply_to_id: None,
                 sensitive: Some(true),
-                spoiler_text: None,
                 visibility: Some(StatusVisibility::Unlisted),
-                scheduled_at: None,
                 language: Some("en".to_string()),
-                quote_id: None,
+                ..Default::default()
             }),
         )
         .await?;

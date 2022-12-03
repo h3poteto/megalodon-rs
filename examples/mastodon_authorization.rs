@@ -11,7 +11,6 @@ async fn main() {
     };
     let client = generator(megalodon::SNS::Mastodon, url, None, None);
     let options = megalodon::megalodon::AppInputOptions {
-        redirect_uris: None,
         scopes: Some(
             [
                 "read".to_string(),
@@ -20,7 +19,7 @@ async fn main() {
             ]
             .to_vec(),
         ),
-        website: None,
+        ..Default::default()
     };
 
     match client
