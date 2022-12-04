@@ -13,11 +13,11 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
 use tokio::fs::File;
 use tokio_util::codec::{BytesCodec, FramedRead};
-use serde_json::Value;
 
 /// Mastodon API Client which satisfies megalodon trait.
 #[derive(Debug, Clone)]
@@ -111,7 +111,10 @@ impl megalodon::Megalodon for Mastodon {
 
         let mut params = HashMap::<&str, Value>::new();
         params.insert("client_name", serde_json::Value::String(client_name));
-        params.insert("redirect_uris", serde_json::Value::String(redirect_uris.to_string()));
+        params.insert(
+            "redirect_uris",
+            serde_json::Value::String(redirect_uris.to_string()),
+        );
         params.insert("scopes", serde_json::Value::String(scope.join(" ")));
         if let Some(website) = &options.website {
             params.insert("website", serde_json::Value::String(website.clone()));
@@ -136,7 +139,10 @@ impl megalodon::Megalodon for Mastodon {
         params.insert("client_secret", serde_json::Value::String(client_secret));
         params.insert("code", serde_json::Value::String(code));
         params.insert("redirect_uri", serde_json::Value::String(redirect_uri));
-        params.insert("grant_type", serde_json::Value::String("authorization_code".to_string()));
+        params.insert(
+            "grant_type",
+            serde_json::Value::String("authorization_code".to_string()),
+        );
 
         let res = self
             .client
@@ -155,7 +161,10 @@ impl megalodon::Megalodon for Mastodon {
         params.insert("client_id", serde_json::Value::String(client_id));
         params.insert("client_secret", serde_json::Value::String(client_secret));
         params.insert("refresh_token", serde_json::Value::String(refresh_token));
-        params.insert("grant_type", serde_json::Value::String("authorization_code".to_string()));
+        params.insert(
+            "grant_type",
+            serde_json::Value::String("authorization_code".to_string()),
+        );
 
         let res = self
             .client
@@ -253,13 +262,19 @@ impl megalodon::Megalodon for Mastodon {
         let mut params = HashMap::<&str, Value>::new();
         if let Some(options) = options {
             if let Some(discoverable) = options.discoverable {
-                params.insert("discoverable", serde_json::Value::String(discoverable.to_string()));
+                params.insert(
+                    "discoverable",
+                    serde_json::Value::String(discoverable.to_string()),
+                );
             }
             if let Some(bot) = options.bot {
                 params.insert("bot", serde_json::Value::String(bot.to_string()));
             }
             if let Some(display_name) = &options.display_name {
-                params.insert("display_name", serde_json::Value::String(display_name.clone()));
+                params.insert(
+                    "display_name",
+                    serde_json::Value::String(display_name.clone()),
+                );
             }
             if let Some(note) = &options.note {
                 params.insert("note", serde_json::Value::String(note.clone()));
@@ -279,11 +294,9 @@ impl megalodon::Megalodon for Mastodon {
                 }
             }
             if let Some(fields_attributes) = &options.fields_attributes {
-                if let Some(json_fields_attributes) = serde_json::to_value(&fields_attributes).ok() {
-                    params.insert(
-                        "fields_attributes",
-                        json_fields_attributes,
-                    );
+                if let Some(json_fields_attributes) = serde_json::to_value(&fields_attributes).ok()
+                {
+                    params.insert("fields_attributes", json_fields_attributes);
                 }
             }
         }
@@ -610,7 +623,10 @@ impl megalodon::Megalodon for Mastodon {
         id: String,
         notifications: bool,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, Value>::from([("notifications", serde_json::Value::String(notifications.to_string()))]);
+        let params = HashMap::<&str, Value>::from([(
+            "notifications",
+            serde_json::Value::String(notifications.to_string()),
+        )]);
         let res = self
             .client
             .post::<entities::Relationship>(
@@ -977,17 +993,29 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         let mut params = HashMap::<&str, Value>::from([
             ("phrase", serde_json::Value::String(phrase)),
-            ("context", serde_json::to_value(&context).ok().unwrap_or_default()),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
         ]);
         if let Some(options) = options {
             if let Some(irreversible) = options.irreversible {
-                params.insert("irreversible", serde_json::Value::String(irreversible.to_string()));
+                params.insert(
+                    "irreversible",
+                    serde_json::Value::String(irreversible.to_string()),
+                );
             }
             if let Some(whole_word) = options.whole_word {
-                params.insert("whole_word", serde_json::Value::String(whole_word.to_string()));
+                params.insert(
+                    "whole_word",
+                    serde_json::Value::String(whole_word.to_string()),
+                );
             }
             if let Some(expires_in) = options.expires_in {
-                params.insert("expires_in", serde_json::Value::String(expires_in.to_string()));
+                params.insert(
+                    "expires_in",
+                    serde_json::Value::String(expires_in.to_string()),
+                );
             }
         }
         let res = self
@@ -1012,17 +1040,29 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         let mut params = HashMap::<&str, Value>::from([
             ("phrase", serde_json::Value::String(phrase)),
-            ("context", serde_json::to_value(&context).ok().unwrap_or_default()),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
         ]);
         if let Some(options) = options {
             if let Some(irreversible) = options.irreversible {
-                params.insert("irreversible", serde_json::Value::String(irreversible.to_string()));
+                params.insert(
+                    "irreversible",
+                    serde_json::Value::String(irreversible.to_string()),
+                );
             }
             if let Some(whole_word) = options.whole_word {
-                params.insert("whole_word", serde_json::Value::String(whole_word.to_string()));
+                params.insert(
+                    "whole_word",
+                    serde_json::Value::String(whole_word.to_string()),
+                );
             }
             if let Some(expires_in) = options.expires_in {
-                params.insert("expires_in", serde_json::Value::String(expires_in.to_string()));
+                params.insert(
+                    "expires_in",
+                    serde_json::Value::String(expires_in.to_string()),
+                );
             }
         }
         let res = self
@@ -1054,8 +1094,10 @@ impl megalodon::Megalodon for Mastodon {
         comment: String,
         options: Option<&megalodon::ReportInputOptions>,
     ) -> Result<Response<MegalodonEntities::Report>, Error> {
-        let mut params =
-            HashMap::<&str, Value>::from([("account_id", serde_json::Value::String(account_id)), ("comment", serde_json::Value::String(comment))]);
+        let mut params = HashMap::<&str, Value>::from([
+            ("account_id", serde_json::Value::String(account_id)),
+            ("comment", serde_json::Value::String(comment)),
+        ]);
         if let Some(options) = options {
             if let Some(status_ids) = &options.status_ids {
                 if let Some(json_status_ids) = serde_json::to_value(&status_ids).ok() {
@@ -1288,27 +1330,43 @@ impl megalodon::Megalodon for Mastodon {
         status: String,
         options: Option<&megalodon::PostStatusInputOptions>,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        let mut params = HashMap::<&str, Value>::from([("status", serde_json::Value::String(status))]);
+        let mut params =
+            HashMap::<&str, Value>::from([("status", serde_json::Value::String(status))]);
         if let Some(options) = options {
             if let Some(media_ids) = &options.media_ids {
                 if let Some(json_media_ids) = serde_json::to_value(media_ids).ok() {
-                    params.insert("media_ids", json_media_ids); 
+                    params.insert("media_ids", json_media_ids);
                 }
             }
             if let Some(in_reply_to_id) = &options.in_reply_to_id {
-                params.insert("in_reply_to_id", serde_json::Value::String(in_reply_to_id.to_string()));
+                params.insert(
+                    "in_reply_to_id",
+                    serde_json::Value::String(in_reply_to_id.to_string()),
+                );
             }
             if let Some(sensitive) = options.sensitive {
-                params.insert("sensitive", serde_json::Value::String(sensitive.to_string()));
+                params.insert(
+                    "sensitive",
+                    serde_json::Value::String(sensitive.to_string()),
+                );
             }
             if let Some(spoiler_text) = &options.spoiler_text {
-                params.insert("spoiler_text", serde_json::Value::String(spoiler_text.clone()));
+                params.insert(
+                    "spoiler_text",
+                    serde_json::Value::String(spoiler_text.clone()),
+                );
             }
             if let Some(visibility) = &options.visibility {
-                params.insert("visibility", serde_json::to_value(visibility.to_string()).unwrap());
+                params.insert(
+                    "visibility",
+                    serde_json::to_value(visibility.to_string()).unwrap(),
+                );
             }
             if let Some(scheduled_at) = options.scheduled_at {
-                params.insert("scheduled_at", serde_json::to_value(scheduled_at.to_rfc3339()).unwrap());
+                params.insert(
+                    "scheduled_at",
+                    serde_json::to_value(scheduled_at.to_rfc3339()).unwrap(),
+                );
             }
             if let Some(language) = &options.language {
                 params.insert("language", serde_json::Value::String(language.clone()));
@@ -1647,7 +1705,7 @@ impl megalodon::Megalodon for Mastodon {
         &self,
         file_path: String,
         options: Option<&megalodon::UploadMediaInputOptions>,
-    ) -> Result<Response<MegalodonEntities::Attachment>, Error> {
+    ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         let file = File::open(file_path.clone()).await?;
 
         let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
@@ -1668,10 +1726,10 @@ impl megalodon::Megalodon for Mastodon {
 
         let res = self
             .client
-            .post_multipart::<entities::Attachment>("/api/v1/media", form, None)
+            .post_multipart::<entities::Attachment>("/api/v2/media", form, None)
             .await?;
 
-        Ok(Response::<MegalodonEntities::Attachment>::new(
+        Ok(Response::<MegalodonEntities::UploadMedia>::new(
             res.json.into(),
             res.status,
             res.status_text,
@@ -1740,8 +1798,10 @@ impl megalodon::Megalodon for Mastodon {
         id: String,
         choices: Vec<u32>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
-        let params =
-            HashMap::<&str, Value>::from([("choices", serde_json::to_value(&choices).ok().unwrap_or_default())]);
+        let params = HashMap::<&str, Value>::from([(
+            "choices",
+            serde_json::to_value(&choices).ok().unwrap_or_default(),
+        )]);
         let res = self
             .client
             .post::<entities::Poll>(
@@ -1822,7 +1882,10 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         let mut params = HashMap::<&str, Value>::new();
         if let Some(scheduled_at) = scheduled_at {
-            params.insert("scheduled_at", serde_json::Value::String(scheduled_at.to_rfc3339()));
+            params.insert(
+                "scheduled_at",
+                serde_json::Value::String(scheduled_at.to_rfc3339()),
+            );
         }
         let res = self
             .client
@@ -2318,10 +2381,7 @@ impl megalodon::Megalodon for Mastodon {
             }
             if let Some(notifications) = &options.notifications {
                 if let Some(json_notifications) = serde_json::to_value(&notifications).ok() {
-                    params.insert(
-                        "notifications",
-                        json_notifications,
-                    );
+                    params.insert("notifications", json_notifications);
                 }
             }
         }

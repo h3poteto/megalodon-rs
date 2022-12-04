@@ -3,6 +3,7 @@
 pub mod account;
 pub mod activity;
 pub mod application;
+pub mod async_attachment;
 pub mod attachment;
 pub mod card;
 pub mod context;
@@ -38,6 +39,8 @@ pub mod urls;
 pub use account::Account;
 pub use activity::Activity;
 pub use application::Application;
+pub use async_attachment::AsyncAttachment;
+pub use async_attachment::UploadMedia;
 pub use attachment::Attachment;
 pub use card::Card;
 pub use context::Context;

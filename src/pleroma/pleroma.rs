@@ -1661,7 +1661,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         file_path: String,
         options: Option<&megalodon::UploadMediaInputOptions>,
-    ) -> Result<Response<MegalodonEntities::Attachment>, Error> {
+    ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         let file = File::open(file_path.clone()).await?;
 
         let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
@@ -1682,11 +1682,12 @@ impl megalodon::Megalodon for Pleroma {
 
         let res = self
             .client
-            .post_multipart::<entities::Attachment>("/api/v1/media", form, None)
+            .post_multipart::<entities::Attachment>("/api/v2/media", form, None)
             .await?;
 
-        Ok(Response::<MegalodonEntities::Attachment>::new(
-            res.json.into(),
+        let data: MegalodonEntities::Attachment = res.json.into();
+        Ok(Response::<MegalodonEntities::UploadMedia>::new(
+            MegalodonEntities::UploadMedia::Attachment(data),
             res.status,
             res.status_text,
             res.header,
