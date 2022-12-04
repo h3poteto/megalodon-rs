@@ -702,7 +702,7 @@ pub trait Megalodon {
 }
 
 /// Input options for [`Megalodon::register_app`] and [`Megalodon::create_app`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct AppInputOptions {
     /// List of requested OAuth scopes.
     pub scopes: Option<Vec<String>>,
@@ -713,7 +713,7 @@ pub struct AppInputOptions {
 }
 
 /// Input options for [`Megalodon::update_credentials`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct UpdateCredentialsInputOptions {
     /// Whether the account should be shown in the profile directory.
     pub discoverable: Option<bool>,
@@ -736,7 +736,7 @@ pub struct UpdateCredentialsInputOptions {
 }
 
 /// Credential source options.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Default)]
 pub struct CredentialsSource {
     /// Default post privacy for authored statuses.
     pub privacy: Option<String>,
@@ -756,7 +756,7 @@ pub struct CredentialsFieldAttribute {
 }
 
 /// Input options for [`Megalodon::get_account_statuses`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetAccountStatusesInputOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -775,7 +775,7 @@ pub struct GetAccountStatusesInputOptions {
 }
 
 /// Input options for [`Megalodon::get_account_followers`] and [`Megalodon::get_account_following`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct AccountFollowersInputOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -786,7 +786,7 @@ pub struct AccountFollowersInputOptions {
 }
 
 /// Input options for [`Megalodon::follow_account`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct FollowAccountInputOptions {
     /// Receive this account's reblogs in home timeline.
     pub reblog: Option<bool>,
@@ -795,7 +795,7 @@ pub struct FollowAccountInputOptions {
 }
 
 /// Input options for [`Megalodon::search_account`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct SearchAccountInputOptions {
     /// Only who the user is following.
     pub following: Option<bool>,
@@ -825,7 +825,7 @@ pub type GetBlocksInputOptions = GetArrayOptions;
 pub type GetDomainBlocksInputOptions = GetArrayOptions;
 
 /// Get array options.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetArrayOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -836,7 +836,7 @@ pub struct GetArrayOptions {
 }
 
 /// Get array options with since.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetArrayWithSinceOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -849,7 +849,7 @@ pub struct GetArrayWithSinceOptions {
 }
 
 /// Input options for [`Megalodon::create_filter`] and [`Megalodon::update_filter`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct FilterInputOptions {
     /// Should the server irreversibly drop matching entities from home and notifications.
     pub irreversible: Option<bool>,
@@ -860,7 +860,7 @@ pub struct FilterInputOptions {
 }
 
 /// Input options for [`Megalodon::report`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ReportInputOptions {
     /// Array of Statuses to attach to the report.
     pub status_ids: Option<Vec<String>>,
@@ -869,7 +869,7 @@ pub struct ReportInputOptions {
 }
 
 /// Input options for [`Megalodon::get_endorsements`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetEndorsementsInputOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -880,7 +880,7 @@ pub struct GetEndorsementsInputOptions {
 }
 
 /// Input options for [`Megalodon::post_status`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct PostStatusInputOptions {
     /// Array of Attachment ids to be attached as media.
     pub media_ids: Option<Vec<String>>,
@@ -903,7 +903,7 @@ pub struct PostStatusInputOptions {
 }
 
 /// Poll options.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Default)]
 pub struct PollOptions {
     /// Array of possible answers.
     pub options: Vec<String>,
@@ -916,7 +916,7 @@ pub struct PollOptions {
 }
 
 /// Input options for [`Megalodon::get_status_context`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetStatusContextInputOptions {
     /// Maximum number of results to return.
     pub limit: Option<u32>,
@@ -927,7 +927,7 @@ pub struct GetStatusContextInputOptions {
 }
 
 /// Input options for [`Megalodon::upload_media`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct UploadMediaInputOptions {
     /// A plain-text description of the file.
     pub description: Option<String>,
@@ -936,7 +936,7 @@ pub struct UploadMediaInputOptions {
 }
 
 /// Input options for [`Megalodon::update_media`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct UpdateMediaInputOptions {
     /// The file path to be attached.
     pub file_path: Option<String>,
@@ -966,7 +966,7 @@ pub type GetConversationTimelineInputOptions = GetArrayWithSinceOptions;
 pub type GetAccountsInListInputOptions = GetArrayOptions;
 
 /// Timeline options.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetTimelineOptions {
     /// Show only statuses with media attached.
     pub only_media: Option<bool>,
@@ -981,7 +981,7 @@ pub struct GetTimelineOptions {
 }
 
 /// Timeline options with local flag.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetTimelineOptionsWithLocal {
     /// Show only statuses with media attached.
     pub only_media: Option<bool>,
@@ -998,7 +998,7 @@ pub struct GetTimelineOptionsWithLocal {
 }
 
 /// Input options for [`Megalodon::save_markers`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct SaveMarkersInputOptions {
     /// ID of the last status read in the home timeline.
     pub home: Option<Marker>,
@@ -1014,7 +1014,7 @@ pub struct Marker {
 }
 
 /// Input options for [`Megalodon::get_notifications`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetNotificationsInputOptions {
     /// Maximum number of results to return. Default 20.
     pub limit: Option<u32>,
@@ -1049,14 +1049,14 @@ pub struct SubscriptionKeys {
 }
 
 /// Input data of [`Megalodon::subscribe_push_notification`].
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Default)]
 pub struct SubscribePushNotificationInputData {
     /// Alert options.
     pub alerts: Option<DataAlerts>,
 }
 
 /// Alert options.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Default)]
 pub struct DataAlerts {
     /// Receive follow notification.
     pub follow: Option<bool>,
@@ -1105,7 +1105,7 @@ impl FromStr for SearchType {
 }
 
 /// Input options for [`Megalodon::search`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct SearchInputOptions {
     /// Maximum number of results. Default 20, max 40.
     pub limit: Option<u32>,
@@ -1126,7 +1126,7 @@ pub struct SearchInputOptions {
 }
 
 /// Input options for [`Megalodon::get_instance_directory`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GetInstanceDirectoryInputOptions {
     /// How many accounts to load. Default 40.
     pub limit: Option<u32>,
