@@ -1,9 +1,15 @@
+use std::thread;
+use std::time::Duration;
+
 use super::entities;
 use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
 use serde::Deserialize;
+use tungstenite::protocol::frame::coding::CloseCode;
 use tungstenite::{connect, Message as WebSocketMessage};
 use url::Url;
+
+const RECONNECT_INTERVAL: u64 = 1000;
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {
@@ -94,22 +100,15 @@ impl WebSocket {
             ))
         }
     }
-}
 
-impl Streaming for WebSocket {
-    fn listen(&self, callback: Box<dyn Fn(Message)>) {
-        let mut parameter = Vec::<String>::from([format!("stream={}", self.stream)]);
-        if let Some(access_token) = &self.access_token {
-            parameter.push(format!("access_token={}", access_token));
-        }
-        if let Some(mut params) = self.params.clone() {
-            parameter.append(&mut params);
-        }
-        let mut url = self.url.clone();
-        url = url + "?" + parameter.join("&").as_str();
+    fn reconnect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
+        thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
+        log::info!("Reconnecting to {}", url);
+        self.connect(url, callback)
+    }
 
-        let (mut socket, response) =
-            connect(Url::parse(url.as_str()).unwrap()).expect("Can't connect");
+    fn connect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
+        let (mut socket, response) = connect(Url::parse(url).unwrap()).expect("Can't connect");
 
         log::debug!("Connected to {}", url);
         log::debug!("Response HTTP code: {}", response.status());
@@ -129,6 +128,13 @@ impl Streaming for WebSocket {
                     });
             }
             if msg.is_close() {
+                if let WebSocketMessage::Close(Some(close)) = msg {
+                    log::warn!("Connection to {} is closed because {}", url, close.code);
+                    if close.code != CloseCode::Normal {
+                        self.reconnect(url, callback);
+                        return;
+                    }
+                }
                 let _ = socket.close(None).map_err(|e| {
                     log::error!("{:#?}", e);
                     e
@@ -144,5 +150,21 @@ impl Streaming for WebSocket {
                 }
             }
         }
+    }
+}
+
+impl Streaming for WebSocket {
+    fn listen(&self, callback: Box<dyn Fn(Message)>) {
+        let mut parameter = Vec::<String>::from([format!("stream={}", self.stream)]);
+        if let Some(access_token) = &self.access_token {
+            parameter.push(format!("access_token={}", access_token));
+        }
+        if let Some(mut params) = self.params.clone() {
+            parameter.append(&mut params);
+        }
+        let mut url = self.url.clone();
+        url = url + "?" + parameter.join("&").as_str();
+
+        self.connect(url.as_str(), callback);
     }
 }
