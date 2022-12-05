@@ -62,6 +62,12 @@ impl APIClient {
                 let res = Response::<T>::from_reqwest(res).await?;
                 Ok(res)
             }
+            reqwest::StatusCode::PARTIAL_CONTENT => Err(MegalodonError::new_own(
+                String::from("The requested resource is still being processed"),
+                Kind::HTTPPartialContentError,
+                Some(url_str),
+                Some(status.as_u16()),
+            )),
             _ => match res.text().await {
                 Ok(text) => Err(MegalodonError::new_own(
                     text,

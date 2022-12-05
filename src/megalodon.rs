@@ -405,7 +405,10 @@ pub trait Megalodon {
         &self,
         file_path: String,
         options: Option<&UploadMediaInputOptions>,
-    ) -> Result<Response<entities::Attachment>, Error>;
+    ) -> Result<Response<entities::UploadMedia>, Error>;
+
+    /// Get an Attachment.
+    async fn get_media(&self, id: String) -> Result<Response<entities::Attachment>, Error>;
 
     /// Update an Attachment, before it is attached to a status and posted.
     async fn update_media(

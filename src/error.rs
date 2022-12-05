@@ -33,10 +33,10 @@ pub enum Error {
 #[derive(thiserror::Error)]
 #[error("{kind}: {message} {} {}", .url.as_ref().map(AsRef::as_ref).unwrap_or(""), .status.map(|u| u.to_string()).unwrap_or("".to_string()))]
 pub struct OwnError {
-    url: Option<String>,
-    status: Option<u16>,
-    message: String,
-    kind: Kind,
+    pub url: Option<String>,
+    pub status: Option<u16>,
+    pub message: String,
+    pub kind: Kind,
 }
 
 /// Error kind of [`OwnError`].
@@ -52,6 +52,9 @@ pub enum Kind {
     /// The request responds http response with error code.
     #[error("http status error")]
     HTTPStatusError,
+    /// The request is not completed error.
+    #[error("partial content error")]
+    HTTPPartialContentError,
 }
 
 impl Error {

@@ -8,7 +8,7 @@ use serde::{de, ser, Deserialize};
 pub struct Attachment {
     id: String,
     r#type: AttachmentType,
-    url: String,
+    url: Option<String>,
     remote_url: Option<String>,
     preview_url: String,
     text_url: Option<String>,
@@ -130,13 +130,43 @@ impl Into<MegalodonEntities::Attachment> for Attachment {
         MegalodonEntities::Attachment {
             id: self.id,
             r#type: self.r#type.into(),
-            url: self.url,
+            url: self.url.unwrap(),
             remote_url: self.remote_url,
             preview_url: self.preview_url,
             text_url: self.text_url,
             meta: self.meta.map(|i| i.into()),
             description: self.description,
             blurhash: self.blurhash,
+        }
+    }
+}
+
+impl Into<MegalodonEntities::UploadMedia> for Attachment {
+    fn into(self) -> MegalodonEntities::UploadMedia {
+        if let Some(url) = self.url {
+            MegalodonEntities::UploadMedia::Attachment(MegalodonEntities::Attachment {
+                id: self.id,
+                r#type: self.r#type.into(),
+                url,
+                remote_url: self.remote_url,
+                preview_url: self.preview_url,
+                text_url: self.text_url,
+                meta: self.meta.map(|i| i.into()),
+                description: self.description,
+                blurhash: self.blurhash,
+            })
+        } else {
+            MegalodonEntities::UploadMedia::AsyncAttachment(MegalodonEntities::AsyncAttachment {
+                id: self.id,
+                r#type: self.r#type.into(),
+                url: None,
+                remote_url: self.remote_url,
+                preview_url: self.preview_url,
+                text_url: self.text_url,
+                meta: self.meta.map(|i| i.into()),
+                description: self.description,
+                blurhash: self.blurhash,
+            })
         }
     }
 }
