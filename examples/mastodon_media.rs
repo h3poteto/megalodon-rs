@@ -30,7 +30,7 @@ async fn upload_media(
     url: &str,
     access_token: String,
     file_path: String,
-) -> Result<entities::Attachment, error::Error> {
+) -> Result<entities::UploadMedia, error::Error> {
     let client = generator(
         megalodon::SNS::Mastodon,
         url.to_string(),

@@ -1694,6 +1694,23 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
+    async fn get_media(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::Attachment>, Error> {
+        let res = self
+            .client
+            .get::<entities::Attachment>(format!("/api/v1/media/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Attachment>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn update_media(
         &self,
         id: String,
