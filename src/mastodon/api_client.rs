@@ -208,7 +208,7 @@ impl APIClient {
             req = req.headers(headers);
         }
 
-        let res = req.form(params).send().await?;
+        let res = req.json(params).send().await?;
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -308,7 +308,7 @@ impl APIClient {
             req = req.headers(headers);
         }
 
-        let res = req.form(params).send().await?;
+        let res = req.json(params).send().await?;
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -358,7 +358,7 @@ impl APIClient {
             req = req.headers(headers);
         }
 
-        let res = req.form(params).send().await?;
+        let res = req.json(params).send().await?;
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
