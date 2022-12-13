@@ -11,7 +11,7 @@ pub struct AsyncAttachment {
     pub r#type: AttachmentType,
     pub url: Option<String>,
     pub remote_url: Option<String>,
-    pub preview_url: String,
+    pub preview_url: Option<String>,
     pub text_url: Option<String>,
     pub meta: Option<AttachmentMeta>,
     pub description: Option<String>,

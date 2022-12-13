@@ -10,7 +10,7 @@ pub struct Attachment {
     r#type: AttachmentType,
     url: String,
     remote_url: Option<String>,
-    preview_url: String,
+    preview_url: Option<String>,
     text_url: Option<String>,
     meta: Option<AttachmentMeta>,
     description: Option<String>,
