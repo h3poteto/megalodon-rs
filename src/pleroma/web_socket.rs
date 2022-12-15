@@ -16,6 +16,7 @@ use tungstenite::{connect, Message as WebSocketMessage};
 use url::Url;
 
 const RECONNECT_INTERVAL: u64 = 1000;
+const READ_MESSAGE_TIMEOUT_SECONDS: i64 = 60;
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {
@@ -157,7 +158,7 @@ impl WebSocket {
 
             let ts = last_received_check.lock().unwrap();
             log::debug!("last received: {}", ts);
-            let diff = Utc::now() - ts.add(chrono::Duration::seconds(60));
+            let diff = Utc::now() - ts.add(chrono::Duration::seconds(READ_MESSAGE_TIMEOUT_SECONDS));
             if diff > chrono::Duration::seconds(0) {
                 log::warn!("closing connection because timeout");
                 socket_check
