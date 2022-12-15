@@ -1,11 +1,17 @@
+use std::fmt;
+use std::ops::Add;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
 use super::entities;
 use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
+use chrono::Utc;
 use serde::Deserialize;
 use tungstenite::protocol::frame::coding::CloseCode;
+use tungstenite::protocol::CloseFrame;
 use tungstenite::{connect, Message as WebSocketMessage};
 use url::Url;
 
@@ -101,14 +107,31 @@ impl WebSocket {
         }
     }
 
-    fn reconnect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
-        thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
-        log::info!("Reconnecting to {}", url);
-        self.connect(url, callback)
+    fn connect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
+        loop {
+            match self.do_connect(url, &callback) {
+                Ok(()) => {
+                    log::info!("connection for {} is  closed", url);
+                    return;
+                }
+                Err(err) => match err.kind {
+                    InnerKind::ConnectionError
+                    | InnerKind::SocketReadError
+                    | InnerKind::UnusualSocketCloseError => {
+                        thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
+                        log::info!("Reconnecting to {}", url);
+                        continue;
+                    }
+                },
+            }
+        }
     }
 
-    fn connect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
-        let (mut socket, response) = connect(Url::parse(url).unwrap()).expect("Can't connect");
+    fn do_connect(&self, url: &str, callback: &Box<dyn Fn(Message)>) -> Result<(), InnerError> {
+        let (socket, response) = connect(Url::parse(url).unwrap()).map_err(|e| {
+            log::error!("Failed to connect: {}", e);
+            InnerError::new(InnerKind::ConnectionError)
+        })?;
 
         log::debug!("Connected to {}", url);
         log::debug!("Response HTTP code: {}", response.status());
@@ -117,10 +140,51 @@ impl WebSocket {
             log::debug!("* {}", header);
         }
 
+        let last_received = Arc::new(Mutex::new(Utc::now()));
+        let last_received_check = Arc::clone(&last_received);
+        let socket = Arc::new(Mutex::new(socket));
+        let socket_check = Arc::clone(&socket);
+
+        let stop = Arc::new(AtomicBool::new(false));
+        let stop_check = Arc::clone(&stop);
+
+        thread::spawn(move || loop {
+            thread::sleep(Duration::from_secs(10));
+
+            if stop_check.load(Ordering::Relaxed) {
+                return;
+            }
+
+            let ts = last_received_check.lock().unwrap();
+            log::debug!("last received: {}", ts);
+            let diff = Utc::now() - ts.add(chrono::Duration::seconds(60));
+            if diff > chrono::Duration::seconds(0) {
+                log::warn!("closing connection because timeout");
+                socket_check
+                    .lock()
+                    .unwrap()
+                    .close(Some(CloseFrame {
+                        code: CloseCode::Again,
+                        reason: std::borrow::Cow::Borrowed("Timeout"),
+                    }))
+                    .unwrap();
+                return;
+            }
+        });
+
         loop {
-            let msg = socket.read_message().expect("Error reading message");
+            let msg = socket.lock().unwrap().read_message().map_err(|e| {
+                log::error!("Failed to read message: {}", e);
+                stop.store(true, Ordering::Relaxed);
+                InnerError::new(InnerKind::SocketReadError)
+            })?;
+            let mut ts = last_received.lock().unwrap();
+            *ts = Utc::now();
+            drop(ts);
             if msg.is_ping() {
                 let _ = socket
+                    .lock()
+                    .unwrap()
                     .write_message(WebSocketMessage::Pong(Vec::<u8>::new()))
                     .map_err(|e| {
                         log::error!("{:#?}", e);
@@ -128,18 +192,18 @@ impl WebSocket {
                     });
             }
             if msg.is_close() {
-                if let WebSocketMessage::Close(Some(close)) = msg {
-                    log::warn!("Connection to {} is closed because {}", url, close.code);
-                    if close.code != CloseCode::Normal {
-                        self.reconnect(url, callback);
-                        return;
-                    }
-                }
-                let _ = socket.close(None).map_err(|e| {
+                stop.store(true, Ordering::Relaxed);
+                let _ = socket.lock().unwrap().close(None).map_err(|e| {
                     log::error!("{:#?}", e);
                     e
                 });
-                return;
+                if let WebSocketMessage::Close(Some(close)) = msg {
+                    log::warn!("Connection to {} is closed because {}", url, close.code);
+                    if close.code != CloseCode::Normal {
+                        return Err(InnerError::new(InnerKind::UnusualSocketCloseError));
+                    }
+                }
+                return Ok(());
             }
             match self.parse(msg) {
                 Ok(message) => {
@@ -166,5 +230,36 @@ impl Streaming for WebSocket {
         url = url + "?" + parameter.join("&").as_str();
 
         self.connect(url.as_str(), callback);
+    }
+}
+
+#[derive(thiserror::Error)]
+#[error("{kind}")]
+struct InnerError {
+    kind: InnerKind,
+}
+
+#[derive(Debug, thiserror::Error)]
+enum InnerKind {
+    #[error("connection error")]
+    ConnectionError,
+    #[error("socket read error")]
+    SocketReadError,
+    #[error("unusual socket close error")]
+    UnusualSocketCloseError,
+}
+
+impl InnerError {
+    pub fn new(kind: InnerKind) -> Self {
+        Self { kind }
+    }
+}
+
+impl fmt::Debug for InnerError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut builder = f.debug_struct("megalodon::pleroma::web_socket::InnerError");
+
+        builder.field("kind", &self.kind);
+        builder.finish()
     }
 }
