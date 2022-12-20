@@ -294,8 +294,14 @@ impl megalodon::Megalodon for Mastodon {
                 }
             }
             if let Some(fields_attributes) = &options.fields_attributes {
-                if let Some(json_fields_attributes) = serde_json::to_value(&fields_attributes).ok()
-                {
+                let json_fields_attributes = serde_json::map::Map::from_iter(
+                    fields_attributes
+                        .iter()
+                        .enumerate()
+                        .map(|(x, y)| (x.to_string(), serde_json::to_value(y).ok().into())),
+                );
+
+                if let Ok(json_fields_attributes) = serde_json::to_value(json_fields_attributes) {
                     params.insert("fields_attributes", json_fields_attributes);
                 }
             }
