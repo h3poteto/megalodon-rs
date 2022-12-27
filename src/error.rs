@@ -19,7 +19,7 @@ pub enum Error {
     /// WebSocketError from [`tungstenite::error::Error`].
     /// This error will be raised when tungstenite WebSocket raises an error.
     #[error(transparent)]
-    WebSocketError(#[from] tungstenite::error::Error),
+    WebSocketError(#[from] tokio_tungstenite::tungstenite::error::Error),
     /// JsonError from [`serde_json::Error`].
     /// This error will be raised when failed to parse some json.
     #[error(transparent)]

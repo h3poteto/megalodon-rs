@@ -22,10 +22,11 @@ url = "2.2.2"
 oauth2 = { version = "4.2" }
 sha1 = { version = "0.10" }
 hex = { version = "0.4" }
-tungstenite = { version = "0.18", features = ["native-tls"] }
+tokio-tungstenite = { version ="0.18", features = ["native-tls"] }
 urlencoding = { version = "2.1" }
 log = "0.4"
 thiserror = "1"
+futures-util = "0.3"
 
 [dev-dependencies]
 env_logger = "0.10"

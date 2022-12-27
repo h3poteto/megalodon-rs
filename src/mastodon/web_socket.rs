@@ -1,22 +1,22 @@
 use std::fmt;
-use std::ops::Add;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
 use super::entities;
 use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
-use chrono::Utc;
 use serde::Deserialize;
-use tungstenite::protocol::frame::coding::CloseCode;
-use tungstenite::protocol::CloseFrame;
-use tungstenite::{connect, Message as WebSocketMessage};
+
+use futures_util::{SinkExt, StreamExt};
+use tokio::runtime::Runtime;
+use tokio_tungstenite::{
+    connect_async, tungstenite::protocol::frame::coding::CloseCode,
+    tungstenite::protocol::Message as WebSocketMessage,
+};
 use url::Url;
 
-const RECONNECT_INTERVAL: u64 = 1000;
-const READ_MESSAGE_TIMEOUT_SECONDS: i64 = 60;
+const RECONNECT_INTERVAL: u64 = 5000;
+const READ_MESSAGE_TIMEOUT_SECONDS: u64 = 60;
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {
@@ -110,7 +110,10 @@ impl WebSocket {
 
     fn connect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
         loop {
-            match self.do_connect(url, &callback) {
+            match Runtime::new()
+                .unwrap()
+                .block_on(self.do_connect(url, &callback))
+            {
                 Ok(()) => {
                     log::info!("connection for {} is  closed", url);
                     return;
@@ -118,7 +121,8 @@ impl WebSocket {
                 Err(err) => match err.kind {
                     InnerKind::ConnectionError
                     | InnerKind::SocketReadError
-                    | InnerKind::UnusualSocketCloseError => {
+                    | InnerKind::UnusualSocketCloseError
+                    | InnerKind::TimeoutError => {
                         thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
                         log::info!("Reconnecting to {}", url);
                         continue;
@@ -128,11 +132,16 @@ impl WebSocket {
         }
     }
 
-    fn do_connect(&self, url: &str, callback: &Box<dyn Fn(Message)>) -> Result<(), InnerError> {
-        let (socket, response) = connect(Url::parse(url).unwrap()).map_err(|e| {
-            log::error!("Failed to connect: {}", e);
-            InnerError::new(InnerKind::ConnectionError)
-        })?;
+    async fn do_connect(
+        &self,
+        url: &str,
+        callback: &Box<dyn Fn(Message)>,
+    ) -> Result<(), InnerError> {
+        let (mut socket, response) =
+            connect_async(Url::parse(url).unwrap()).await.map_err(|e| {
+                log::error!("Failed to connect: {}", e);
+                InnerError::new(InnerKind::ConnectionError)
+            })?;
 
         log::debug!("Connected to {}", url);
         log::debug!("Response HTTP code: {}", response.status());
@@ -141,60 +150,35 @@ impl WebSocket {
             log::debug!("* {}", header);
         }
 
-        let last_received = Arc::new(Mutex::new(Utc::now()));
-        let last_received_check = Arc::clone(&last_received);
-        let socket = Arc::new(Mutex::new(socket));
-        let socket_check = Arc::clone(&socket);
-
-        let stop = Arc::new(AtomicBool::new(false));
-        let stop_check = Arc::clone(&stop);
-
-        thread::spawn(move || loop {
-            thread::sleep(Duration::from_secs(10));
-
-            if stop_check.load(Ordering::Relaxed) {
-                return;
-            }
-
-            let ts = last_received_check.lock().unwrap();
-            log::debug!("last received: {}", ts);
-            let diff = Utc::now() - ts.add(chrono::Duration::seconds(READ_MESSAGE_TIMEOUT_SECONDS));
-            if diff > chrono::Duration::seconds(0) {
-                log::warn!("closing connection because timeout");
-                socket_check
-                    .lock()
-                    .unwrap()
-                    .close(Some(CloseFrame {
-                        code: CloseCode::Again,
-                        reason: std::borrow::Cow::Borrowed("Timeout"),
-                    }))
-                    .unwrap();
-                return;
-            }
-        });
-
         loop {
-            let msg = socket.lock().unwrap().read_message().map_err(|e| {
+            let res = tokio::time::timeout(
+                Duration::from_secs(READ_MESSAGE_TIMEOUT_SECONDS),
+                socket.next(),
+            )
+            .await
+            .map_err(|e| {
+                log::error!("Timeout reading message: {}", e);
+                InnerError::new(InnerKind::TimeoutError)
+            })?;
+            let Some(r) = res else {
+                log::warn!("Response is empty");
+                continue;
+            };
+            let msg = r.map_err(|e| {
                 log::error!("Failed to read message: {}", e);
-                stop.store(true, Ordering::Relaxed);
                 InnerError::new(InnerKind::SocketReadError)
             })?;
-            let mut ts = last_received.lock().unwrap();
-            *ts = Utc::now();
-            drop(ts);
             if msg.is_ping() {
                 let _ = socket
-                    .lock()
-                    .unwrap()
-                    .write_message(WebSocketMessage::Pong(Vec::<u8>::new()))
+                    .send(WebSocketMessage::Pong(Vec::<u8>::new()))
+                    .await
                     .map_err(|e| {
                         log::error!("{:#?}", e);
                         e
                     });
             }
             if msg.is_close() {
-                stop.store(true, Ordering::Relaxed);
-                let _ = socket.lock().unwrap().close(None).map_err(|e| {
+                let _ = socket.close(None).await.map_err(|e| {
                     log::error!("{:#?}", e);
                     e
                 });
@@ -248,6 +232,8 @@ enum InnerKind {
     SocketReadError,
     #[error("unusual socket close error")]
     UnusualSocketCloseError,
+    #[error("timeout error")]
+    TimeoutError,
 }
 
 impl InnerError {
