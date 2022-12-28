@@ -1,10 +1,12 @@
 //! Streaming modules
 use crate::entities as MegalodonEntities;
+use async_trait::async_trait;
 
 /// Streaming interface to listen message.
+#[async_trait]
 pub trait Streaming {
     /// Start listening stream messages. When receive a message, the callback function will be called.
-    fn listen(&self, callback: Box<dyn Fn(Message)>);
+    async fn listen(&self, callback: Box<dyn Fn(Message) + Send + Sync>);
 }
 
 /// Stream message definitions.

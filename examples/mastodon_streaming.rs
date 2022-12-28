@@ -1,7 +1,8 @@
 use megalodon::{generator, streaming::Message};
 use std::env;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     env_logger::init();
 
     let Ok(url) = env::var("MASTODON_STREAMING_URL") else {
@@ -13,10 +14,10 @@ fn main() {
         return
     };
 
-    streaming(url.as_str(), token);
+    streaming(url.as_str(), token).await;
 }
 
-fn streaming(url: &str, access_token: String) {
+async fn streaming(url: &str, access_token: String) {
     let client = generator(
         megalodon::SNS::Mastodon,
         url.to_string(),
@@ -25,21 +26,23 @@ fn streaming(url: &str, access_token: String) {
     );
     let streaming = client.user_streaming(url.to_string());
 
-    streaming.listen(Box::new(|message| match message {
-        Message::Update(mes) => {
-            println!("{:#?}", mes);
-        }
-        Message::Notification(mes) => {
-            println!("{:#?}", mes);
-        }
-        Message::Conversation(mes) => {
-            println!("{:#?}", mes);
-        }
-        Message::Delete(mes) => {
-            println!("message is deleted: {}", mes);
-        }
-        Message::Heartbeat() => {
-            println!("heartbeat");
-        }
-    }));
+    streaming
+        .listen(Box::new(|message| match message {
+            Message::Update(mes) => {
+                println!("{:#?}", mes);
+            }
+            Message::Notification(mes) => {
+                println!("{:#?}", mes);
+            }
+            Message::Conversation(mes) => {
+                println!("{:#?}", mes);
+            }
+            Message::Delete(mes) => {
+                println!("message is deleted: {}", mes);
+            }
+            Message::Heartbeat() => {
+                println!("heartbeat");
+            }
+        }))
+        .await;
 }

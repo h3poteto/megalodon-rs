@@ -5,10 +5,9 @@ use std::time::Duration;
 use super::entities;
 use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
-use serde::Deserialize;
-
+use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
-use tokio::runtime::Runtime;
+use serde::Deserialize;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::frame::coding::CloseCode,
     tungstenite::protocol::Message as WebSocketMessage,
@@ -108,12 +107,9 @@ impl WebSocket {
         }
     }
 
-    fn connect(&self, url: &str, callback: Box<dyn Fn(Message)>) {
+    async fn connect(&self, url: &str, callback: Box<dyn Fn(Message) + Send + Sync>) {
         loop {
-            match Runtime::new()
-                .unwrap()
-                .block_on(self.do_connect(url, &callback))
-            {
+            match self.do_connect(url, &callback).await {
                 Ok(()) => {
                     log::info!("connection for {} is  closed", url);
                     return;
@@ -135,7 +131,7 @@ impl WebSocket {
     async fn do_connect(
         &self,
         url: &str,
-        callback: &Box<dyn Fn(Message)>,
+        callback: &Box<dyn Fn(Message) + Send + Sync>,
     ) -> Result<(), InnerError> {
         let (mut socket, response) =
             connect_async(Url::parse(url).unwrap()).await.map_err(|e| {
@@ -202,8 +198,9 @@ impl WebSocket {
     }
 }
 
+#[async_trait]
 impl Streaming for WebSocket {
-    fn listen(&self, callback: Box<dyn Fn(Message)>) {
+    async fn listen(&self, callback: Box<dyn Fn(Message) + Send + Sync>) {
         let mut parameter = Vec::<String>::from([format!("stream={}", self.stream)]);
         if let Some(access_token) = &self.access_token {
             parameter.push(format!("access_token={}", access_token));
@@ -214,7 +211,7 @@ impl Streaming for WebSocket {
         let mut url = self.url.clone();
         url = url + "?" + parameter.join("&").as_str();
 
-        self.connect(url.as_str(), callback);
+        self.connect(url.as_str(), callback).await;
     }
 }
 
