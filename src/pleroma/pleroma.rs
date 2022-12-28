@@ -2793,7 +2793,7 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
-    fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming> {
+    fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
@@ -2805,7 +2805,7 @@ impl megalodon::Megalodon for Pleroma {
         Box::new(c)
     }
 
-    fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming> {
+    fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
@@ -2817,7 +2817,7 @@ impl megalodon::Megalodon for Pleroma {
         Box::new(c)
     }
 
-    fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming> {
+    fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
@@ -2829,7 +2829,7 @@ impl megalodon::Megalodon for Pleroma {
         Box::new(c)
     }
 
-    fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming> {
+    fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
@@ -2841,7 +2841,11 @@ impl megalodon::Megalodon for Pleroma {
         Box::new(c)
     }
 
-    fn tag_streaming(&self, streaming_url: String, tag: String) -> Box<dyn Streaming> {
+    fn tag_streaming(
+        &self,
+        streaming_url: String,
+        tag: String,
+    ) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("tag={}", tag)]);
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
@@ -2853,7 +2857,11 @@ impl megalodon::Megalodon for Pleroma {
         Box::new(c)
     }
 
-    fn list_streaming(&self, streaming_url: String, list_id: String) -> Box<dyn Streaming> {
+    fn list_streaming(
+        &self,
+        streaming_url: String,
+        list_id: String,
+    ) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("list={}", list_id)]);
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
