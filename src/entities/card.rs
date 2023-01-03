@@ -17,6 +17,7 @@ pub struct Card {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum CardType {
     Link,
     Photo,

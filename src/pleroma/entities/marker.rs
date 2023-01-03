@@ -1,13 +1,13 @@
 use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Marker {
     notifications: InnerMarker,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 struct InnerMarker {
     last_read_id: String,
     version: u32,
@@ -16,7 +16,7 @@ struct InnerMarker {
     pleroma: PleromaMarker,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 struct PleromaMarker {
     unread_count: u32,
 }

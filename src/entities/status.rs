@@ -42,6 +42,7 @@ pub struct Status {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum StatusVisibility {
     Public,
     Unlisted,
