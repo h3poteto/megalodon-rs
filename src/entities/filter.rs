@@ -12,6 +12,7 @@ pub struct Filter {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+#[serde(rename_all = "lowercase")]
 pub enum FilterContext {
     Home,
     Notifications,
