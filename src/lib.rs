@@ -61,15 +61,19 @@ pub use streaming::Streaming;
 
 #[derive(Deserialize)]
 struct Instance {
-    title: String,
-    uri: String,
-    urls: entities::URLs,
+    // title: String,
+    // uri: String,
+    // urls: entities::URLs,
     version: String,
 }
 
 /// Detect which SNS the provided URL is. To detect SNS, the URL has to open `/api/v1/instance` or `/api/meta` endpoint.
 pub async fn detector(url: &str) -> Result<SNS, error::Error> {
-    let res = reqwest::get(format!("{}{}", url, "/api/v1/instance")).await;
+    let client = reqwest::Client::builder().user_agent("megalodon").build()?;
+    let res = client
+        .get(format!("{}{}", url, "/api/v1/instance"))
+        .send()
+        .await;
 
     match res {
         Ok(res) => {
