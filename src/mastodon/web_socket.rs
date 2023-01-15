@@ -3,11 +3,13 @@ use std::thread;
 use std::time::Duration;
 
 use super::entities;
+use crate::default::DEFAULT_UA;
 use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
 use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
+use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::frame::coding::CloseCode,
     tungstenite::protocol::Message as WebSocketMessage,
@@ -23,6 +25,7 @@ pub struct WebSocket {
     stream: String,
     params: Option<Vec<String>>,
     access_token: Option<String>,
+    user_agent: String,
 }
 
 #[derive(Deserialize)]
@@ -37,12 +40,19 @@ impl WebSocket {
         stream: String,
         params: Option<Vec<String>>,
         access_token: Option<String>,
+        user_agent: Option<String>,
     ) -> Self {
+        let ua: String;
+        match user_agent {
+            Some(agent) => ua = agent,
+            None => ua = DEFAULT_UA.to_string(),
+        }
         Self {
             url,
             stream,
             params,
             access_token,
+            user_agent: ua,
         }
     }
 
@@ -133,11 +143,19 @@ impl WebSocket {
         url: &str,
         callback: &Box<dyn Fn(Message) + Send + Sync>,
     ) -> Result<(), InnerError> {
-        let (mut socket, response) =
-            connect_async(Url::parse(url).unwrap()).await.map_err(|e| {
-                log::error!("Failed to connect: {}", e);
+        let mut req = Url::parse(url)
+            .unwrap()
+            .into_client_request()
+            .map_err(|e| {
+                log::error!("Failed to parse url: {}", e);
                 InnerError::new(InnerKind::ConnectionError)
             })?;
+        req.headers_mut()
+            .insert("User-Agent", self.user_agent.parse().unwrap());
+        let (mut socket, response) = connect_async(req).await.map_err(|e| {
+            log::error!("Failed to connect: {}", e);
+            InnerError::new(InnerKind::ConnectionError)
+        })?;
 
         log::debug!("Connected to {}", url);
         log::debug!("Response HTTP code: {}", response.status());
