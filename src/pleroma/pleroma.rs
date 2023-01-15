@@ -26,16 +26,18 @@ pub struct Pleroma {
     client: APIClient,
     base_url: String,
     access_token: Option<String>,
+    user_agent: Option<String>,
 }
 
 impl Pleroma {
     /// Create a new [`Pleroma`].
     pub fn new(base_url: String, access_token: Option<String>, user_agent: Option<String>) -> Self {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent);
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone());
         Self {
             client,
             base_url,
             access_token,
+            user_agent,
         }
     }
 
@@ -2806,6 +2808,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("user"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2818,6 +2821,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("public"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2830,6 +2834,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("public:local"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2842,6 +2847,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("direct"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2858,6 +2864,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("hashtag"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2874,6 +2881,7 @@ impl megalodon::Megalodon for Pleroma {
             String::from("list"),
             Some(params),
             self.access_token.clone(),
+            self.user_agent.clone(),
         );
 
         Box::new(c)
