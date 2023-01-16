@@ -54,4 +54,4 @@ println!("{:#?}", res.json());
 ```
 
 ## License
-The software is available as open source under the terms of the [Apache Licnese 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+The software is available as open source under the terms of the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
