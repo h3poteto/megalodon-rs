@@ -40,6 +40,9 @@ async fn streaming(url: &str, access_token: String) {
             Message::Delete(mes) => {
                 println!("message is deleted {:#?}", mes);
             }
+            Message::StatusUpdate(mes) => {
+                println!("updated: {:#?}", mes)
+            }
             Message::Heartbeat() => {
                 println!("heartbeat");
             }

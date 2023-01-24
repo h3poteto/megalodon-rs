@@ -20,6 +20,8 @@ pub enum Message {
     Conversation(MegalodonEntities::Conversation),
     /// Delete message for `delete` event.
     Delete(String),
+    /// StatusUpdate message of `status.update` event.
+    StatusUpdate(MegalodonEntities::Status),
     /// Heartbeat for streaming connection.
     Heartbeat(),
 }

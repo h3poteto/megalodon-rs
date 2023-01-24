@@ -100,6 +100,18 @@ impl WebSocket {
                     Ok(Message::Conversation(res.into()))
                 }
                 "delete" => Ok(Message::Delete(mes.payload)),
+                "status.update" => {
+                    let res =
+                        serde_json::from_str::<entities::Status>(&mes.payload).map_err(|e| {
+                            log::error!(
+                                "failed to parse status: {}\n{}",
+                                e.to_string(),
+                                &mes.payload
+                            );
+                            e
+                        })?;
+                    Ok(Message::StatusUpdate(res.into()))
+                }
                 event => Err(Error::new_own(
                     format!("Unknown event is received: {}", event),
                     Kind::ParseError,
