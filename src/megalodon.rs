@@ -333,6 +333,18 @@ pub trait Megalodon {
     ) -> Result<Response<Vec<entities::Account>>, Error>;
 
     // ======================================
+    // accounts/tags
+    // ======================================
+    /// Get a hashtag and its associated information.
+    async fn get_tag(&self, id: String) -> Result<Response<entities::Tag>, Error>;
+
+    /// Follow a hashtag. Posts containing a followed hashtag will be inserted into your home timeline.
+    async fn follow_tag(&self, id: String) -> Result<Response<entities::Tag>, Error>;
+
+    /// Unfollow a hashtag. Posts containing this hashtag will no longer be inserted into your home timeline.
+    async fn unfollow_tag(&self, id: String) -> Result<Response<entities::Tag>, Error>;
+
+    // ======================================
     // statuses
     // ======================================
     /// Post a new status.

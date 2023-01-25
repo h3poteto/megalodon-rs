@@ -1303,6 +1303,58 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
+    async fn get_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        let res = self
+            .client
+            .get::<entities::Tag>(format!("/api/v1/tags/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Tag>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn follow_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        let params = HashMap::<&str, Value>::default();
+        let res = self
+            .client
+            .post::<entities::Tag>(
+                format!("/api/v1/tags/{}/follow", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Tag>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn unfollow_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        let params = HashMap::<&str, Value>::default();
+        let res = self
+            .client
+            .post::<entities::Tag>(
+                format!("/api/v1/tags/{}/unfollow", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Tag>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn post_status(
         &self,
         status: String,
