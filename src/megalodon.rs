@@ -345,6 +345,13 @@ pub trait Megalodon {
     /// Get information about a status.
     async fn get_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
 
+    /// Edit a status.
+    async fn edit_status(
+        &self,
+        id: String,
+        options: &EditStatusInputOptions,
+    ) -> Result<Response<entities::Status>, Error>;
+
     /// Delete a status of your own statuses.
     async fn delete_status(&self, id: String) -> Result<Response<()>, Error>;
 
@@ -908,6 +915,23 @@ pub struct PostStatusInputOptions {
     pub language: Option<String>,
     /// ID of the status being quoted to.
     pub quote_id: Option<String>,
+}
+
+/// Input options for [`Megalodon::edit_status`].
+#[derive(Debug, Clone, Default)]
+pub struct EditStatusInputOptions {
+    /// The plain text content of the status.
+    pub status: Option<String>,
+    /// Text to be shown as a warning or subject before the actual content.
+    pub spoiler_text: Option<String>,
+    /// Mark status and attached media as sensitive.
+    pub sensitive: Option<bool>,
+    /// ISO 639 language code for this status.
+    pub language: Option<String>,
+    /// Array of Attachment ids to be attached as media.
+    pub media_ids: Option<Vec<String>>,
+    /// Poll options.
+    pub poll: Option<PollOptions>,
 }
 
 /// Poll options.
