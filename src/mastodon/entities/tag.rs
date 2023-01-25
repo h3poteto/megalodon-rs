@@ -7,6 +7,7 @@ pub struct Tag {
     name: String,
     url: String,
     history: Option<Vec<History>>,
+    following: bool,
 }
 
 impl Into<MegalodonEntities::Tag> for Tag {
@@ -17,6 +18,7 @@ impl Into<MegalodonEntities::Tag> for Tag {
             history: self
                 .history
                 .map(|i| i.into_iter().map(|j| j.into()).collect()),
+            following: self.following,
         }
     }
 }
