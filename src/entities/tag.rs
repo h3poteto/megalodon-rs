@@ -7,6 +7,5 @@ pub struct Tag {
     pub name: String,
     pub url: String,
     pub history: Option<Vec<History>>,
-    #[serde(default)]
-    pub following: bool,
+    pub following: Option<bool>,
 }

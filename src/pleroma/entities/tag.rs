@@ -7,8 +7,7 @@ pub struct Tag {
     name: String,
     url: String,
     history: Option<Vec<History>>,
-    #[serde(default)]
-    following: bool,
+    following: Option<bool>,
 }
 
 impl Into<MegalodonEntities::Tag> for Tag {
