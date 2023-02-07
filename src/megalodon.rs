@@ -31,6 +31,15 @@ pub trait Megalodon {
     // ======================================
     // apps/oauth
     // ======================================
+    /// Generate a code URL to authorize a user to a application
+    async fn authorize_user_code_url(
+        &self,
+        client_id: String,
+        client_secret: String,
+        scopes: Vec<String>,
+        redirect_uri: String,
+    ) -> Result<String, Error>;
+
     /// Fetch OAuth access token.
     /// Get an access token based client_id, client_secret and authorization_code.
     async fn fetch_access_token(

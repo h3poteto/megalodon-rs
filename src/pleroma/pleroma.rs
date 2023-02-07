@@ -71,6 +71,24 @@ impl Pleroma {
 
 #[async_trait]
 impl megalodon::Megalodon for Pleroma {
+    async fn authorize_user_code_url(
+        &self,
+        client_id: String,
+        client_secret: String,
+        scopes: Vec<String>,
+        redirect_uri: String,
+    ) -> Result<String, Error> {
+        let url = self
+            .generate_auth_url(
+                client_id.clone(),
+                client_secret.clone(),
+                scopes.iter().map(String::as_str).collect(),
+                redirect_uri.clone(),
+            )
+            .await?;
+        Ok(url)
+    }
+
     async fn register_app(
         &self,
         client_name: String,
