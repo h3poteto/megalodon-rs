@@ -92,7 +92,9 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
             NotificationType::Favourite => {
                 MegalodonEntities::notification::NotificationType::Favourite
             }
-            NotificationType::Poll => MegalodonEntities::notification::NotificationType::PollVote,
+            NotificationType::Poll => {
+                MegalodonEntities::notification::NotificationType::PollExpired
+            }
             NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
         }
     }
