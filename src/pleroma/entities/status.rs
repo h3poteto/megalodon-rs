@@ -1,11 +1,7 @@
-use core::fmt;
-use std::str::FromStr;
-
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
 use crate::entities as MegalodonEntities;
-use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
-use serde::{de, ser, Deserialize};
+use serde::{de, Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Status {
@@ -40,7 +36,8 @@ pub struct Status {
     pub pleroma: PleromaOptions,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum StatusVisibility {
     Public,
     Unlisted,
@@ -66,53 +63,6 @@ pub struct PleromaOptions {
 #[derive(Debug, Clone, PartialEq)]
 pub struct PleromaContent {
     pub text_plain: String,
-}
-
-impl fmt::Display for StatusVisibility {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            StatusVisibility::Public => write!(f, "public"),
-            StatusVisibility::Unlisted => write!(f, "unlisted"),
-            StatusVisibility::Private => write!(f, "private"),
-            StatusVisibility::Direct => write!(f, "direct"),
-        }
-    }
-}
-
-impl FromStr for StatusVisibility {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "public" => Ok(StatusVisibility::Public),
-            "unlisted" => Ok(StatusVisibility::Unlisted),
-            "private" => Ok(StatusVisibility::Private),
-            "direct" => Ok(StatusVisibility::Direct),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
-        }
-    }
-}
-
-impl ser::Serialize for StatusVisibility {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> de::Deserialize<'de> for StatusVisibility {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match StatusVisibility::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
-        }
-    }
 }
 
 impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {

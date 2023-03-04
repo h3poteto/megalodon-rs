@@ -1,5 +1,5 @@
 use core::fmt;
-use serde::{de, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 use super::StatusVisibility;
@@ -14,7 +14,8 @@ pub struct Preferences {
     pub reading_expand_spoilers: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ExpandMedia {
     Default,
     ShowAll,
@@ -40,28 +41,6 @@ impl FromStr for ExpandMedia {
             "show_all" => Ok(ExpandMedia::ShowAll),
             "hide_all" => Ok(ExpandMedia::HideAll),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
-        }
-    }
-}
-
-impl Serialize for ExpandMedia {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> de::Deserialize<'de> for ExpandMedia {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match ExpandMedia::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
         }
     }
 }

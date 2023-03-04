@@ -1,9 +1,5 @@
 use crate::entities as MegalodonEntities;
-use core::fmt;
-use serde::{de, ser, Deserialize};
-use std::str::FromStr;
-
-use crate::error::{Error, Kind};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Card {
@@ -21,59 +17,13 @@ pub struct Card {
     height: Option<u32>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum CardType {
     Link,
     Photo,
     Video,
     Rich,
-}
-
-impl fmt::Display for CardType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            CardType::Link => write!(f, "link"),
-            CardType::Photo => write!(f, "photo"),
-            CardType::Video => write!(f, "video"),
-            CardType::Rich => write!(f, "rich"),
-        }
-    }
-}
-
-impl FromStr for CardType {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "link" => Ok(CardType::Link),
-            "photo" => Ok(CardType::Photo),
-            "video" => Ok(CardType::Video),
-            "rich" => Ok(CardType::Rich),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
-        }
-    }
-}
-
-impl ser::Serialize for CardType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> de::Deserialize<'de> for CardType {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match CardType::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
-        }
-    }
 }
 
 impl Into<MegalodonEntities::card::CardType> for CardType {

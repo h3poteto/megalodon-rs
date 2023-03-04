@@ -1,5 +1,5 @@
 use core::fmt;
-use serde::{de, ser, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 use crate::error::Error;
@@ -56,7 +56,8 @@ pub struct Focus {
     pub y: f64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum AttachmentType {
     Image,
     Gifv,
@@ -87,28 +88,6 @@ impl FromStr for AttachmentType {
             "video" => Ok(AttachmentType::Video),
             "audio" => Ok(AttachmentType::Audio),
             _ => Ok(AttachmentType::Unknown),
-        }
-    }
-}
-
-impl ser::Serialize for AttachmentType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> Deserialize<'de> for AttachmentType {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match AttachmentType::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
         }
     }
 }

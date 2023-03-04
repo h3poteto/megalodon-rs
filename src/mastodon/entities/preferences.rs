@@ -1,10 +1,7 @@
 use super::StatusVisibility;
 use crate::entities as MegalodonEntities;
-use crate::error::{Error, Kind};
-use core::fmt;
 use serde::ser::SerializeStruct;
-use serde::{de, ser};
-use std::str::FromStr;
+use serde::{de, ser, Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Preferences {
@@ -15,56 +12,12 @@ pub struct Preferences {
     pub reading_expand_spoilers: bool,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ExpandMedia {
     Default,
     ShowAll,
     HideAll,
-}
-
-impl fmt::Display for ExpandMedia {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ExpandMedia::Default => write!(f, "default"),
-            ExpandMedia::ShowAll => write!(f, "show_all"),
-            ExpandMedia::HideAll => write!(f, "hide_all"),
-        }
-    }
-}
-
-impl FromStr for ExpandMedia {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "default" => Ok(ExpandMedia::Default),
-            "show_all" => Ok(ExpandMedia::ShowAll),
-            "hide_all" => Ok(ExpandMedia::HideAll),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
-        }
-    }
-}
-
-impl ser::Serialize for ExpandMedia {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> de::Deserialize<'de> for ExpandMedia {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match ExpandMedia::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
-        }
-    }
 }
 
 const FIELDS: &'static [&'static str] = &[
