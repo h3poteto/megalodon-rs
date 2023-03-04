@@ -265,7 +265,6 @@ pub trait Megalodon {
     async fn report(
         &self,
         account_id: String,
-        comment: String,
         options: Option<&ReportInputOptions>,
     ) -> Result<Response<entities::Report>, Error>;
 
@@ -891,8 +890,14 @@ pub struct FilterInputOptions {
 pub struct ReportInputOptions {
     /// Array of Statuses to attach to the report.
     pub status_ids: Option<Vec<String>>,
+    /// The reason for the report. Default maximum of 1000 characters.
+    pub comment: Option<String>,
     /// If the account is remote, should the report be forwarded to the remote admin.
     pub forward: Option<bool>,
+    /// Specify if the report is due to spam, violation of enumerated instance rules, or some other reason. Defaults to other. Will be set to violation if rule_ids[] is provided (regardless of any category value you provide).
+    pub category: Option<entities::report::Category>,
+    /// For violation category reports, specify the ID of the exact rules broken. Rules and their IDs are available via GET /api/v1/instance/rules and GET /api/v1/instance.
+    pub rule_ids: Option<Vec<u64>>,
 }
 
 /// Input options for [`Megalodon::get_endorsements`].

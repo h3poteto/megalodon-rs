@@ -1069,21 +1069,28 @@ impl megalodon::Megalodon for Pleroma {
     async fn report(
         &self,
         account_id: String,
-        comment: String,
         options: Option<&megalodon::ReportInputOptions>,
     ) -> Result<Response<MegalodonEntities::Report>, Error> {
-        let mut params = HashMap::<&str, Value>::from([
-            ("account_id", Value::String(account_id)),
-            ("comment", Value::String(comment)),
-        ]);
+        let mut params = HashMap::<&str, Value>::from([("account_id", Value::String(account_id))]);
         if let Some(options) = options {
             if let Some(status_ids) = &options.status_ids {
                 if let Some(json_status_ids) = serde_json::to_value(&status_ids).ok() {
                     params.insert("status_ids", json_status_ids);
                 }
             }
-            if let Some(forward) = options.forward {
+            if let Some(comment) = &options.comment {
+                params.insert("comment", Value::String(comment.to_string()));
+            }
+            if let Some(forward) = &options.forward {
                 params.insert("forward", Value::String(forward.to_string()));
+            }
+            if let Some(category) = &options.category {
+                params.insert("category", Value::String(category.to_string()));
+            }
+            if let Some(rule_ids) = &options.rule_ids {
+                if let Some(json_rule_ids) = serde_json::to_value(&rule_ids).ok() {
+                    params.insert("rule_ids", json_rule_ids);
+                }
             }
         }
         let res = self
