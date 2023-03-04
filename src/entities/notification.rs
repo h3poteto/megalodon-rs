@@ -2,7 +2,7 @@ use super::{Account, Status};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
-use serde::{de, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -15,7 +15,8 @@ pub struct Notification {
     pub r#type: NotificationType,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum NotificationType {
     Follow,
     FollowRequest,
@@ -58,28 +59,6 @@ impl FromStr for NotificationType {
             "status" => Ok(NotificationType::Status),
             "emoji_reaction" => Ok(NotificationType::EmojiReaction),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
-        }
-    }
-}
-
-impl Serialize for NotificationType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
-    }
-}
-
-impl<'de> Deserialize<'de> for NotificationType {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: de::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        match NotificationType::from_str(s.as_str()) {
-            Ok(r) => Ok(r),
-            Err(e) => Err(de::Error::custom(e)),
         }
     }
 }
