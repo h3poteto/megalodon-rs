@@ -1,54 +1,62 @@
-use super::{Account, Stats, URLs};
+use super::{Stats, URLs};
 use crate::entities as MegalodonEntities;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Instance {
-    uri: String,
-    title: String,
-    description: String,
-    email: String,
-    version: String,
-    thumbnail: Option<String>,
-    urls: URLs,
-    stats: Stats,
-    languages: Vec<String>,
-    contact_account: Option<Account>,
-    max_toot_chars: Option<usize>,
-    registrations: Option<bool>,
-    configuration: Option<InstanceConfig>,
+    pub uri: String,
+    pub title: String,
+    pub description: String,
+    pub email: String,
+    pub version: String,
+    pub thumbnail: Option<String>,
+    pub urls: URLs,
+    pub stats: Stats,
+    pub languages: Vec<String>,
+    pub registrations: bool,
+    pub approval_required: bool,
+    pub max_toot_chars: u32,
+    pub max_media_attachments: Option<u32>,
+    pub pleroma: PleromaConfig,
+    pub poll_limits: PollLimits,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct InstanceConfig {
-    statuses: Statuses,
-    media_attachments: MediaAttachments,
-    polls: Polls,
+pub struct PleromaConfig {
+    pub metadata: PleromaMetadata,
 }
 
-#[derive(Deserialize, Debug, Clone)]
-struct Statuses {
-    max_characters: u32,
-    max_media_attachments: u32,
-    characters_reserved_per_url: u32,
+#[derive(Debug, Deserialize, Clone)]
+pub struct PleromaMetadata {
+    pub account_activation_required: bool,
+    pub birthday_min_age: u32,
+    pub birthday_required: bool,
+    pub features: Vec<String>,
+    pub federation: Federation,
+    pub fields_limit: FieldsLimit,
+    pub post_format: Vec<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
-struct MediaAttachments {
-    supported_mime_types: Vec<String>,
-    image_size_limit: u32,
-    image_matrix_limit: u32,
-    video_size_limit: u32,
-    video_frame_rate_limit: u32,
-    video_matrix_limit: u32,
+#[derive(Debug, Deserialize, Clone)]
+pub struct Federation {
+    pub enabled: bool,
+    pub exclusions: bool,
 }
 
-#[derive(Deserialize, Debug, Clone)]
-struct Polls {
-    max_options: u32,
-    max_characters_per_option: u32,
-    min_expiration: u32,
-    max_expiration: u32,
+#[derive(Debug, Deserialize, Clone)]
+pub struct FieldsLimit {
+    pub max_fields: u32,
+    pub max_remote_fields: u32,
+    pub name_length: u32,
+    pub value_length: u32,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct PollLimits {
+    pub max_expiration: u32,
+    pub min_expiration: u32,
+    pub max_option_chars: u32,
+    pub max_options: u32,
 }
 
 impl Into<MegalodonEntities::Instance> for Instance {
@@ -63,54 +71,23 @@ impl Into<MegalodonEntities::Instance> for Instance {
             urls: self.urls.into(),
             stats: self.stats.into(),
             languages: self.languages,
-            contact_account: self.contact_account.map(|i| i.into()),
-            max_toot_chars: self.max_toot_chars,
             registrations: self.registrations,
-            configuration: self.configuration.map(|i| i.into()),
-        }
-    }
-}
-
-impl Into<MegalodonEntities::instance::InstanceConfig> for InstanceConfig {
-    fn into(self) -> MegalodonEntities::instance::InstanceConfig {
-        MegalodonEntities::instance::InstanceConfig {
-            statuses: self.statuses.into(),
-            media_attachments: self.media_attachments.into(),
-            polls: self.polls.into(),
-        }
-    }
-}
-
-impl Into<MegalodonEntities::instance::Statuses> for Statuses {
-    fn into(self) -> MegalodonEntities::instance::Statuses {
-        MegalodonEntities::instance::Statuses {
-            max_characters: self.max_characters,
-            max_media_attachments: self.max_media_attachments,
-            characters_reserved_per_url: self.characters_reserved_per_url,
-        }
-    }
-}
-
-impl Into<MegalodonEntities::instance::MediaAttachments> for MediaAttachments {
-    fn into(self) -> MegalodonEntities::instance::MediaAttachments {
-        MegalodonEntities::instance::MediaAttachments {
-            supported_mime_types: self.supported_mime_types,
-            image_size_limit: self.image_size_limit,
-            image_matrix_limit: self.image_matrix_limit,
-            video_size_limit: self.video_size_limit,
-            video_frame_rate_limit: self.video_frame_rate_limit,
-            video_matrix_limit: self.video_matrix_limit,
-        }
-    }
-}
-
-impl Into<MegalodonEntities::instance::Polls> for Polls {
-    fn into(self) -> MegalodonEntities::instance::Polls {
-        MegalodonEntities::instance::Polls {
-            max_options: self.max_options,
-            max_characters_per_option: self.max_characters_per_option,
-            min_expiration: self.min_expiration,
-            max_expiration: self.max_expiration,
+            approval_required: self.approval_required,
+            invites_enabled: None,
+            configuration: MegalodonEntities::instance::InstanceConfig {
+                statuses: MegalodonEntities::instance::Statuses {
+                    max_characters: self.max_toot_chars,
+                    max_media_attachments: self.max_media_attachments,
+                },
+                polls: MegalodonEntities::instance::Polls {
+                    max_options: self.poll_limits.max_options,
+                    max_characters_per_option: self.poll_limits.max_option_chars,
+                    min_expiration: self.poll_limits.min_expiration,
+                    max_expiration: self.poll_limits.max_expiration,
+                },
+            },
+            contact_account: None,
+            rules: None,
         }
     }
 }
