@@ -1,6 +1,6 @@
 use super::{Stats, URLs};
 use crate::entities as MegalodonEntities;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Instance {
@@ -21,37 +21,37 @@ pub struct Instance {
     pub poll_limits: PollLimits,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PleromaConfig {
     pub metadata: PleromaMetadata,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PleromaMetadata {
     pub account_activation_required: bool,
     pub birthday_min_age: u32,
     pub birthday_required: bool,
     pub features: Vec<String>,
     pub federation: Federation,
-    pub fields_limit: FieldsLimit,
-    pub post_format: Vec<String>,
+    pub fields_limits: FieldsLimits,
+    pub post_formats: Vec<String>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Federation {
     pub enabled: bool,
     pub exclusions: bool,
 }
 
-#[derive(Debug, Deserialize, Clone)]
-pub struct FieldsLimit {
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct FieldsLimits {
     pub max_fields: u32,
     pub max_remote_fields: u32,
     pub name_length: u32,
     pub value_length: u32,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PollLimits {
     pub max_expiration: u32,
     pub min_expiration: u32,

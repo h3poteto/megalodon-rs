@@ -43,7 +43,7 @@
 //! # }
 //! ```
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{fmt, str::FromStr};
 
 pub mod default;
@@ -59,12 +59,13 @@ pub mod streaming;
 pub use self::megalodon::Megalodon;
 pub use streaming::Streaming;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Debug)]
 struct Instance {
-    // title: String,
-    // uri: String,
-    // urls: entities::URLs,
+    title: String,
+    uri: String,
+    urls: entities::URLs,
     version: String,
+    pleroma: Option<pleroma::entities::instance::PleromaConfig>,
 }
 
 /// Detect which SNS the provided URL is. To detect SNS, the URL has to open `/api/v1/instance` or `/api/meta` endpoint.
@@ -80,7 +81,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
             let obj = res.json::<Instance>().await;
             match obj {
                 Ok(json) => {
-                    if json.version.contains("Pleroma") == true {
+                    if let Some(_pleroma) = json.pleroma {
                         Ok(SNS::Pleroma)
                     } else {
                         Ok(SNS::Mastodon)
