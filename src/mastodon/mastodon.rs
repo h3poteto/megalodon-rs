@@ -56,7 +56,7 @@ impl Mastodon {
             Some(ClientSecret::new(client_secret)),
             AuthUrl::new(format!("{}{}", self.base_url, "/oauth/authorize").to_string())?,
             Some(TokenUrl::new(
-                format!("{}{}", self.base_url, "/oaut/token").to_string(),
+                format!("{}{}", self.base_url, "/oauth/token").to_string(),
             )?),
         )
         .set_redirect_uri(RedirectUrl::new(redirect_uri)?);
