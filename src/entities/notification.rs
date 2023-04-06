@@ -27,6 +27,7 @@ pub enum NotificationType {
     PollExpired,
     Status,
     EmojiReaction,
+    Update,
 }
 
 impl fmt::Display for NotificationType {
@@ -41,6 +42,7 @@ impl fmt::Display for NotificationType {
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Status => write!(f, "status"),
             NotificationType::EmojiReaction => write!(f, "emoji_reaction"),
+            NotificationType::Update => write!(f, "update"),
         }
     }
 }
@@ -58,6 +60,7 @@ impl FromStr for NotificationType {
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
             "emoji_reaction" => Ok(NotificationType::EmojiReaction),
+            "update" => Ok(NotificationType::Update),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }

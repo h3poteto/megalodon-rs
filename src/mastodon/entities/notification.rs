@@ -22,6 +22,7 @@ pub enum NotificationType {
     Favourite,
     Poll,
     Status,
+    Update,
 }
 
 impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
@@ -40,6 +41,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 MegalodonEntities::notification::NotificationType::PollExpired
             }
             NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
+            NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
         }
     }
 }
