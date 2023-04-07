@@ -78,6 +78,7 @@ impl Into<MegalodonEntities::Instance> for Instance {
                 statuses: MegalodonEntities::instance::Statuses {
                     max_characters: self.max_toot_chars,
                     max_media_attachments: self.max_media_attachments,
+                    characters_reserved_per_url: None,
                 },
                 polls: MegalodonEntities::instance::Polls {
                     max_options: self.poll_limits.max_options,

@@ -96,6 +96,7 @@ impl Into<MegalodonEntities::instance::Statuses> for Statuses {
         MegalodonEntities::instance::Statuses {
             max_characters: self.max_characters,
             max_media_attachments: Some(self.max_media_attachments),
+            characters_reserved_per_url: Some(self.characters_reserved_per_url),
         }
     }
 }
