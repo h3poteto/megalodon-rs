@@ -26,6 +26,7 @@ pub enum NotificationType {
     Favourite,
     Poll,
     PleromaEmojiReaction,
+    Update,
 }
 
 impl fmt::Display for NotificationType {
@@ -38,6 +39,7 @@ impl fmt::Display for NotificationType {
             NotificationType::PleromaEmojiReaction => write!(f, "pleroma:emoji_reaction"),
             NotificationType::Poll => write!(f, "poll"),
             NotificationType::FollowRequest => write!(f, "follow_request"),
+            NotificationType::Update => write!(f, "update"),
         }
     }
 }
@@ -54,6 +56,7 @@ impl FromStr for NotificationType {
             "pleroma:emoji_reaction" => Ok(NotificationType::PleromaEmojiReaction),
             "poll" => Ok(NotificationType::Poll),
             "follow_request" => Ok(NotificationType::FollowRequest),
+            "update" => Ok(NotificationType::Update),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
@@ -99,6 +102,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
             NotificationType::PleromaEmojiReaction => {
                 MegalodonEntities::notification::NotificationType::EmojiReaction
             }
+            NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
         }
     }
 }
