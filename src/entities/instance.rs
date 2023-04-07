@@ -30,6 +30,7 @@ pub struct InstanceConfig {
 pub struct Statuses {
     pub max_characters: u32,
     pub max_media_attachments: Option<u32>,
+    pub characters_reserved_per_url: Option<u32>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
