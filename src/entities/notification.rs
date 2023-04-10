@@ -12,6 +12,7 @@ pub struct Notification {
     pub id: String,
     pub status: Option<Status>,
     pub emoji: Option<String>,
+    pub target: Option<Account>,
     pub r#type: NotificationType,
 }
 
@@ -28,6 +29,7 @@ pub enum NotificationType {
     Status,
     EmojiReaction,
     Update,
+    Move,
 }
 
 impl fmt::Display for NotificationType {
@@ -43,6 +45,7 @@ impl fmt::Display for NotificationType {
             NotificationType::Status => write!(f, "status"),
             NotificationType::EmojiReaction => write!(f, "emoji_reaction"),
             NotificationType::Update => write!(f, "update"),
+            NotificationType::Move => write!(f, "move"),
         }
     }
 }
@@ -61,6 +64,7 @@ impl FromStr for NotificationType {
             "status" => Ok(NotificationType::Status),
             "emoji_reaction" => Ok(NotificationType::EmojiReaction),
             "update" => Ok(NotificationType::Update),
+            "move" => Ok(NotificationType::Move),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
