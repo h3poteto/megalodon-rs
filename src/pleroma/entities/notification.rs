@@ -15,6 +15,7 @@ pub struct Notification {
     status: Option<Status>,
     r#type: NotificationType,
     emoji: Option<String>,
+    target: Option<Account>,
 }
 
 #[derive(Debug, Clone)]
@@ -27,6 +28,7 @@ pub enum NotificationType {
     Poll,
     PleromaEmojiReaction,
     Update,
+    Move,
 }
 
 impl fmt::Display for NotificationType {
@@ -40,6 +42,7 @@ impl fmt::Display for NotificationType {
             NotificationType::Poll => write!(f, "poll"),
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Update => write!(f, "update"),
+            NotificationType::Move => write!(f, "move"),
         }
     }
 }
@@ -57,6 +60,7 @@ impl FromStr for NotificationType {
             "poll" => Ok(NotificationType::Poll),
             "follow_request" => Ok(NotificationType::FollowRequest),
             "update" => Ok(NotificationType::Update),
+            "move" => Ok(NotificationType::Move),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
@@ -103,6 +107,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 MegalodonEntities::notification::NotificationType::EmojiReaction
             }
             NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
+            NotificationType::Move => MegalodonEntities::notification::NotificationType::Move,
         }
     }
 }
@@ -115,6 +120,7 @@ impl Into<MegalodonEntities::Notification> for Notification {
             id: self.id,
             status: self.status.map(|i| i.into()),
             emoji: self.emoji,
+            target: self.target.map(|i| i.into()),
             r#type: self.r#type.into(),
         }
     }
