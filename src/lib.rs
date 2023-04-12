@@ -49,6 +49,7 @@ pub mod default;
 pub mod detector;
 pub mod entities;
 pub mod error;
+pub mod friendica;
 pub mod mastodon;
 pub mod megalodon;
 pub mod oauth;
@@ -67,8 +68,8 @@ pub enum SNS {
     Mastodon,
     /// SNS is Pleroma.
     Pleroma,
-    /// SNS is Misskey.
-    Misskey,
+    /// SNS is Friendica.
+    Friendica,
 }
 
 impl fmt::Display for SNS {
@@ -76,7 +77,7 @@ impl fmt::Display for SNS {
         match self {
             SNS::Mastodon => write!(f, "mastodon"),
             SNS::Pleroma => write!(f, "pleroma"),
-            SNS::Misskey => write!(f, "misskey"),
+            SNS::Friendica => write!(f, "friendica"),
         }
     }
 }
@@ -88,7 +89,7 @@ impl FromStr for SNS {
         match s {
             "mastodon" => Ok(SNS::Mastodon),
             "pleroma" => Ok(SNS::Pleroma),
-            "misskey" => Ok(SNS::Misskey),
+            "friendica" => Ok(SNS::Friendica),
             &_ => Err(format!("Unknown sns: {}", s)),
         }
     }
@@ -105,6 +106,10 @@ pub fn generator(
         SNS::Pleroma => {
             let pleroma = pleroma::Pleroma::new(base_url, access_token, user_agent);
             Box::new(pleroma)
+        }
+        SNS::Friendica => {
+            let friendica = friendica::Friendica::new(base_url, access_token, user_agent);
+            Box::new(friendica)
         }
         _ => {
             let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent);

@@ -271,7 +271,7 @@ impl InnerError {
 
 impl fmt::Debug for InnerError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut builder = f.debug_struct("megalodon::pleroma::web_socket::InnerError");
+        let mut builder = f.debug_struct("megalodon::mastodon::web_socket::InnerError");
 
         builder.field("kind", &self.kind);
         builder.finish()
