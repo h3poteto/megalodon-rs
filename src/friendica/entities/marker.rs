@@ -4,8 +4,8 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Marker {
-    home: InnerMarker,
-    notifications: InnerMarker,
+    home: Option<InnerMarker>,
+    notifications: Option<InnerMarker>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -18,8 +18,8 @@ struct InnerMarker {
 impl Into<MegalodonEntities::Marker> for Marker {
     fn into(self) -> MegalodonEntities::Marker {
         MegalodonEntities::Marker {
-            home: Some(self.home.into()),
-            notifications: Some(self.notifications.into()),
+            home: self.home.map(|i| i.into()),
+            notifications: self.notifications.map(|i| i.into()),
         }
     }
 }

@@ -13,6 +13,7 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use reqwest::header::HeaderMap;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
@@ -2216,57 +2217,35 @@ impl megalodon::Megalodon for Friendica {
 
     async fn get_markers(
         &self,
-        timeline: Vec<String>,
+        _timeline: Vec<String>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
-        let params: Vec<String> = timeline
-            .into_iter()
-            .map(|t| format!("timeline[]={}", t))
-            .collect();
-
-        let mut path = "/api/v1/markers".to_string();
-        if params.len() > 0 {
-            path = path + "?" + params.join("&").as_str();
-        }
-        let res = self
-            .client
-            .get::<entities::Marker>(path.as_str(), None)
-            .await?;
+        let marker = MegalodonEntities::Marker {
+            home: None,
+            notifications: None,
+        };
 
         Ok(Response::<MegalodonEntities::Marker>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
+            marker,
+            200,
+            "200".to_string(),
+            HeaderMap::new(),
         ))
     }
 
     async fn save_markers(
         &self,
-        options: Option<&megalodon::SaveMarkersInputOptions>,
+        _options: Option<&megalodon::SaveMarkersInputOptions>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
-        let mut params = HashMap::<&str, Value>::new();
-        if let Some(options) = options {
-            if let Some(home) = &options.home {
-                if let Some(json_home) = serde_json::to_value(&home).ok() {
-                    params.insert("home", json_home);
-                }
-            }
-            if let Some(notifications) = &options.notifications {
-                if let Some(json_notifications) = serde_json::to_value(&notifications).ok() {
-                    params.insert("notifications", json_notifications);
-                }
-            }
-        }
-        let res = self
-            .client
-            .post::<entities::Marker>("/api/v1/makers", &params, None)
-            .await?;
+        let marker = MegalodonEntities::Marker {
+            home: None,
+            notifications: None,
+        };
 
         Ok(Response::<MegalodonEntities::Marker>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
+            marker,
+            200,
+            "200".to_string(),
+            HeaderMap::new(),
         ))
     }
 

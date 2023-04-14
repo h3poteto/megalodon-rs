@@ -45,8 +45,8 @@ pub struct Status {
 pub enum StatusVisibility {
     Public,
     Unlisted,
+    /// Friendica does not provide direct as visibility. If it receives DM, the message becomes a private message.
     Private,
-    Direct,
 }
 
 impl fmt::Display for StatusVisibility {
@@ -55,7 +55,6 @@ impl fmt::Display for StatusVisibility {
             StatusVisibility::Public => write!(f, "public"),
             StatusVisibility::Unlisted => write!(f, "unlisted"),
             StatusVisibility::Private => write!(f, "private"),
-            StatusVisibility::Direct => write!(f, "direct"),
         }
     }
 }
@@ -68,7 +67,6 @@ impl FromStr for StatusVisibility {
             "public" => Ok(StatusVisibility::Public),
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
-            "direct" => Ok(StatusVisibility::Direct),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
@@ -80,7 +78,6 @@ impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
             StatusVisibility::Public => MegalodonEntities::status::StatusVisibility::Public,
             StatusVisibility::Unlisted => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Private => MegalodonEntities::status::StatusVisibility::Private,
-            StatusVisibility::Direct => MegalodonEntities::status::StatusVisibility::Direct,
         }
     }
 }
