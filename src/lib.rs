@@ -43,10 +43,10 @@
 //! # }
 //! ```
 
-use serde::{Deserialize, Serialize};
 use std::{fmt, str::FromStr};
 
 pub mod default;
+pub mod detector;
 pub mod entities;
 pub mod error;
 pub mod mastodon;
@@ -57,52 +57,11 @@ pub mod response;
 pub mod streaming;
 
 pub use self::megalodon::Megalodon;
+pub use detector::detector;
 pub use streaming::Streaming;
 
-#[derive(Deserialize, Serialize, Debug)]
-struct Instance {
-    title: String,
-    uri: String,
-    urls: entities::URLs,
-    version: String,
-    pleroma: Option<pleroma::entities::instance::PleromaConfig>,
-}
-
-/// Detect which SNS the provided URL is. To detect SNS, the URL has to open `/api/v1/instance` or `/api/meta` endpoint.
-pub async fn detector(url: &str) -> Result<SNS, error::Error> {
-    let client = reqwest::Client::builder().user_agent("megalodon").build()?;
-    let res = client
-        .get(format!("{}{}", url, "/api/v1/instance"))
-        .send()
-        .await;
-
-    match res {
-        Ok(res) => {
-            let obj = res.json::<Instance>().await;
-            match obj {
-                Ok(json) => {
-                    if let Some(_pleroma) = json.pleroma {
-                        Ok(SNS::Pleroma)
-                    } else {
-                        Ok(SNS::Mastodon)
-                    }
-                }
-                Err(err) => Err(err.into()),
-            }
-        }
-        Err(_) => {
-            let client = reqwest::Client::new();
-            let res = client.post(format!("{}{}", url, "/api/meta")).send().await;
-            match res {
-                Ok(_) => Ok(SNS::Misskey),
-                Err(err) => Err(err.into()),
-            }
-        }
-    }
-}
-
 /// Which SNS.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SNS {
     /// SNS is Mastodon.
     Mastodon,

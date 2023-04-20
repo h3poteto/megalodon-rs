@@ -55,6 +55,12 @@ pub enum Kind {
     /// The request is not completed error.
     #[error("partial content error")]
     HTTPPartialContentError,
+    /// Failed to find nodeinfo.
+    #[error("nodeinfo error")]
+    NodeinfoError,
+    /// The SNS is unknown.
+    #[error("unknown sns")]
+    UnknownSNSError,
 }
 
 impl Error {
