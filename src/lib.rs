@@ -111,7 +111,7 @@ pub fn generator(
             let friendica = friendica::Friendica::new(base_url, access_token, user_agent);
             Box::new(friendica)
         }
-        _ => {
+        SNS::Mastodon => {
             let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent);
             Box::new(mastodon)
         }
