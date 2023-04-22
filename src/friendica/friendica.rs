@@ -1060,16 +1060,11 @@ impl megalodon::Megalodon for Friendica {
     }
 
     async fn get_suggested_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
-        let res = self
-            .client
-            .get::<Vec<entities::Tag>>("/api/v1/featured_tags/suggestions", None)
-            .await?;
-
-        Ok(Response::<Vec<MegalodonEntities::Tag>>::new(
-            res.json.into_iter().map(|j| j.into()).collect(),
-            res.status,
-            res.status_text,
-            res.header,
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
