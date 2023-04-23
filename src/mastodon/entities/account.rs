@@ -1,5 +1,5 @@
 use super::{Emoji, Field, Source};
-use crate::entities as MegalodonEntities;
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -98,5 +98,11 @@ impl Into<MegalodonEntities::Account> for Account {
             bot: self.bot,
             source: self.source.into(),
         }
+    }
+}
+
+impl Into<megalodon::FollowRequest> for Account {
+    fn into(self) -> megalodon::FollowRequest {
+        megalodon::FollowRequest::Account(self.into())
     }
 }

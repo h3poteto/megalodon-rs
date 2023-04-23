@@ -1,5 +1,5 @@
 use super::{Emoji, Field};
-use crate::entities as MegalodonEntities;
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -78,5 +78,11 @@ impl Into<MegalodonEntities::FollowRequest> for FollowRequest {
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             fields: self.fields.into_iter().map(|i| i.into()).collect(),
         }
+    }
+}
+
+impl Into<megalodon::FollowRequest> for FollowRequest {
+    fn into(self) -> megalodon::FollowRequest {
+        megalodon::FollowRequest::FollowRequest(self.into())
     }
 }
