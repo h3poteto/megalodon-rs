@@ -68,7 +68,7 @@ impl Into<MegalodonEntities::Instance> for Instance {
             email: self.email,
             version: self.version,
             thumbnail: self.thumbnail,
-            urls: self.urls.into(),
+            urls: Some(self.urls.into()),
             stats: self.stats.into(),
             languages: self.languages,
             registrations: self.registrations,
@@ -80,12 +80,12 @@ impl Into<MegalodonEntities::Instance> for Instance {
                     max_media_attachments: self.max_media_attachments,
                     characters_reserved_per_url: None,
                 },
-                polls: MegalodonEntities::instance::Polls {
+                polls: Some(MegalodonEntities::instance::Polls {
                     max_options: self.poll_limits.max_options,
                     max_characters_per_option: self.poll_limits.max_option_chars,
                     min_expiration: self.poll_limits.min_expiration,
                     max_expiration: self.poll_limits.max_expiration,
-                },
+                }),
             },
             contact_account: None,
             rules: None,

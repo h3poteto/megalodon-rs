@@ -9,7 +9,7 @@ pub struct Instance {
     pub email: String,
     pub version: String,
     pub thumbnail: Option<String>,
-    pub urls: URLs,
+    pub urls: Option<URLs>,
     pub stats: Stats,
     pub languages: Vec<String>,
     pub registrations: bool,
@@ -23,7 +23,7 @@ pub struct Instance {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct InstanceConfig {
     pub statuses: Statuses,
-    pub polls: Polls,
+    pub polls: Option<Polls>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]

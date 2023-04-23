@@ -69,7 +69,7 @@ impl Into<MegalodonEntities::Instance> for Instance {
             email: self.email,
             version: self.version,
             thumbnail: self.thumbnail,
-            urls: self.urls.into(),
+            urls: Some(self.urls.into()),
             stats: self.stats.into(),
             languages: self.languages,
             registrations: self.registrations,
@@ -86,7 +86,7 @@ impl Into<MegalodonEntities::instance::InstanceConfig> for InstanceConfig {
     fn into(self) -> MegalodonEntities::instance::InstanceConfig {
         MegalodonEntities::instance::InstanceConfig {
             statuses: self.statuses.into(),
-            polls: self.polls.into(),
+            polls: Some(self.polls.into()),
         }
     }
 }
