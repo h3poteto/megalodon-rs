@@ -275,7 +275,7 @@ pub trait Megalodon {
     async fn get_follow_requests(
         &self,
         limit: Option<u32>,
-    ) -> Result<Response<Vec<entities::Account>>, Error>;
+    ) -> Result<Response<Vec<FollowRequest>>, Error>;
 
     /// Accept the follow request.
     async fn accept_follow_request(
@@ -1215,4 +1215,13 @@ impl FromStr for Order {
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
+}
+
+/// FollowRequest object. It is FollowRequest object only if Friendica, otherwise it is Account object.
+#[derive(Debug, Clone)]
+pub enum FollowRequest {
+    /// Account object for Mastodon and Pleroma.
+    Account(entities::Account),
+    /// FollowRequest object for Friendica.
+    FollowRequest(entities::FollowRequest),
 }

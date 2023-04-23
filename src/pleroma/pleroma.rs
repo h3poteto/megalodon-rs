@@ -2,6 +2,7 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
+use crate::megalodon::FollowRequest;
 use crate::Streaming;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
@@ -1109,7 +1110,7 @@ impl megalodon::Megalodon for Pleroma {
     async fn get_follow_requests(
         &self,
         limit: Option<u32>,
-    ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+    ) -> Result<Response<Vec<FollowRequest>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(limit) = limit {
             params.push(format!("limit={}", limit));
@@ -1124,7 +1125,7 @@ impl megalodon::Megalodon for Pleroma {
             .get::<Vec<entities::Account>>(path.as_str(), None)
             .await?;
 
-        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+        Ok(Response::<Vec<FollowRequest>>::new(
             res.json.into_iter().map(|j| j.into()).collect(),
             res.status,
             res.status_text,

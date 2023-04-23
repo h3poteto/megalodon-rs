@@ -1,5 +1,5 @@
 use super::{Emoji, Field, Source};
-use crate::entities as MegalodonEntities;
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -10,10 +10,12 @@ pub struct Account {
     acct: String,
     display_name: String,
     locked: bool,
+    discoverable: Option<bool>,
+    group: bool,
     created_at: DateTime<Utc>,
-    followers_count: i32,
-    following_count: i32,
-    statuses_count: i32,
+    followers_count: u32,
+    following_count: u32,
+    statuses_count: u32,
     note: String,
     url: String,
     avatar: String,
@@ -22,9 +24,9 @@ pub struct Account {
     header_static: String,
     emojis: Vec<Emoji>,
     moved: Option<Box<Account>>,
-    fields: Option<Vec<Field>>,
-    bot: Option<bool>,
-    source: Option<Source>,
+    fields: Vec<Field>,
+    bot: bool,
+    source: Source,
 }
 
 impl From<MegalodonEntities::Account> for Account {
@@ -34,12 +36,18 @@ impl From<MegalodonEntities::Account> for Account {
             let ma: MegalodonEntities::Account = *moved;
             moved_account = Some(Box::new(ma.into()));
         }
+        let mut group = false;
+        if let Some(g) = item.group {
+            group = g;
+        }
         Self {
             id: item.id,
             username: item.username,
             acct: item.acct,
             display_name: item.display_name,
             locked: item.locked,
+            discoverable: item.discoverable,
+            group,
             created_at: item.created_at,
             followers_count: item.followers_count,
             following_count: item.following_count,
@@ -52,11 +60,9 @@ impl From<MegalodonEntities::Account> for Account {
             header_static: item.header_static,
             emojis: item.emojis.into_iter().map(|i| i.into()).collect(),
             moved: moved_account,
-            fields: item
-                .fields
-                .map(|i| i.into_iter().map(|j| j.into()).collect()),
+            fields: item.fields.into_iter().map(|j| j.into()).collect(),
             bot: item.bot,
-            source: item.source.map(|i| i.into()),
+            source: item.source.into(),
         }
     }
 }
@@ -74,6 +80,8 @@ impl Into<MegalodonEntities::Account> for Account {
             acct: self.acct,
             display_name: self.display_name,
             locked: self.locked,
+            discoverable: self.discoverable,
+            group: Some(self.group),
             created_at: self.created_at,
             followers_count: self.followers_count,
             following_count: self.following_count,
@@ -86,11 +94,15 @@ impl Into<MegalodonEntities::Account> for Account {
             header_static: self.header_static,
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             moved: moved_account,
-            fields: self
-                .fields
-                .map(|i| i.into_iter().map(|j| j.into()).collect()),
+            fields: self.fields.into_iter().map(|j| j.into()).collect(),
             bot: self.bot,
-            source: self.source.map(|i| i.into()),
+            source: self.source.into(),
         }
+    }
+}
+
+impl Into<megalodon::FollowRequest> for Account {
+    fn into(self) -> megalodon::FollowRequest {
+        megalodon::FollowRequest::Account(self.into())
     }
 }
