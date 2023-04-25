@@ -25,5 +25,5 @@ pub struct Account {
     pub moved: Option<Box<Account>>,
     pub fields: Vec<Field>,
     pub bot: bool,
-    pub source: Source,
+    pub source: Option<Source>,
 }

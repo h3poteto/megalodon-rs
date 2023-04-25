@@ -81,8 +81,8 @@ impl Into<MegalodonEntities::FollowRequest> for FollowRequest {
     }
 }
 
-impl Into<megalodon::FollowRequest> for FollowRequest {
-    fn into(self) -> megalodon::FollowRequest {
-        megalodon::FollowRequest::FollowRequest(self.into())
+impl Into<megalodon::FollowRequestOutput> for FollowRequest {
+    fn into(self) -> megalodon::FollowRequestOutput {
+        megalodon::FollowRequestOutput::FollowRequest(self.into())
     }
 }

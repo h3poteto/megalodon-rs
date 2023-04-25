@@ -1,6 +1,6 @@
 use std::env;
 
-use megalodon::{error, generator, megalodon::FollowRequest};
+use megalodon::{error, generator, megalodon::FollowRequestOutput};
 
 #[tokio::main]
 async fn main() {
@@ -20,8 +20,8 @@ async fn main() {
         Ok(res) => res
             .into_iter()
             .map(|f| match f {
-                FollowRequest::FollowRequest(req) => println!("FollowRequest: {:#?}", req),
-                FollowRequest::Account(acct) => println!("Account: {:#?}", acct),
+                FollowRequestOutput::FollowRequest(req) => println!("FollowRequest: {:#?}", req),
+                FollowRequestOutput::Account(acct) => println!("Account: {:#?}", acct),
             })
             .collect(),
         Err(err) => {
@@ -33,7 +33,7 @@ async fn main() {
 async fn follow_requests(
     url: &str,
     access_token: String,
-) -> Result<Vec<FollowRequest>, error::Error> {
+) -> Result<Vec<FollowRequestOutput>, error::Error> {
     let client = generator(
         megalodon::SNS::Friendica,
         url.to_string(),

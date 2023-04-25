@@ -9,7 +9,7 @@ pub struct StatusParams {
     pub media_ids: Option<Vec<String>>,
     pub sensitive: Option<bool>,
     pub spoiler_text: Option<String>,
-    pub visibility: StatusVisibility,
+    pub visibility: Option<StatusVisibility>,
     pub scheduled_at: Option<DateTime<Utc>>,
-    pub application_id: String,
+    pub application_id: Option<u32>,
 }

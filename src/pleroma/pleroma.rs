@@ -2,7 +2,7 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
-use crate::megalodon::FollowRequest;
+use crate::megalodon::FollowRequestOutput;
 use crate::Streaming;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
@@ -1110,7 +1110,7 @@ impl megalodon::Megalodon for Pleroma {
     async fn get_follow_requests(
         &self,
         limit: Option<u32>,
-    ) -> Result<Response<Vec<FollowRequest>>, Error> {
+    ) -> Result<Response<Vec<FollowRequestOutput>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(limit) = limit {
             params.push(format!("limit={}", limit));
@@ -1125,7 +1125,7 @@ impl megalodon::Megalodon for Pleroma {
             .get::<Vec<entities::Account>>(path.as_str(), None)
             .await?;
 
-        Ok(Response::<Vec<FollowRequest>>::new(
+        Ok(Response::<Vec<FollowRequestOutput>>::new(
             res.json.into_iter().map(|j| j.into()).collect(),
             res.status,
             res.status_text,
@@ -1367,7 +1367,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         status: String,
         options: Option<&megalodon::PostStatusInputOptions>,
-    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+    ) -> Result<Response<megalodon::PostStatusOutput>, Error> {
         let mut params = HashMap::<&str, Value>::from([("status", Value::String(status))]);
         if let Some(options) = options {
             if let Some(media_ids) = &options.media_ids {
@@ -1403,17 +1403,32 @@ impl megalodon::Megalodon for Pleroma {
                 params.insert("poll", serde_json::to_value(&poll).unwrap());
             }
         }
-        let res = self
-            .client
-            .post::<entities::Status>("/api/v1/statuses", &params, None)
-            .await?;
 
-        Ok(Response::<MegalodonEntities::Status>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
-        ))
+        if params.contains_key("scheduled_at") {
+            let res = self
+                .client
+                .post::<entities::ScheduledStatus>("/api/v1/statuses", &params, None)
+                .await?;
+
+            Ok(Response::<megalodon::PostStatusOutput>::new(
+                res.json.into(),
+                res.status,
+                res.status_text,
+                res.header,
+            ))
+        } else {
+            let res = self
+                .client
+                .post::<entities::Status>("/api/v1/statuses", &params, None)
+                .await?;
+
+            Ok(Response::<megalodon::PostStatusOutput>::new(
+                res.json.into(),
+                res.status,
+                res.status_text,
+                res.header,
+            ))
+        }
     }
 
     async fn get_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {

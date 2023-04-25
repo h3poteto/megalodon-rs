@@ -7,5 +7,5 @@ pub struct ScheduledStatus {
     pub id: String,
     pub scheduled_at: DateTime<Utc>,
     pub params: StatusParams,
-    pub media_attachments: Vec<Attachment>,
+    pub media_attachments: Option<Vec<Attachment>>,
 }
