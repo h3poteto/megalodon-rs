@@ -2,7 +2,7 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
-use crate::megalodon::FollowRequest;
+use crate::megalodon::FollowRequestOutput;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
@@ -928,7 +928,7 @@ impl megalodon::Megalodon for Friendica {
     async fn get_follow_requests(
         &self,
         limit: Option<u32>,
-    ) -> Result<Response<Vec<FollowRequest>>, Error> {
+    ) -> Result<Response<Vec<FollowRequestOutput>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(limit) = limit {
             params.push(format!("limit={}", limit));
@@ -943,7 +943,7 @@ impl megalodon::Megalodon for Friendica {
             .get::<Vec<entities::FollowRequest>>(path.as_str(), None)
             .await?;
 
-        Ok(Response::<Vec<FollowRequest>>::new(
+        Ok(Response::<Vec<FollowRequestOutput>>::new(
             res.json.into_iter().map(|j| j.into()).collect(),
             res.status,
             res.status_text,
@@ -1164,7 +1164,7 @@ impl megalodon::Megalodon for Friendica {
         &self,
         status: String,
         options: Option<&megalodon::PostStatusInputOptions>,
-    ) -> Result<Response<MegalodonEntities::Status>, Error> {
+    ) -> Result<Response<megalodon::PostStatusOutput>, Error> {
         let mut params =
             HashMap::<&str, Value>::from([("status", serde_json::Value::String(status))]);
         if let Some(options) = options {
@@ -1200,7 +1200,9 @@ impl megalodon::Megalodon for Friendica {
             if let Some(scheduled_at) = options.scheduled_at {
                 params.insert(
                     "scheduled_at",
-                    serde_json::to_value(scheduled_at.to_rfc3339()).unwrap(),
+                    // Friendica can't accept milisecond and timezone parameter.
+                    serde_json::to_value(scheduled_at.format("%Y-%m-%dT%H:%M:%S").to_string())
+                        .unwrap(),
                 );
             }
             if let Some(language) = &options.language {
@@ -1214,17 +1216,31 @@ impl megalodon::Megalodon for Friendica {
             }
         }
 
-        let res = self
-            .client
-            .post::<entities::Status>("/api/v1/statuses", &params, None)
-            .await?;
+        if params.contains_key("scheduled_at") {
+            let res = self
+                .client
+                .post::<entities::ScheduledStatus>("/api/v1/statuses", &params, None)
+                .await?;
 
-        Ok(Response::<MegalodonEntities::Status>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
-        ))
+            Ok(Response::<megalodon::PostStatusOutput>::new(
+                res.json.into(),
+                res.status,
+                res.status_text,
+                res.header,
+            ))
+        } else {
+            let res = self
+                .client
+                .post::<entities::Status>("/api/v1/statuses", &params, None)
+                .await?;
+
+            Ok(Response::<megalodon::PostStatusOutput>::new(
+                res.json.into(),
+                res.status,
+                res.status_text,
+                res.header,
+            ))
+        }
     }
 
     async fn get_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {

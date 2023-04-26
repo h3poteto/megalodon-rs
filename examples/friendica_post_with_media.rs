@@ -105,7 +105,7 @@ async fn post_status(
     client: &Box<dyn megalodon::Megalodon + Send + Sync>,
     status: &str,
     media_id: Option<Vec<String>>,
-) -> Result<entities::Status, error::Error> {
+) -> Result<megalodon::megalodon::PostStatusOutput, error::Error> {
     let res = client
         .post_status(
             status.to_string(),

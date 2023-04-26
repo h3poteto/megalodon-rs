@@ -1,5 +1,5 @@
 use super::{Attachment, StatusParams};
-use crate::entities as MegalodonEntities;
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -8,7 +8,7 @@ pub struct ScheduledStatus {
     id: String,
     scheduled_at: DateTime<Utc>,
     params: StatusParams,
-    media_attachments: Vec<Attachment>,
+    media_attachments: Option<Vec<Attachment>>,
 }
 
 impl Into<MegalodonEntities::ScheduledStatus> for ScheduledStatus {
@@ -19,9 +19,13 @@ impl Into<MegalodonEntities::ScheduledStatus> for ScheduledStatus {
             params: self.params.into(),
             media_attachments: self
                 .media_attachments
-                .into_iter()
-                .map(|i| i.into())
-                .collect(),
+                .map(|m| m.into_iter().map(|i| i.into()).collect()),
         }
+    }
+}
+
+impl Into<megalodon::PostStatusOutput> for ScheduledStatus {
+    fn into(self) -> megalodon::PostStatusOutput {
+        megalodon::PostStatusOutput::ScheduledStatus(self.into())
     }
 }

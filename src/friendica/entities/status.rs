@@ -2,8 +2,8 @@ use core::fmt;
 use std::str::FromStr;
 
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Tag};
-use crate::entities as MegalodonEntities;
 use crate::error::{Error, Kind};
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -132,5 +132,11 @@ impl Into<MegalodonEntities::Status> for Status {
             quote: quoted,
             bookmarked: self.bookmarked,
         }
+    }
+}
+
+impl Into<megalodon::PostStatusOutput> for Status {
+    fn into(self) -> megalodon::PostStatusOutput {
+        megalodon::PostStatusOutput::Status(self.into())
     }
 }

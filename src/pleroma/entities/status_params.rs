@@ -10,9 +10,8 @@ pub struct StatusParams {
     media_ids: Option<Vec<String>>,
     sensitive: Option<bool>,
     spoiler_text: Option<String>,
-    visibility: StatusVisibility,
+    visibility: Option<StatusVisibility>,
     scheduled_at: Option<DateTime<Utc>>,
-    application_id: String,
 }
 
 impl Into<MegalodonEntities::StatusParams> for StatusParams {
@@ -23,9 +22,9 @@ impl Into<MegalodonEntities::StatusParams> for StatusParams {
             media_ids: self.media_ids,
             sensitive: self.sensitive,
             spoiler_text: self.spoiler_text,
-            visibility: self.visibility.into(),
+            visibility: self.visibility.map(|i| i.into()),
             scheduled_at: self.scheduled_at,
-            application_id: self.application_id,
+            application_id: None,
         }
     }
 }

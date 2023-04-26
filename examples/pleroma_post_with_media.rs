@@ -82,7 +82,7 @@ async fn post_status(
     access_token: String,
     status: &str,
     media_id: Option<Vec<String>>,
-) -> Result<entities::Status, error::Error> {
+) -> Result<megalodon::megalodon::PostStatusOutput, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
         url.to_string(),

@@ -275,7 +275,7 @@ pub trait Megalodon {
     async fn get_follow_requests(
         &self,
         limit: Option<u32>,
-    ) -> Result<Response<Vec<FollowRequest>>, Error>;
+    ) -> Result<Response<Vec<FollowRequestOutput>>, Error>;
 
     /// Accept the follow request.
     async fn accept_follow_request(
@@ -351,7 +351,7 @@ pub trait Megalodon {
         &self,
         status: String,
         options: Option<&PostStatusInputOptions>,
-    ) -> Result<Response<entities::Status>, Error>;
+    ) -> Result<Response<PostStatusOutput>, Error>;
 
     /// Get information about a status.
     async fn get_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
@@ -1217,11 +1217,20 @@ impl FromStr for Order {
     }
 }
 
-/// FollowRequest object. It is FollowRequest object only if Friendica, otherwise it is Account object.
+/// FollowRequest output object. It is FollowRequest object only if Friendica, otherwise it is Account object.
 #[derive(Debug, Clone)]
-pub enum FollowRequest {
+pub enum FollowRequestOutput {
     /// Account object for Mastodon and Pleroma.
     Account(entities::Account),
     /// FollowRequest object for Friendica.
     FollowRequest(entities::FollowRequest),
+}
+
+/// PostStatus output object. When the scheduled_at is specified, it returns ScheduledStatus object. Otherwise, it returns Status object.
+#[derive(Debug, Clone)]
+pub enum PostStatusOutput {
+    /// Status object for normal post results.
+    Status(entities::Status),
+    /// ScheduleStatus object for scheduled_at is specified.
+    ScheduledStatus(entities::ScheduledStatus),
 }

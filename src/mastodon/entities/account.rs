@@ -26,7 +26,7 @@ pub struct Account {
     moved: Option<Box<Account>>,
     fields: Vec<Field>,
     bot: bool,
-    source: Source,
+    source: Option<Source>,
 }
 
 impl From<MegalodonEntities::Account> for Account {
@@ -62,7 +62,7 @@ impl From<MegalodonEntities::Account> for Account {
             moved: moved_account,
             fields: item.fields.into_iter().map(|j| j.into()).collect(),
             bot: item.bot,
-            source: item.source.into(),
+            source: item.source.map(|i| i.into()),
         }
     }
 }
@@ -96,13 +96,13 @@ impl Into<MegalodonEntities::Account> for Account {
             moved: moved_account,
             fields: self.fields.into_iter().map(|j| j.into()).collect(),
             bot: self.bot,
-            source: self.source.into(),
+            source: self.source.map(|i| i.into()),
         }
     }
 }
 
-impl Into<megalodon::FollowRequest> for Account {
-    fn into(self) -> megalodon::FollowRequest {
-        megalodon::FollowRequest::Account(self.into())
+impl Into<megalodon::FollowRequestOutput> for Account {
+    fn into(self) -> megalodon::FollowRequestOutput {
+        megalodon::FollowRequestOutput::Account(self.into())
     }
 }

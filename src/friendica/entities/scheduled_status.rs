@@ -1,5 +1,5 @@
 use super::{Attachment, StatusParams};
-use crate::entities as MegalodonEntities;
+use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -17,11 +17,18 @@ impl Into<MegalodonEntities::ScheduledStatus> for ScheduledStatus {
             id: self.id,
             scheduled_at: self.scheduled_at,
             params: self.params.into(),
-            media_attachments: self
-                .media_attachments
-                .into_iter()
-                .map(|i| i.into())
-                .collect(),
+            media_attachments: Some(
+                self.media_attachments
+                    .into_iter()
+                    .map(|i| i.into())
+                    .collect(),
+            ),
         }
+    }
+}
+
+impl Into<megalodon::PostStatusOutput> for ScheduledStatus {
+    fn into(self) -> megalodon::PostStatusOutput {
+        megalodon::PostStatusOutput::ScheduledStatus(self.into())
     }
 }
