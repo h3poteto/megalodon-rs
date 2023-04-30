@@ -7,14 +7,10 @@
 The `megalodon` is a client library for Mastodon and Pleroma. It provides REST API and streaming method which uses WebSocket. By using this library, you can take Mastodon and Pleroma with the same interface.
 This library is Rust version of [megalodon](https://github.com/h3poteto/megalodon).
 
-## Features
-- [x] REST API
-  - [x] Mastodon
-  - [x] Pleroma
-- [x] Streaming with WebSocket
-  - [x] Mastodon
-  - [x] Pleroma
-- [ ] Proxy support
+## Supporting
+- [x] Mastodon
+- [x] Pleroma
+- [x] Friendica
 
 
 ## Usage
@@ -22,7 +18,7 @@ Add your `Cargo.toml` like this:
 
 ```
 [dependencies]
-megalodon = { version = "0.1" }
+megalodon = { version = "0.8" }
 ```
 
 ### Making Mastodon request
