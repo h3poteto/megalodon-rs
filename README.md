@@ -12,6 +12,11 @@ This library is Rust version of [megalodon](https://github.com/h3poteto/megalodo
 - [x] Pleroma
 - [x] Friendica
 
+## Features
+- [x] REST API
+- [ ] Admin API
+- [x] WebSocket for Streamings
+
 
 ## Usage
 Add your `Cargo.toml` like this:
