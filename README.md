@@ -4,7 +4,7 @@
 [![Build](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml/badge.svg)](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml)
 [![GitHub](https://img.shields.io/github/license/h3poteto/megalodon-rs)](LICENSE.txt)
 
-The `megalodon` is a client library for Mastodon and Pleroma. It provides REST API and streaming method which uses WebSocket. By using this library, you can take Mastodon and Pleroma with the same interface.
+The `megalodon` is a client library for Fediverse. It provides REST API and streaming method which uses WebSocket. By using this library, you can take Mastodon, Pleroma, and Friendica with the same interface.
 This library is Rust version of [megalodon](https://github.com/h3poteto/megalodon).
 
 ## Supporting
