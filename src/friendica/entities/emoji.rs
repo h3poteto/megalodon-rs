@@ -27,6 +27,7 @@ impl Into<MegalodonEntities::Emoji> for Emoji {
             static_url: self.static_url,
             url: self.url,
             visible_in_picker: self.visible_in_picker,
+            category: "".to_string(),
         }
     }
 }

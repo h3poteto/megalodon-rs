@@ -6,7 +6,7 @@ use serde::Deserialize;
 pub struct Tag {
     name: String,
     url: String,
-    history: Option<Vec<History>>,
+    history: Vec<History>,
     following: Option<bool>,
 }
 
@@ -15,9 +15,7 @@ impl Into<MegalodonEntities::Tag> for Tag {
         MegalodonEntities::Tag {
             name: self.name,
             url: self.url,
-            history: self
-                .history
-                .map(|i| i.into_iter().map(|j| j.into()).collect()),
+            history: self.history.into_iter().map(|j| j.into()).collect(),
             following: self.following,
         }
     }

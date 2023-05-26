@@ -1,5 +1,6 @@
 pub mod account;
 pub mod activity;
+pub mod announcement;
 pub mod application;
 pub mod attachment;
 pub mod card;
@@ -34,6 +35,7 @@ pub mod urls;
 
 pub use account::Account;
 pub use activity::Activity;
+pub use announcement::Announcement;
 pub use application::Application;
 pub use attachment::Attachment;
 pub use card::Card;

@@ -1,9 +1,8 @@
-use serde::{Deserialize, Serialize};
-
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
+use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::fmt;
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -73,4 +72,10 @@ impl FromStr for StatusVisibility {
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Tag {
+    pub name: String,
+    pub url: String,
 }
