@@ -3,11 +3,11 @@ use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
 use crate::megalodon::FollowRequestOutput;
-use crate::Streaming;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
+use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -2821,6 +2821,67 @@ impl megalodon::Megalodon for Pleroma {
             res.status,
             res.status_text,
             res.header,
+        ))
+    }
+
+    async fn get_instance_announcements(
+        &self,
+    ) -> Result<Response<Vec<MegalodonEntities::Announcement>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Announcement>>("/api/v1/announcements", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Announcement>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn dismiss_instance_announcement(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, Value>::new();
+        let res = self
+            .client
+            .post::<()>(
+                format!("/api/v1/announcements/{}/dismiss", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<()>::new(
+            (),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
+    async fn add_reaction_to_announcement(
+        &self,
+        _id: String,
+        _name: String,
+    ) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
+    async fn remove_reaction_from_announcement(
+        &self,
+        _id: String,
+        _name: String,
+    ) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 

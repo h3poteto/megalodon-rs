@@ -671,6 +671,31 @@ pub trait Megalodon {
     async fn get_instance_custom_emojis(&self) -> Result<Response<Vec<entities::Emoji>>, Error>;
 
     // ======================================
+    // instance/announcements
+    // ======================================
+    /// Get all currently active announcements set by admins.
+    async fn get_instance_announcements(
+        &self,
+    ) -> Result<Response<Vec<entities::Announcement>>, Error>;
+
+    /// Dismiss an announcement
+    async fn dismiss_instance_announcement(&self, id: String) -> Result<Response<()>, Error>;
+
+    /// Add a reaction to an announcement.
+    async fn add_reaction_to_announcement(
+        &self,
+        id: String,
+        name: String,
+    ) -> Result<Response<()>, Error>;
+
+    /// Remove a reaction from an announcement.
+    async fn remove_reaction_from_announcement(
+        &self,
+        id: String,
+        name: String,
+    ) -> Result<Response<()>, Error>;
+
+    // ======================================
     // Emoji reactions
     // ======================================
     /// Add an emoji reaction to the status.
