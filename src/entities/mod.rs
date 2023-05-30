@@ -2,6 +2,7 @@
 
 pub mod account;
 pub mod activity;
+pub mod announcement;
 pub mod application;
 pub mod async_attachment;
 pub mod attachment;
@@ -39,6 +40,7 @@ pub mod urls;
 
 pub use account::Account;
 pub use activity::Activity;
+pub use announcement::Announcement;
 pub use application::Application;
 pub use async_attachment::AsyncAttachment;
 pub use async_attachment::UploadMedia;

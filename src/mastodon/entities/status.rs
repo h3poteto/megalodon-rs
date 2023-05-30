@@ -1,7 +1,7 @@
 use core::fmt;
 use std::str::FromStr;
 
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Tag};
+use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll};
 use crate::error::{Error, Kind};
 use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
@@ -70,6 +70,20 @@ impl FromStr for StatusVisibility {
             "private" => Ok(StatusVisibility::Private),
             "direct" => Ok(StatusVisibility::Direct),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Tag {
+    pub name: String,
+    pub url: String,
+}
+impl Into<MegalodonEntities::status::Tag> for Tag {
+    fn into(self) -> MegalodonEntities::status::Tag {
+        MegalodonEntities::status::Tag {
+            name: self.name,
+            url: self.url,
         }
     }
 }

@@ -1,4 +1,4 @@
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction, Tag};
+use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction};
 use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::{de, Deserialize, Serialize};
@@ -72,6 +72,21 @@ impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
             StatusVisibility::Unlisted => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Private => MegalodonEntities::status::StatusVisibility::Private,
             StatusVisibility::Direct => MegalodonEntities::status::StatusVisibility::Direct,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Tag {
+    pub name: String,
+    pub url: String,
+}
+
+impl Into<MegalodonEntities::status::Tag> for Tag {
+    fn into(self) -> MegalodonEntities::status::Tag {
+        MegalodonEntities::status::Tag {
+            name: self.name,
+            url: self.url,
         }
     }
 }

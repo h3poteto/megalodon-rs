@@ -2582,6 +2582,52 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
+    async fn get_instance_announcements(
+        &self,
+    ) -> Result<Response<Vec<MegalodonEntities::Announcement>>, Error> {
+        Ok(Response::<Vec<MegalodonEntities::Announcement>>::new(
+            [].to_vec(),
+            200,
+            "200".to_string(),
+            HeaderMap::new(),
+        ))
+    }
+
+    async fn dismiss_instance_announcement(&self, _id: String) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
+    async fn add_reaction_to_announcement(
+        &self,
+        _id: String,
+        _name: String,
+    ) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
+    async fn remove_reaction_from_announcement(
+        &self,
+        _id: String,
+        _name: String,
+    ) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn create_emoji_reaction(
         &self,
         _id: String,

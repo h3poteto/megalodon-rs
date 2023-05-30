@@ -6,4 +6,5 @@ pub struct Emoji {
     pub static_url: String,
     pub url: String,
     pub visible_in_picker: bool,
+    pub category: String,
 }
