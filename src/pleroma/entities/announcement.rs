@@ -6,7 +6,7 @@ use serde::Deserialize;
 #[derive(Debug, Clone, Deserialize)]
 pub struct Announcement {
     id: String,
-    conent: String,
+    content: String,
     starts_at: Option<DateTime<Utc>>,
     ends_at: Option<DateTime<Utc>>,
     published: bool,
@@ -47,7 +47,7 @@ impl Into<MegalodonEntities::Announcement> for Announcement {
     fn into(self) -> MegalodonEntities::Announcement {
         MegalodonEntities::Announcement {
             id: self.id,
-            conent: self.conent,
+            content: self.content,
             starts_at: self.starts_at,
             ends_at: self.ends_at,
             published: self.published,
