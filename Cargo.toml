@@ -27,6 +27,7 @@ urlencoding = { version = "2.1" }
 log = "0.4"
 thiserror = "1"
 futures-util = "0.3"
+http =  "0.2"
 
 [dev-dependencies]
 env_logger = "0.10"
