@@ -7,7 +7,7 @@ pub struct Emoji {
     static_url: String,
     url: String,
     visible_in_picker: bool,
-    category: String,
+    category: Option<String>,
 }
 
 impl From<MegalodonEntities::Emoji> for Emoji {
