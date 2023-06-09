@@ -8,10 +8,11 @@ use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
 use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
+use http;
 use serde::Deserialize;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::{
-    connect_async, tungstenite::protocol::frame::coding::CloseCode,
+    connect_async, tungstenite::error, tungstenite::protocol::frame::coding::CloseCode,
     tungstenite::protocol::Message as WebSocketMessage,
 };
 use url::Url;
@@ -145,6 +146,10 @@ impl WebSocket {
                         log::info!("Reconnecting to {}", url);
                         continue;
                     }
+                    InnerKind::UnauthorizedError => {
+                        log::info!("Unauthorized so give up");
+                        return;
+                    }
                 },
             }
         }
@@ -166,7 +171,13 @@ impl WebSocket {
             .insert("User-Agent", self.user_agent.parse().unwrap());
         let (mut socket, response) = connect_async(req).await.map_err(|e| {
             log::error!("Failed to connect: {}", e);
-            InnerError::new(InnerKind::ConnectionError)
+            match e {
+                error::Error::Http(response) => match response.status() {
+                    http::StatusCode::UNAUTHORIZED => InnerError::new(InnerKind::UnauthorizedError),
+                    _ => InnerError::new(InnerKind::ConnectionError),
+                },
+                _ => InnerError::new(InnerKind::ConnectionError),
+            }
         })?;
 
         log::debug!("Connected to {}", url);
@@ -261,6 +272,8 @@ enum InnerKind {
     UnusualSocketCloseError,
     #[error("timeout error")]
     TimeoutError,
+    #[error("unauthorized error")]
+    UnauthorizedError,
 }
 
 impl InnerError {
