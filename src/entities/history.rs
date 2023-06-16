@@ -8,10 +8,10 @@ pub struct History {
 }
 
 pub fn parse_from_string<'de, T, D>(deserializer: D) -> Result<T, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-        T: std::str::FromStr,
-        <T as std::str::FromStr>::Err: std::fmt::Display,
+where
+    D: serde::Deserializer<'de>,
+    T: std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Display,
 {
     Ok(String::deserialize(deserializer)?
         .parse()
