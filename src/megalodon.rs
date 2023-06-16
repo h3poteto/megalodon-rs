@@ -418,10 +418,17 @@ pub trait Megalodon {
     // ======================================
     // statuses/media
     // ======================================
-    /// Creates an attachment to be used with a new status.
+    /// Creates an attachment from file to be used with a new status.
     async fn upload_media(
         &self,
         file_path: String,
+        options: Option<&UploadMediaInputOptions>,
+    ) -> Result<Response<entities::UploadMedia>, Error>;
+
+    /// Creates an attachment from bytes to be used with a new status.
+    async fn upload_media_bytes(
+        &self,
+        data: &'static [u8],
         options: Option<&UploadMediaInputOptions>,
     ) -> Result<Response<entities::UploadMedia>, Error>;
 
