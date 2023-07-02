@@ -75,6 +75,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .await?;
             match nodeinfo.software.name.as_str() {
                 "pleroma" => Ok(SNS::Pleroma),
+                "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
                 _ => {
@@ -101,6 +102,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .await?;
             match nodeinfo.software.name.as_str() {
                 "pleroma" => Ok(SNS::Pleroma),
+                "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
                 _ => {
@@ -127,6 +129,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .await?;
             match nodeinfo.software.name.as_str() {
                 "pleroma" => Ok(SNS::Pleroma),
+                "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
                 _ => {
@@ -187,5 +190,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Friendica);
+    }
+
+    #[tokio::test]
+    async fn test_detector_akkoma() {
+        let sns = detector("https://pleroma.noellabo.jp").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Pleroma);
     }
 }
