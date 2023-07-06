@@ -78,6 +78,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
+                "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -105,6 +106,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
+                "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -132,6 +134,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
+                "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -198,5 +201,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Pleroma);
+    }
+
+    #[tokio::test]
+    async fn test_detector_wildebeest() {
+        let sns = detector("https://wildebeest.mirror-kt.dev").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 }
