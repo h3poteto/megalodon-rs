@@ -31,6 +31,8 @@ pub enum NotificationType {
     Update,
     Move,
     AdminSignup,
+    AdminReport,
+    AnnouncementReaction,
 }
 
 impl fmt::Display for NotificationType {
@@ -48,6 +50,8 @@ impl fmt::Display for NotificationType {
             NotificationType::Update => write!(f, "update"),
             NotificationType::Move => write!(f, "move"),
             NotificationType::AdminSignup => write!(f, "admin.sign_up"),
+            NotificationType::AdminReport => write!(f, "admin.report"),
+            NotificationType::AnnouncementReaction => write!(f, "announcement.reaction"),
         }
     }
 }
@@ -67,7 +71,9 @@ impl FromStr for NotificationType {
             "emoji_reaction" => Ok(NotificationType::EmojiReaction),
             "update" => Ok(NotificationType::Update),
             "move" => Ok(NotificationType::Move),
-            "admin.sign_up"  => Ok(NotificationType::AdminSignup),
+            "admin.sign_up" => Ok(NotificationType::AdminSignup),
+            "admin.report" => Ok(NotificationType::AdminReport),
+            "announcement.reaction" => Ok(NotificationType::AnnouncementReaction),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
