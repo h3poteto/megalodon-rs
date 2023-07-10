@@ -23,6 +23,8 @@ pub enum NotificationType {
     Poll,
     Status,
     Update,
+    #[serde(rename = "admin.sign_up")]
+    AdminSignup,
 }
 
 impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
@@ -42,6 +44,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
             }
             NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
             NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
+            NotificationType::AdminSignup => MegalodonEntities::notification::NotificationType::AdminSignup,
         }
     }
 }
