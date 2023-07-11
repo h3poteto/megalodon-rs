@@ -27,8 +27,6 @@ pub enum NotificationType {
     AdminSignup,
     #[serde(rename = "admin.report")]
     AdminReport,
-    #[serde(rename = "announcement.reaction")]
-    AnnouncementReaction,
 }
 
 impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
@@ -53,9 +51,6 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
             }
             NotificationType::AdminReport => {
                 MegalodonEntities::notification::NotificationType::AdminReport
-            }
-            NotificationType::AnnouncementReaction => {
-                MegalodonEntities::notification::NotificationType::AnnouncementReaction
             }
         }
     }
