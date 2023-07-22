@@ -22,7 +22,7 @@ url = "2.4.0"
 oauth2 = { version = "4.4" }
 sha1 = { version = "0.10" }
 hex = { version = "0.4" }
-tokio-tungstenite = { version ="0.19", features = ["native-tls"] }
+tokio-tungstenite = { version ="0.20", features = ["native-tls"] }
 urlencoding = { version = "2.1" }
 log = "0.4"
 thiserror = "1"
