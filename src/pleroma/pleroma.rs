@@ -1286,6 +1286,15 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
+    async fn get_followed_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn get_suggestions(
         &self,
         limit: Option<u32>,
