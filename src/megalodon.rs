@@ -323,6 +323,12 @@ pub trait Megalodon {
     async fn get_preferences(&self) -> Result<Response<entities::Preferences>, Error>;
 
     // ======================================
+    // accounts/followed_tags
+    // ======================================
+    /// Get all followed tags.
+    async fn get_followed_tags(&self) -> Result<Response<Vec<entities::Tag>>, Error>;
+
+    // ======================================
     // accounts/suggestions
     // ======================================
     /// Get accounts the user has had past positive interactions with, but is not yet following.

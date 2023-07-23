@@ -1317,6 +1317,20 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_followed_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
+        let res = self
+            .client
+            .get::<Vec<entities::Tag>>("/api/v1/followed_tags", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Tag>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_suggestions(
         &self,
         limit: Option<u32>,
