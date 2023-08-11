@@ -1,4 +1,4 @@
-use super::{Emoji, Field, Source};
+use super::{Emoji, Field, Role, Source};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +11,10 @@ pub struct Account {
     pub locked: bool,
     pub discoverable: Option<bool>,
     pub group: Option<bool>,
+    pub noindex: Option<bool>,
+    pub moved: Option<Box<Account>>,
+    pub suspended: Option<bool>,
+    pub limited: Option<bool>,
     pub created_at: DateTime<Utc>,
     pub followers_count: u32,
     pub following_count: u32,
@@ -22,8 +26,9 @@ pub struct Account {
     pub header: String,
     pub header_static: String,
     pub emojis: Vec<Emoji>,
-    pub moved: Option<Box<Account>>,
     pub fields: Vec<Field>,
     pub bot: bool,
     pub source: Option<Source>,
+    pub role: Option<Role>,
+    pub mute_expires_at: Option<DateTime<Utc>>,
 }

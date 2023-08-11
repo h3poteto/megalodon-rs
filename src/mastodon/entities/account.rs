@@ -1,4 +1,4 @@
-use super::{Emoji, Field, Source};
+use super::{Emoji, Field, Role, Source};
 use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -12,6 +12,10 @@ pub struct Account {
     locked: bool,
     discoverable: Option<bool>,
     group: bool,
+    noindex: Option<bool>,
+    moved: Option<Box<Account>>,
+    suspended: Option<bool>,
+    limited: Option<bool>,
     created_at: DateTime<Utc>,
     followers_count: u32,
     following_count: u32,
@@ -23,10 +27,13 @@ pub struct Account {
     header: String,
     header_static: String,
     emojis: Vec<Emoji>,
-    moved: Option<Box<Account>>,
     fields: Vec<Field>,
     bot: bool,
+    /// CredentialAccount entity attributes
     source: Option<Source>,
+    role: Option<Role>,
+    /// MutedAccount entity attributes
+    mute_expires_at: Option<DateTime<Utc>>,
 }
 
 impl From<MegalodonEntities::Account> for Account {
@@ -48,6 +55,9 @@ impl From<MegalodonEntities::Account> for Account {
             locked: item.locked,
             discoverable: item.discoverable,
             group,
+            noindex: item.noindex,
+            suspended: item.suspended,
+            limited: item.limited,
             created_at: item.created_at,
             followers_count: item.followers_count,
             following_count: item.following_count,
@@ -63,6 +73,8 @@ impl From<MegalodonEntities::Account> for Account {
             fields: item.fields.into_iter().map(|j| j.into()).collect(),
             bot: item.bot,
             source: item.source.map(|i| i.into()),
+            role: item.role.map(|i| i.into()),
+            mute_expires_at: item.mute_expires_at,
         }
     }
 }
@@ -82,6 +94,9 @@ impl Into<MegalodonEntities::Account> for Account {
             locked: self.locked,
             discoverable: self.discoverable,
             group: Some(self.group),
+            noindex: self.noindex,
+            suspended: self.suspended,
+            limited: self.limited,
             created_at: self.created_at,
             followers_count: self.followers_count,
             following_count: self.following_count,
@@ -97,6 +112,8 @@ impl Into<MegalodonEntities::Account> for Account {
             fields: self.fields.into_iter().map(|j| j.into()).collect(),
             bot: self.bot,
             source: self.source.map(|i| i.into()),
+            role: self.role.map(|i| i.into()),
+            mute_expires_at: self.mute_expires_at,
         }
     }
 }
