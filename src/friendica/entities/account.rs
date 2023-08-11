@@ -83,6 +83,9 @@ impl Into<MegalodonEntities::Account> for Account {
             locked: self.locked,
             discoverable: self.discoverable,
             group: Some(self.group),
+            noindex: None,
+            suspended: None,
+            limited: None,
             created_at: self.created_at,
             followers_count: self.followers_count,
             following_count: self.following_count,
@@ -98,6 +101,8 @@ impl Into<MegalodonEntities::Account> for Account {
             fields: self.fields.into_iter().map(|j| j.into()).collect(),
             bot: self.bot,
             source: self.source.map(|i| i.into()),
+            role: None,
+            mute_expires_at: None,
         }
     }
 }
