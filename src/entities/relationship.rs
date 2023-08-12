@@ -5,7 +5,6 @@ pub struct Relationship {
     pub id: String,
     pub following: bool,
     pub followed_by: bool,
-    pub delivery_following: Option<bool>,
     pub blocking: bool,
     pub blocked_by: bool,
     pub muting: bool,
@@ -15,4 +14,6 @@ pub struct Relationship {
     pub showing_reblogs: bool,
     pub endorsed: bool,
     pub notifying: bool,
+    // Friendica returns null as note.
+    pub note: Option<String>,
 }
