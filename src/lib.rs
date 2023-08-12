@@ -75,6 +75,8 @@ pub enum SNS {
     Friendica,
     /// SNS is Firefish.
     Firefish,
+    /// SNS is Gotosocial.
+    Gotosocial,
 }
 
 impl fmt::Display for SNS {
@@ -84,6 +86,7 @@ impl fmt::Display for SNS {
             SNS::Pleroma => write!(f, "pleroma"),
             SNS::Friendica => write!(f, "friendica"),
             SNS::Firefish => write!(f, "firefish"),
+            SNS::Gotosocial => write!(f, "gotosocial"),
         }
     }
 }
@@ -97,6 +100,7 @@ impl FromStr for SNS {
             "pleroma" => Ok(SNS::Pleroma),
             "friendica" => Ok(SNS::Friendica),
             "firefish" => Ok(SNS::Firefish),
+            "gotosocial" => Ok(SNS::Gotosocial),
             &_ => Err(format!("Unknown sns: {}", s)),
         }
     }
@@ -125,6 +129,10 @@ pub fn generator(
         SNS::Firefish => {
             let firefish = firefish::Firefish::new(base_url, access_token, user_agent);
             Box::new(firefish)
+        }
+        SNS::Gotosocial => {
+            let gotosocial = gotosocial::Gotosocial::new(base_url, access_token, user_agent);
+            Box::new(gotosocial)
         }
     }
 }

@@ -9,7 +9,7 @@ async fn main() {
         println!("Specify GOTOSOCIAL_URL!!");
         return
     };
-    let client = generator(megalodon::SNS::Mastodon, url, None, None);
+    let client = generator(megalodon::SNS::Gotosocial, url, None, None);
     let options = megalodon::megalodon::AppInputOptions {
         scopes: Some(
             [
