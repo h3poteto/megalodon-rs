@@ -51,6 +51,7 @@ pub mod entities;
 pub mod error;
 pub mod firefish;
 pub mod friendica;
+pub mod gotosocial;
 pub mod mastodon;
 pub mod megalodon;
 pub mod oauth;

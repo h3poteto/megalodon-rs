@@ -87,6 +87,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -116,6 +117,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -145,6 +147,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
