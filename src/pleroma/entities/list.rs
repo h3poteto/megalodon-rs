@@ -12,6 +12,7 @@ impl Into<MegalodonEntities::List> for List {
         MegalodonEntities::List {
             id: self.id,
             title: self.title,
+            replies_policy: None,
         }
     }
 }
