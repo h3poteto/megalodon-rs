@@ -1,5 +1,6 @@
 use core::fmt;
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::Account;
@@ -8,12 +9,14 @@ use super::Account;
 pub struct Report {
     pub id: String,
     pub action_taken: bool,
-    pub category: Category,
-    pub comment: String,
-    pub forwarded: bool,
+    pub action_taken_at: Option<DateTime<Utc>>,
     pub status_ids: Option<Vec<String>>,
     pub rule_ids: Option<Vec<String>>,
-    pub target_account: Account,
+    // These parameters are optional in Pleroma.
+    pub category: Option<Category>,
+    pub comment: Option<String>,
+    pub forwarded: Option<bool>,
+    pub target_account: Option<Account>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
