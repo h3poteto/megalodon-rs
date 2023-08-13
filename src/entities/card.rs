@@ -9,11 +9,13 @@ pub struct Card {
     pub image: Option<String>,
     pub author_name: Option<String>,
     pub author_url: Option<String>,
-    pub provider_name: Option<String>,
-    pub provider_url: Option<String>,
+    pub provider_name: String,
+    pub provider_url: String,
     pub html: Option<String>,
     pub width: Option<u32>,
     pub height: Option<u32>,
+    pub embed_url: Option<String>,
+    pub blurhash: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
