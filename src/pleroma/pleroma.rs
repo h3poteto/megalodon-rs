@@ -1320,55 +1320,30 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
-    async fn get_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
-        let res = self
-            .client
-            .get::<entities::Tag>(format!("/api/v1/tags/{}", id).as_str(), None)
-            .await?;
-
-        Ok(Response::<MegalodonEntities::Tag>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
+    async fn get_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
-    async fn follow_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
-        let params = HashMap::<&str, Value>::default();
-        let res = self
-            .client
-            .post::<entities::Tag>(
-                format!("/api/v1/tags/{}/follow", id).as_str(),
-                &params,
-                None,
-            )
-            .await?;
-
-        Ok(Response::<MegalodonEntities::Tag>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
+    async fn follow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
-    async fn unfollow_tag(&self, id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
-        let params = HashMap::<&str, Value>::default();
-        let res = self
-            .client
-            .post::<entities::Tag>(
-                format!("/api/v1/tags/{}/unfollow", id).as_str(),
-                &params,
-                None,
-            )
-            .await?;
-
-        Ok(Response::<MegalodonEntities::Tag>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
+    async fn unfollow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
+        Err(Error::new_own(
+            "Pleroma doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
         ))
     }
 
