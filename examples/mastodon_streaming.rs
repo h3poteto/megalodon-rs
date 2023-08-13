@@ -24,7 +24,7 @@ async fn streaming(url: &str, access_token: String) {
         Some(access_token),
         None,
     );
-    let streaming = client.user_streaming(url.to_string());
+    let streaming = client.local_streaming(url.to_string());
 
     streaming
         .listen(Box::new(|message| match message {

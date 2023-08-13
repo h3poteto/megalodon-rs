@@ -8,13 +8,8 @@ pub struct Card {
     description: String,
     r#type: CardType,
     image: Option<String>,
-    author_name: Option<String>,
-    author_url: Option<String>,
-    provider_name: Option<String>,
-    provider_url: Option<String>,
-    html: Option<String>,
-    width: Option<u32>,
-    height: Option<u32>,
+    provider_name: String,
+    provider_url: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -45,13 +40,15 @@ impl Into<MegalodonEntities::Card> for Card {
             description: self.description,
             r#type: self.r#type.into(),
             image: self.image,
-            author_name: self.author_name,
-            author_url: self.author_url,
+            author_name: None,
+            author_url: None,
             provider_name: self.provider_name,
             provider_url: self.provider_url,
-            html: self.html,
-            width: self.width,
-            height: self.height,
+            html: None,
+            width: None,
+            height: None,
+            embed_url: None,
+            blurhash: None,
         }
     }
 }
