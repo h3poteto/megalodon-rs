@@ -20,19 +20,19 @@ const NODEINFO_21: &str = "http://nodeinfo.diaspora.software/ns/schema/2.1";
 #[derive(Deserialize, Debug)]
 struct Nodeinfo10 {
     software: Software,
-    metadata: Metadata,
+    metadata: Option<Metadata>,
 }
 
 #[derive(Deserialize, Debug)]
 struct Nodeinfo20 {
     software: Software,
-    metadata: Metadata,
+    metadata: Option<Metadata>,
 }
 
 #[derive(Deserialize, Debug)]
 struct Nodeinfo21 {
     software: Software,
-    metadata: Metadata,
+    metadata: Option<Metadata>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -80,9 +80,11 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
-                    if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
-                            return Ok(SNS::Mastodon);
+                    if let Some(metadata) = nodeinfo.metadata {
+                        if let Some(upstream) = metadata.upstream {
+                            if upstream.name == "mastodon" {
+                                return Ok(SNS::Mastodon);
+                            }
                         }
                     }
                     Err(error::Error::new_own(
@@ -108,9 +110,11 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
-                    if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
-                            return Ok(SNS::Mastodon);
+                    if let Some(metadata) = nodeinfo.metadata {
+                        if let Some(upstream) = metadata.upstream {
+                            if upstream.name == "mastodon" {
+                                return Ok(SNS::Mastodon);
+                            }
                         }
                     }
                     Err(error::Error::new_own(
@@ -136,9 +140,11 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 _ => {
-                    if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
-                            return Ok(SNS::Mastodon);
+                    if let Some(metadata) = nodeinfo.metadata {
+                        if let Some(upstream) = metadata.upstream {
+                            if upstream.name == "mastodon" {
+                                return Ok(SNS::Mastodon);
+                            }
                         }
                     }
                     Err(error::Error::new_own(
@@ -170,6 +176,14 @@ mod tests {
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
+
+    #[tokio::test]
+    async fn test_detector_mastodon_without_metadata() {
+        let sns = detector("https://qoto.org").await;
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Mastodon);
+    }
+
 
     #[tokio::test]
     async fn test_detector_pleroma() {
