@@ -14,10 +14,11 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use rand::RngCore;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
-use tokio::fs::File;
+use tokio::{fs::File, io::AsyncRead};
 use tokio_util::codec::{BytesCodec, FramedRead};
 use urlencoding::encode;
 
@@ -1770,16 +1771,16 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
-    async fn upload_media(
+    async fn upload_media_reader(
         &self,
-        file_path: String,
+        reader: Box<dyn AsyncRead + Sync + Send + Unpin>,
         options: Option<&megalodon::UploadMediaInputOptions>,
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
-        let file = File::open(file_path.clone()).await?;
+        let mut file_name_unhash = [0; 32];
+        rand::thread_rng().fill_bytes(&mut file_name_unhash);
+        let file_name = hex::encode(Sha1::digest(file_name_unhash));
 
-        let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
-
-        let stream = FramedRead::new(file, BytesCodec::new());
+        let stream = FramedRead::new(reader, BytesCodec::new());
         let file_body = reqwest::Body::wrap_stream(stream);
         let part = reqwest::multipart::Part::stream(file_body).file_name(file_name);
 

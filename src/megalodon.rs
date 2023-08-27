@@ -10,6 +10,7 @@ use crate::{entities, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
+use tokio::{fs::File, io::AsyncRead};
 
 /// Megalodon API interface
 #[async_trait]
@@ -428,6 +429,15 @@ pub trait Megalodon {
     async fn upload_media(
         &self,
         file_path: String,
+        options: Option<&UploadMediaInputOptions>,
+    ) -> Result<Response<entities::UploadMedia>, Error> {
+        let file = File::open(file_path.clone()).await?;
+        self.upload_media_reader(Box::new(file), options).await
+    }
+
+    async fn upload_media_reader(
+        &self,
+        reader: Box<dyn AsyncRead + Sync + Send + Unpin>,
         options: Option<&UploadMediaInputOptions>,
     ) -> Result<Response<entities::UploadMedia>, Error>;
 
