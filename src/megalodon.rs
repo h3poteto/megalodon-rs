@@ -646,7 +646,6 @@ pub trait Megalodon {
     async fn search(
         &self,
         q: String,
-        r#type: &SearchType,
         options: Option<&SearchInputOptions>,
     ) -> Result<Response<entities::Results>, Error>;
 
@@ -1197,6 +1196,8 @@ impl FromStr for SearchType {
 /// Input options for [`Megalodon::search`].
 #[derive(Debug, Clone, Default)]
 pub struct SearchInputOptions {
+    /// Specify whether to search for only accounts, hashtags, statuses.
+    pub r#type: Option<SearchType>,
     /// Maximum number of results. Default 20, max 40.
     pub limit: Option<u32>,
     /// Return results oder than this id.

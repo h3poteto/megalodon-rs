@@ -2723,11 +2723,13 @@ impl megalodon::Megalodon for Mastodon {
     async fn search(
         &self,
         q: String,
-        r#type: &megalodon::SearchType,
         options: Option<&megalodon::SearchInputOptions>,
     ) -> Result<Response<MegalodonEntities::Results>, Error> {
-        let mut params = Vec::<String>::from([format!("q={}", q), format!("type={}", r#type)]);
+        let mut params = Vec::<String>::from([format!("q={}", q)]);
         if let Some(options) = options {
+            if let Some(t) = &options.r#type {
+                params.push(format!("type={}", t));
+            }
             if let Some(limit) = options.limit {
                 params.push(format!("limit={}", limit));
             }
