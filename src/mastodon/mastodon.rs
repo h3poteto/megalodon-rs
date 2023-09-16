@@ -92,7 +92,7 @@ impl megalodon::Megalodon for Mastodon {
                 app.client_id.clone(),
                 app.client_secret.clone(),
                 scope,
-                app.redirect_uri.clone(),
+                app.redirect_uri.clone().unwrap(),
             )
             .await?;
         app.url = Some(url);

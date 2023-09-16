@@ -49,6 +49,7 @@ pub mod default;
 pub mod detector;
 pub mod entities;
 pub mod error;
+pub mod firefish;
 pub mod friendica;
 pub mod mastodon;
 pub mod megalodon;

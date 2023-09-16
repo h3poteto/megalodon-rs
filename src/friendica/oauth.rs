@@ -26,7 +26,7 @@ impl Into<oauth::AppData> for AppDataFromServer {
             self.id,
             self.name,
             self.website,
-            self.redirect_uri,
+            Some(self.redirect_uri),
             self.client_id,
             self.client_secret,
         )
@@ -38,8 +38,8 @@ impl Into<oauth::TokenData> for TokenDataFromServer {
         oauth::TokenData::new(
             self.access_token,
             self.token_type,
-            self.scope,
-            self.created_at,
+            Some(self.scope),
+            Some(self.created_at),
             None,
             None,
         )
