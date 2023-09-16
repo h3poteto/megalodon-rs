@@ -5,6 +5,7 @@ use serde::Deserialize;
 pub struct Emoji {
     name: String,
     url: String,
+    category: Option<String>,
 }
 
 impl Into<MegalodonEntities::Emoji> for Emoji {
@@ -14,7 +15,7 @@ impl Into<MegalodonEntities::Emoji> for Emoji {
             static_url: self.url.clone(),
             url: self.url,
             visible_in_picker: true,
-            category: None,
+            category: self.category,
         }
     }
 }

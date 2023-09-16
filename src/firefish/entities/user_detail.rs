@@ -120,9 +120,17 @@ impl Into<MegalodonEntities::Account> for UserDetail {
         if let Some(avatar_url) = self.avatar_url {
             avatar = avatar_url;
         }
+        let mut avatar_static = "".to_string();
+        if let Some(avatar_color) = self.avatar_color {
+            avatar_static = avatar_color;
+        }
         let mut header = "".to_string();
         if let Some(banner_url) = self.banner_url {
             header = banner_url;
+        }
+        let mut header_static = "".to_string();
+        if let Some(banner_color) = self.banner_color {
+            header_static = banner_color;
         }
         let mut bot = false;
         if let Some(is_bot) = self.is_bot {
@@ -154,10 +162,10 @@ impl Into<MegalodonEntities::Account> for UserDetail {
             statuses_count: self.notes_count,
             note,
             url: acct,
-            avatar: avatar.clone(),
-            avatar_static: avatar,
-            header: header.clone(),
-            header_static: header,
+            avatar,
+            avatar_static,
+            header,
+            header_static,
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             moved: None,
             fields: self.fields.into_iter().map(|j| j.into()).collect(),
