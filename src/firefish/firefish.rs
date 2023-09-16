@@ -113,4 +113,20 @@ impl Firefish {
             .await?;
         Ok(MegalodonOAuth::TokenData::from(res.json.into()))
     }
+
+    pub async fn verify_account_credentials(
+        &self,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
+        let params = HashMap::<&str, Value>::new();
+        let res = self
+            .client
+            .post::<entities::UserDetail>("/api/i", &params, None)
+            .await?;
+        Ok(Response::<MegalodonEntities::Account>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
 }
