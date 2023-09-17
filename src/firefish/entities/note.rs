@@ -4,6 +4,7 @@ use std::fmt;
 use std::{collections::HashMap, str::FromStr};
 
 use super::{Emoji, File, Poll, User};
+use crate::entities as MegalodonEntities;
 use crate::error::{Error, Kind};
 
 #[derive(Debug, Deserialize, Clone)]
@@ -30,6 +31,7 @@ pub struct Note {
     tags: Option<Vec<String>>,
     poll: Option<Poll>,
     mentions: Vec<String>,
+    my_reaction: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
@@ -66,5 +68,120 @@ impl FromStr for StatusVisibility {
             "hidden" => Ok(StatusVisibility::Hidden),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
+    }
+}
+
+impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
+    fn into(self) -> MegalodonEntities::status::StatusVisibility {
+        match self {
+            StatusVisibility::Public => MegalodonEntities::status::StatusVisibility::Public,
+            StatusVisibility::Home => MegalodonEntities::status::StatusVisibility::Unlisted,
+            StatusVisibility::Followers => MegalodonEntities::status::StatusVisibility::Private,
+            StatusVisibility::Specified => MegalodonEntities::status::StatusVisibility::Direct,
+            StatusVisibility::Hidden => MegalodonEntities::status::StatusVisibility::Direct,
+        }
+    }
+}
+
+impl Into<MegalodonEntities::Status> for Note {
+    fn into(self) -> MegalodonEntities::Status {
+        let mut uri = "".to_string();
+        if let Some(u) = self.uri.clone() {
+            uri = u;
+        }
+        let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
+        let mut quoted = false;
+        if let Some(renote) = self.renote {
+            let rs: Note = *renote;
+            reblog_status = Some(Box::new(rs.into()));
+            if let Some(_) = self.text.clone() {
+                quoted = true;
+            }
+        }
+        let mut content = "".to_string();
+        if let Some(text) = self.text.clone() {
+            content = text;
+        }
+
+        let mut spoiler_text = "".to_string();
+        if let Some(cw) = self.cw {
+            spoiler_text = cw;
+        }
+
+        let mut tags: Vec<MegalodonEntities::status::Tag> = [].to_vec();
+        if let Some(hashtags) = self.tags {
+            tags = hashtags
+                .into_iter()
+                .map(|t| MegalodonEntities::status::Tag {
+                    name: t.clone(),
+                    url: t,
+                })
+                .collect();
+        }
+        let emoji_reactions = Some(map_reactions(self.reactions, self.my_reaction));
+
+        MegalodonEntities::Status {
+            id: self.id,
+            uri: uri.clone(),
+            url: self.uri,
+            account: self.user.into(),
+            in_reply_to_id: self.reply_id,
+            in_reply_to_account_id: None,
+            reblog: reblog_status,
+            content,
+            plain_content: self.text,
+            created_at: self.created_at,
+            emojis: self.emojis.into_iter().map(|e| e.into()).collect(),
+            replies_count: self.replies_count,
+            reblogs_count: self.renote_count,
+            favourites_count: 0,
+            reblogged: None,
+            favourited: None,
+            muted: None,
+            sensitive: self.files.iter().any(|f| f.is_sensitive),
+            spoiler_text,
+            visibility: self.visibility.into(),
+            media_attachments: self.files.into_iter().map(|f| f.into()).collect(),
+            mentions: [].to_vec(),
+            tags,
+            card: None,
+            poll: self.poll.map(|p| p.into()),
+            application: None,
+            language: None,
+            pinned: None,
+            emoji_reactions,
+            quote: quoted,
+            bookmarked: None,
+        }
+    }
+}
+
+fn map_reactions(
+    reactions: HashMap<String, u32>,
+    my_reaction: Option<String>,
+) -> Vec<MegalodonEntities::Reaction> {
+    if let Some(my) = my_reaction {
+        reactions
+            .into_iter()
+            .map(|(key, value)| {
+                let me = my == key;
+                MegalodonEntities::Reaction {
+                    count: value,
+                    me,
+                    name: key,
+                    accounts: None,
+                }
+            })
+            .collect()
+    } else {
+        reactions
+            .into_iter()
+            .map(|(key, value)| MegalodonEntities::Reaction {
+                count: value,
+                me: false,
+                name: key,
+                accounts: None,
+            })
+            .collect()
     }
 }

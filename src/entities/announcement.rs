@@ -11,7 +11,8 @@ pub struct Announcement {
     pub published: bool,
     pub all_day: bool,
     pub published_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    // Firefish provides updated_at as optional.
+    pub updated_at: Option<DateTime<Utc>>,
     pub read: Option<bool>,
     pub mentions: Vec<Account>,
     pub statuses: Vec<Status>,
