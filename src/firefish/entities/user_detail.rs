@@ -1,4 +1,4 @@
-use super::Emoji;
+use super::{Emoji, Note};
 use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -43,7 +43,7 @@ pub struct UserDetail {
     following_count: u32,
     notes_count: u32,
     pinned_note_ids: Vec<String>,
-    // pinned_notes: Vec<Note>,
+    pub pinned_notes: Vec<Note>,
     pinned_page_id: Option<String>,
     // pinned_page: Option<Page>,
     public_reactions: bool,
@@ -139,7 +139,7 @@ impl Into<MegalodonEntities::Account> for UserDetail {
 
         let source = MegalodonEntities::Source {
             privacy: None,
-            sensitive: None,
+            sensitive: self.always_mark_nsfw,
             language: self.lang,
             note: note.clone(),
             fields: None,

@@ -1721,6 +1721,7 @@ impl megalodon::Megalodon for Friendica {
         &self,
         _id: String,
         _choices: Vec<u32>,
+        _status_id: Option<String>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
         Err(Error::new_own(
             "Friendica does not support".to_string(),

@@ -8,5 +8,5 @@ pub struct Favorite {
     id: String,
     created_at: String,
     note_id: String,
-    note: Note,
+    pub note: Note,
 }

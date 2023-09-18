@@ -7,21 +7,21 @@ use crate::entities as MegalodonEntities;
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
-    id: String,
-    name: Option<String>,
-    username: String,
-    host: Option<String>,
-    avatar_url: Option<String>,
-    avatar_blurhash: Option<String>,
-    avatar_color: Option<String>,
-    is_admin: Option<bool>,
-    is_moderator: Option<bool>,
-    is_bot: Option<bool>,
-    is_cat: Option<bool>,
-    is_indexable: Option<bool>,
-    speak_as_cat: Option<bool>,
-    emojis: Vec<Emoji>,
-    online_status: Option<String>,
+    pub id: String,
+    pub name: Option<String>,
+    pub username: String,
+    pub host: Option<String>,
+    pub avatar_url: Option<String>,
+    pub avatar_blurhash: Option<String>,
+    pub avatar_color: Option<String>,
+    pub is_admin: Option<bool>,
+    pub is_moderator: Option<bool>,
+    pub is_bot: Option<bool>,
+    pub is_cat: Option<bool>,
+    pub is_indexable: Option<bool>,
+    pub speak_as_cat: Option<bool>,
+    pub emojis: Vec<Emoji>,
+    pub online_status: Option<String>,
 }
 
 impl Into<MegalodonEntities::Account> for User {

@@ -13,7 +13,7 @@ pub struct Note {
     id: String,
     created_at: DateTime<Utc>,
     user_id: String,
-    user: User,
+    pub user: User,
     text: Option<String>,
     cw: Option<String>,
     visibility: StatusVisibility,
@@ -67,6 +67,17 @@ impl FromStr for StatusVisibility {
             "specified" => Ok(StatusVisibility::Specified),
             "hidden" => Ok(StatusVisibility::Hidden),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+        }
+    }
+}
+
+impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
+    fn from(value: MegalodonEntities::status::StatusVisibility) -> Self {
+        match value {
+            MegalodonEntities::StatusVisibility::Public => StatusVisibility::Public,
+            MegalodonEntities::StatusVisibility::Unlisted => StatusVisibility::Home,
+            MegalodonEntities::StatusVisibility::Private => StatusVisibility::Followers,
+            MegalodonEntities::StatusVisibility::Direct => StatusVisibility::Specified,
         }
     }
 }

@@ -10,6 +10,6 @@ pub struct Follow {
     created_at: DateTime<Utc>,
     followee_id: String,
     follower_id: String,
-    follower: UserDetail,
-    followee: UserDetail,
+    pub follower: UserDetail,
+    pub followee: UserDetail,
 }

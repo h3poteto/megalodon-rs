@@ -9,5 +9,5 @@ pub struct Blocking {
     id: String,
     created_at: DateTime<Utc>,
     blockee_id: String,
-    blockee: UserDetail,
+    pub blockee: UserDetail,
 }

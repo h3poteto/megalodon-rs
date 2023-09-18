@@ -93,3 +93,9 @@ impl Into<MegalodonEntities::Attachment> for File {
         }
     }
 }
+
+impl Into<MegalodonEntities::UploadMedia> for File {
+    fn into(self) -> MegalodonEntities::UploadMedia {
+        MegalodonEntities::UploadMedia::Attachment(self.into())
+    }
+}

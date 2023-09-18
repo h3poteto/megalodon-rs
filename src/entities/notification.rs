@@ -34,6 +34,7 @@ pub enum NotificationType {
     AdminReport,
     GroupInvited,
     App,
+    Unknown,
 }
 
 impl fmt::Display for NotificationType {
@@ -54,6 +55,7 @@ impl fmt::Display for NotificationType {
             NotificationType::AdminReport => write!(f, "admin.report"),
             NotificationType::GroupInvited => write!(f, "group_invited"),
             NotificationType::App => write!(f, "app"),
+            NotificationType::Unknown => write!(f, "unknown"),
         }
     }
 }
@@ -77,6 +79,7 @@ impl FromStr for NotificationType {
             "admin.report" => Ok(NotificationType::AdminReport),
             "group_invited" => Ok(NotificationType::GroupInvited),
             "app" => Ok(NotificationType::App),
+            "unknown" => Ok(NotificationType::Unknown),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }

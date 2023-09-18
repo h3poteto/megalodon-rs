@@ -4,7 +4,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Hashtag {
-    tag: String,
+    pub tag: String,
 }
 
 impl Into<MegalodonEntities::Tag> for Hashtag {

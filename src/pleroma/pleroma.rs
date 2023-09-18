@@ -1885,6 +1885,7 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
         choices: Vec<u32>,
+        _status_id: Option<String>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
         let params = HashMap::<&str, Value>::from([(
             "choices",

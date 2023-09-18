@@ -9,5 +9,5 @@ pub struct Mute {
     id: String,
     created_at: DateTime<Utc>,
     mutee_id: String,
-    mutee: UserDetail,
+    pub mutee: UserDetail,
 }
