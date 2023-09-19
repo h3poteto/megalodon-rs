@@ -31,7 +31,7 @@ async fn home_timeline(
     access_token: String,
 ) -> Result<Vec<entities::Status>, error::Error> {
     let client = generator(
-        megalodon::SNS::Friendica,
+        megalodon::SNS::Firefish,
         url.to_string(),
         Some(access_token),
         None,

@@ -234,7 +234,6 @@ impl WebSocket {
                 }
                 return Ok(());
             }
-
             match self.parse(msg) {
                 Ok(message) => {
                     callback(message);
@@ -287,8 +286,12 @@ impl WebSocket {
                     "body": {
                         "channel": "homeTimeline",
                         "id": self.channel_id,
+                        "params": {
+                            "withReplies": false
+                        }
                     },
                 });
+                log::debug!("Sending {:?}", &home);
                 let _ = socket
                     .send(WebSocketMessage::Text(home.to_string()))
                     .await
@@ -305,9 +308,11 @@ impl WebSocket {
                         "id": self.channel_id,
                         "params": {
                             "listId": self.list_id,
+                            "withReplies": false
                         }
                     },
                 });
+                log::debug!("Sending {:?}", &data);
                 let _ = socket
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
@@ -322,8 +327,12 @@ impl WebSocket {
                     "body": {
                         "channel": channel,
                         "id": self.channel_id,
+                        "params": {
+                            "withReplies": false
+                        }
                     },
                 });
+                log::debug!("Sending {:?}", &data);
                 let _ = socket
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
