@@ -59,11 +59,18 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
         .await?
         .json::<Links>()
         .await?;
-    let Some(link) = links.links
+    let Some(link) = links
+        .links
         .iter()
-        .find(|l| l.rel == NODEINFO_20 || l.rel == NODEINFO_21 || l.rel == NODEINFO_10) else {
-            return Err(error::Error::new_own(String::from("Could not find nodeinfo"), error::Kind::NodeinfoError, None, None));
-        };
+        .find(|l| l.rel == NODEINFO_20 || l.rel == NODEINFO_21 || l.rel == NODEINFO_10)
+    else {
+        return Err(error::Error::new_own(
+            String::from("Could not find nodeinfo"),
+            error::Kind::NodeinfoError,
+            None,
+            None,
+        ));
+    };
 
     match link.rel.as_str() {
         NODEINFO_10 => {
@@ -80,6 +87,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
+                "firefish" => Ok(SNS::Firefish),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -109,6 +117,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
+                "firefish" => Ok(SNS::Firefish),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -138,6 +147,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
+                "firefish" => Ok(SNS::Firefish),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -212,5 +222,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Mastodon);
+    }
+
+    #[tokio::test]
+    async fn test_detector_firefish() {
+        let sns = detector("https://calckey.jp").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Firefish);
     }
 }
