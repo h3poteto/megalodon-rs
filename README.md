@@ -25,7 +25,7 @@ Add your `Cargo.toml` like this:
 
 ```
 [dependencies]
-megalodon = { version = "0.8" }
+megalodon = { version = "0.11" }
 ```
 
 ### Making Mastodon request
