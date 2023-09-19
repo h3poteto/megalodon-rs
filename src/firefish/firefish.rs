@@ -1811,7 +1811,7 @@ impl megalodon::Megalodon for Firefish {
     async fn get_conversation_timeline(
         &self,
         options: Option<&megalodon::GetConversationTimelineInputOptions>,
-    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+    ) -> Result<Response<Vec<MegalodonEntities::Conversation>>, Error> {
         let mut params =
             HashMap::<&str, Value>::from([("visibility", Value::String("specified".to_string()))]);
         if let Some(options) = options {
@@ -1832,7 +1832,7 @@ impl megalodon::Megalodon for Firefish {
             .client
             .post::<Vec<entities::Note>>("/api/notes/mentions", &params, None)
             .await?;
-        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+        Ok(Response::<Vec<MegalodonEntities::Conversation>>::new(
             res.json.into_iter().map(|i| i.into()).collect(),
             res.status,
             res.status_text,
