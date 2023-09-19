@@ -10,7 +10,11 @@ use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
 use http;
 use serde::Deserialize;
+use serde_json::json;
+use tokio::net::TcpStream;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
+use tokio_tungstenite::MaybeTlsStream;
+use tokio_tungstenite::WebSocketStream;
 use tokio_tungstenite::{
     connect_async, tungstenite::error, tungstenite::protocol::frame::coding::CloseCode,
     tungstenite::protocol::Message as WebSocketMessage,
@@ -33,8 +37,15 @@ pub struct WebSocket {
 
 #[derive(Deserialize)]
 struct RawMessage {
-    event: String,
-    payload: String,
+    r#type: String,
+    body: MessageBody,
+}
+
+#[derive(Deserialize)]
+struct MessageBody {
+    id: String,
+    r#type: String,
+    body: serde_json::Value,
 }
 
 impl WebSocket {
@@ -65,9 +76,55 @@ impl WebSocket {
             Ok(Message::Heartbeat())
         } else if message.is_text() {
             let text = message.to_text()?;
-            let mes = serde_json::from_str::<RawMessage>(text)?;
-            log::info!("message: {}", text);
-            Ok(Message::Heartbeat())
+            let Ok(mes) = serde_json::from_str::<RawMessage>(text) else {
+                return Ok(Message::Heartbeat());
+            };
+            if mes.r#type != "channel" || mes.body.id != self.channel_id {
+                return Ok(Message::Heartbeat());
+            }
+            match &*mes.body.r#type {
+                "note" => {
+                    let res = serde_json::from_value::<entities::Note>(mes.body.body.clone())
+                        .map_err(|e| {
+                            log::error!(
+                                "failed to parse note: {}\n{}",
+                                e.to_string(),
+                                &mes.body.body
+                            );
+                            e
+                        })?;
+                    Ok(Message::Update(res.into()))
+                }
+                "notification" => {
+                    let res =
+                        serde_json::from_value::<entities::Notification>(mes.body.body.clone())
+                            .map_err(|e| {
+                                log::error!(
+                                    "failed to parse notification: {}\n{}",
+                                    e.to_string(),
+                                    &mes.body.body
+                                );
+                                e
+                            })?;
+                    Ok(Message::Notification(res.into()))
+                }
+                "mention" => {
+                    let res = serde_json::from_value::<entities::Note>(mes.body.body.clone())
+                        .map_err(|e| {
+                            log::error!(
+                                "failed to parse note: {}\n{}",
+                                e.to_string(),
+                                &mes.body.body
+                            );
+                            e
+                        })?;
+                    Ok(Message::Conversation(res.into()))
+                }
+                unknown => {
+                    log::warn!("Unknown body type message is received: {}", unknown);
+                    Ok(Message::Heartbeat())
+                }
+            }
         } else {
             Err(Error::new_own(
                 String::from("Receiving message is not ping, pong or text"),
@@ -117,7 +174,7 @@ impl WebSocket {
             })?;
         req.headers_mut()
             .insert("User-Agent", self.user_agent.parse().unwrap());
-        let (mut socket, response) = connect_async(req).await.map_err(|e| {
+        let (socket, response) = connect_async(req).await.map_err(|e| {
             log::error!("Failed to connect: {}", e);
             match e {
                 error::Error::Http(response) => match response.status() {
@@ -134,6 +191,8 @@ impl WebSocket {
         for (ref header, _value) in response.headers() {
             log::debug!("* {}", header);
         }
+
+        let mut socket = self.connect_channel(socket).await;
 
         loop {
             let res = tokio::time::timeout(
@@ -175,12 +234,7 @@ impl WebSocket {
                 }
                 return Ok(());
             }
-            // if msg.is_text() {
-            //     let text = msg.to_text().map_err(|e| {
-            //         log::warn!("{}", e);
-            //     });
-            //     if text == "open" {}
-            // }
+
             match self.parse(msg) {
                 Ok(message) => {
                     callback(message);
@@ -190,6 +244,96 @@ impl WebSocket {
                 }
             }
         }
+    }
+
+    async fn connect_channel(
+        &self,
+        mut socket: WebSocketStream<MaybeTlsStream<TcpStream>>,
+    ) -> WebSocketStream<MaybeTlsStream<TcpStream>> {
+        match self.channel.as_ref() {
+            "conversation" => {
+                let data = json!({
+                    "type": "connect",
+                    "body": {
+                        "channel": "main",
+                        "id": self.channel_id,
+                    },
+                });
+                let _ = socket
+                    .send(WebSocketMessage::Text(data.to_string()))
+                    .await
+                    .map_err(|e| {
+                        log::error!("{:#?}", e);
+                        e
+                    });
+            }
+            "user" => {
+                let data = json!({
+                    "type": "connect",
+                    "body": {
+                        "channel": "main",
+                        "id": self.channel_id,
+                    },
+                });
+                let _ = socket
+                    .send(WebSocketMessage::Text(data.to_string()))
+                    .await
+                    .map_err(|e| {
+                        log::error!("{:#?}", e);
+                        e
+                    });
+                let home = json!({
+                    "type": "connect",
+                    "body": {
+                        "channel": "homeTimeline",
+                        "id": self.channel_id,
+                    },
+                });
+                let _ = socket
+                    .send(WebSocketMessage::Text(home.to_string()))
+                    .await
+                    .map_err(|e| {
+                        log::error!("{:#?}", e);
+                        e
+                    });
+            }
+            "list" => {
+                let data = json!({
+                    "type": "connect",
+                    "body": {
+                        "channel": "userList",
+                        "id": self.channel_id,
+                        "params": {
+                            "listId": self.list_id,
+                        }
+                    },
+                });
+                let _ = socket
+                    .send(WebSocketMessage::Text(data.to_string()))
+                    .await
+                    .map_err(|e| {
+                        log::error!("{:#?}", e);
+                        e
+                    });
+            }
+            channel => {
+                let data = json!({
+                    "type": "connect",
+                    "body": {
+                        "channel": channel,
+                        "id": self.channel_id,
+                    },
+                });
+                let _ = socket
+                    .send(WebSocketMessage::Text(data.to_string()))
+                    .await
+                    .map_err(|e| {
+                        log::error!("{:#?}", e);
+                        e
+                    });
+            }
+        }
+        socket
     }
 }
 

@@ -20,9 +20,9 @@ pub struct Note {
     renote_count: u32,
     replies_count: u32,
     reactions: HashMap<String, u32>,
-    emojis: Vec<Emoji>,
-    file_ids: Vec<String>,
-    files: Vec<File>,
+    emojis: Option<Vec<Emoji>>,
+    file_ids: Option<Vec<String>>,
+    files: Option<Vec<File>>,
     reply_id: Option<String>,
     renote_id: Option<String>,
     uri: Option<String>,
@@ -30,7 +30,7 @@ pub struct Note {
     renote: Option<Box<Note>>,
     tags: Option<Vec<String>>,
     poll: Option<Poll>,
-    mentions: Vec<String>,
+    mentions: Option<Vec<String>>,
     my_reaction: Option<String>,
 }
 
@@ -142,17 +142,24 @@ impl Into<MegalodonEntities::Status> for Note {
             content,
             plain_content: self.text,
             created_at: self.created_at,
-            emojis: self.emojis.into_iter().map(|e| e.into()).collect(),
+            emojis: self
+                .emojis
+                .map_or([].to_vec(), |o| o.into_iter().map(|e| e.into()).collect()),
             replies_count: self.replies_count,
             reblogs_count: self.renote_count,
             favourites_count: 0,
             reblogged: None,
             favourited: None,
             muted: None,
-            sensitive: self.files.iter().any(|f| f.is_sensitive),
+            sensitive: self
+                .files
+                .as_ref()
+                .map_or(false, |f| f.iter().any(|f| f.is_sensitive)),
             spoiler_text,
             visibility: self.visibility.into(),
-            media_attachments: self.files.into_iter().map(|f| f.into()).collect(),
+            media_attachments: self
+                .files
+                .map_or([].to_vec(), |f| f.into_iter().map(|f| f.into()).collect()),
             mentions: [].to_vec(),
             tags,
             card: None,
@@ -194,5 +201,17 @@ fn map_reactions(
                 accounts: None,
             })
             .collect()
+    }
+}
+
+impl Into<MegalodonEntities::Conversation> for Note {
+    fn into(self) -> MegalodonEntities::Conversation {
+        let accounts: Vec<MegalodonEntities::Account> = [self.user.clone().into()].to_vec();
+        MegalodonEntities::Conversation {
+            id: self.id.clone(),
+            accounts,
+            last_status: Some(self.into()),
+            unread: false,
+        }
     }
 }

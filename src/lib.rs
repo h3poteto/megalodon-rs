@@ -71,6 +71,8 @@ pub enum SNS {
     Pleroma,
     /// SNS is Friendica.
     Friendica,
+    /// SNS is Firefish.
+    Firefish,
 }
 
 impl fmt::Display for SNS {
@@ -79,6 +81,7 @@ impl fmt::Display for SNS {
             SNS::Mastodon => write!(f, "mastodon"),
             SNS::Pleroma => write!(f, "pleroma"),
             SNS::Friendica => write!(f, "friendica"),
+            SNS::Firefish => write!(f, "firefish"),
         }
     }
 }
@@ -91,6 +94,7 @@ impl FromStr for SNS {
             "mastodon" => Ok(SNS::Mastodon),
             "pleroma" => Ok(SNS::Pleroma),
             "friendica" => Ok(SNS::Friendica),
+            "firefish" => Ok(SNS::Firefish),
             &_ => Err(format!("Unknown sns: {}", s)),
         }
     }
@@ -115,6 +119,10 @@ pub fn generator(
         SNS::Mastodon => {
             let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent);
             Box::new(mastodon)
+        }
+        SNS::Firefish => {
+            let firefish = firefish::Firefish::new(base_url, access_token, user_agent);
+            Box::new(firefish)
         }
     }
 }
