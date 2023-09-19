@@ -531,7 +531,7 @@ pub trait Megalodon {
     async fn get_conversation_timeline(
         &self,
         options: Option<&GetConversationTimelineInputOptions>,
-    ) -> Result<Response<Vec<entities::Status>>, Error>;
+    ) -> Result<Response<Vec<entities::Conversation>>, Error>;
 
     /// Delete a conversation.
     async fn delete_conversation(&self, id: String) -> Result<Response<()>, Error>;

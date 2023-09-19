@@ -2016,7 +2016,7 @@ impl megalodon::Megalodon for Friendica {
     async fn get_conversation_timeline(
         &self,
         options: Option<&megalodon::GetConversationTimelineInputOptions>,
-    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+    ) -> Result<Response<Vec<MegalodonEntities::Conversation>>, Error> {
         let mut params = Vec::<String>::new();
         if let Some(options) = options {
             if let Some(limit) = options.limit {
@@ -2038,10 +2038,10 @@ impl megalodon::Megalodon for Friendica {
         }
         let res = self
             .client
-            .get::<Vec<entities::Status>>(path.as_str(), None)
+            .get::<Vec<entities::Conversation>>(path.as_str(), None)
             .await?;
 
-        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+        Ok(Response::<Vec<MegalodonEntities::Conversation>>::new(
             res.json.into_iter().map(|j| j.into()).collect(),
             res.status,
             res.status_text,
