@@ -7,7 +7,7 @@ use std::fmt;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Notification {
-    pub account: Account,
+    pub account: Option<Account>,
     pub created_at: DateTime<Utc>,
     pub id: String,
     pub status: Option<Status>,
@@ -32,6 +32,9 @@ pub enum NotificationType {
     Move,
     AdminSignup,
     AdminReport,
+    GroupInvited,
+    App,
+    Unknown,
 }
 
 impl fmt::Display for NotificationType {
@@ -50,6 +53,9 @@ impl fmt::Display for NotificationType {
             NotificationType::Move => write!(f, "move"),
             NotificationType::AdminSignup => write!(f, "admin.sign_up"),
             NotificationType::AdminReport => write!(f, "admin.report"),
+            NotificationType::GroupInvited => write!(f, "group_invited"),
+            NotificationType::App => write!(f, "app"),
+            NotificationType::Unknown => write!(f, "unknown"),
         }
     }
 }
@@ -71,6 +77,9 @@ impl FromStr for NotificationType {
             "move" => Ok(NotificationType::Move),
             "admin.sign_up" => Ok(NotificationType::AdminSignup),
             "admin.report" => Ok(NotificationType::AdminReport),
+            "group_invited" => Ok(NotificationType::GroupInvited),
+            "app" => Ok(NotificationType::App),
+            "unknown" => Ok(NotificationType::Unknown),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }

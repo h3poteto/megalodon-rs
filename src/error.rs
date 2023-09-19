@@ -61,6 +61,9 @@ pub enum Kind {
     /// The SNS is unknown.
     #[error("unknown sns")]
     UnknownSNSError,
+    /// The entity does not satisfy required parameters.
+    #[error("unsatisfied error")]
+    UnsatisfiedError,
 }
 
 impl Error {

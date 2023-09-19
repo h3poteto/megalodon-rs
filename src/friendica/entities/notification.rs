@@ -49,7 +49,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
 impl Into<MegalodonEntities::Notification> for Notification {
     fn into(self) -> MegalodonEntities::Notification {
         MegalodonEntities::Notification {
-            account: self.account.into(),
+            account: Some(self.account.into()),
             created_at: self.created_at,
             id: self.id,
             status: self.status.map(|i| i.into()),

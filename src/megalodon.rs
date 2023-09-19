@@ -462,6 +462,7 @@ pub trait Megalodon {
         &self,
         id: String,
         choices: Vec<u32>,
+        status_id: Option<String>,
     ) -> Result<Response<entities::Poll>, Error>;
 
     // ======================================

@@ -11,13 +11,16 @@ pub struct AppData {
     /// Website URL of the application.
     pub website: Option<String>,
     /// Redirect URI for the application.
-    pub redirect_uri: String,
+    // Firefish return callbackUrl as optional string.
+    pub redirect_uri: Option<String>,
     /// Client ID.
     pub client_id: String,
     /// Client secret.
     pub client_secret: String,
     /// Authorize URL for the application.
     pub url: Option<String>,
+    /// Session token for Firefish.
+    pub session_token: Option<String>,
 }
 
 impl AppData {
@@ -26,7 +29,7 @@ impl AppData {
         id: String,
         name: String,
         website: Option<String>,
-        redirect_uri: String,
+        redirect_uri: Option<String>,
         client_id: String,
         client_secret: String,
     ) -> Self {
@@ -38,6 +41,7 @@ impl AppData {
             client_id,
             client_secret,
             url: None,
+            session_token: None,
         }
     }
 }
@@ -50,9 +54,11 @@ pub struct TokenData {
     /// Token type of the access token.
     pub token_type: String,
     /// Scope of the access token.
-    pub scope: String,
+    // Firefish does not have scope.
+    pub scope: Option<String>,
     /// Created date of the access token.
-    pub created_at: u64,
+    // Firefish does not have created_at.
+    pub created_at: Option<u64>,
     /// Expires date of the access token.
     pub expires_in: Option<u64>,
     /// Refresh token of the access token.
@@ -64,8 +70,8 @@ impl TokenData {
     pub fn new(
         access_token: String,
         token_type: String,
-        scope: String,
-        created_at: u64,
+        scope: Option<String>,
+        created_at: Option<u64>,
         expires_in: Option<u64>,
         refresh_token: Option<String>,
     ) -> Self {

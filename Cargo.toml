@@ -29,6 +29,8 @@ thiserror = "1"
 futures-util = "0.3"
 http = "0.2"
 rand = "0.8"
+regex = "1"
+uuid = { version = "1.4", features = ["v4"]}
 
 [dev-dependencies]
 env_logger = "0.10"

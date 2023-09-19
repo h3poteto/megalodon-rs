@@ -54,7 +54,7 @@ impl Into<MegalodonEntities::Announcement> for Announcement {
             published: self.published,
             all_day: self.all_day,
             published_at: self.published_at,
-            updated_at: self.updated_at,
+            updated_at: Some(self.updated_at),
             read: self.read,
             mentions: self.mentions.into_iter().map(|i| i.into()).collect(),
             statuses: self.statuses.into_iter().map(|i| i.into()).collect(),
