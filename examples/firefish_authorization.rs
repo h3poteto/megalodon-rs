@@ -1,4 +1,4 @@
-use megalodon::{firefish, generator};
+use megalodon::generator;
 use std::env;
 
 #[tokio::main]
@@ -10,7 +10,7 @@ async fn main() {
         return;
     };
 
-    let client = firefish::Firefish::new(url, None, None);
+    let client = generator(megalodon::SNS::Firefish, url.to_string(), None, None);
     let options = megalodon::megalodon::AppInputOptions {
         ..Default::default()
     };
