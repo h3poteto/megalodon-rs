@@ -9,7 +9,7 @@ use crate::{entities as MegalodonEntities, megalodon};
 pub struct FollowRequest {
     id: String,
     follower: User,
-    followee: User,
+    // followee: User,
 }
 
 impl Into<MegalodonEntities::FollowRequest> for FollowRequest {

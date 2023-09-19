@@ -3,14 +3,14 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct AppDataFromServer {
-    id: String,
-    name: String,
-    #[serde(rename = "callbackUrl")]
-    callback_url: Option<String>,
-    permission: Vec<String>,
+    pub id: String,
+    pub name: String,
+    // #[serde(rename = "callbackUrl")]
+    pub callback_url: Option<String>,
+    pub permission: Vec<String>,
     pub secret: Option<String>,
     #[serde(rename = "isAuthorized")]
-    is_authorized: Option<bool>,
+    pub is_authorized: Option<bool>,
 }
 
 impl Into<oauth::AppData> for AppDataFromServer {

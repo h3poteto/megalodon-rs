@@ -2355,7 +2355,6 @@ impl megalodon::Megalodon for Firefish {
     }
 
     fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
-        let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("user"),
@@ -2368,7 +2367,6 @@ impl megalodon::Megalodon for Firefish {
     }
 
     fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
-        let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("globalTimeline"),
@@ -2381,7 +2379,6 @@ impl megalodon::Megalodon for Firefish {
     }
 
     fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
-        let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("localTimeline"),
@@ -2394,7 +2391,6 @@ impl megalodon::Megalodon for Firefish {
     }
 
     fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
-        let params = Vec::<String>::new();
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("conversation"),
@@ -2409,7 +2405,7 @@ impl megalodon::Megalodon for Firefish {
     fn tag_streaming(
         &self,
         streaming_url: String,
-        tag: String,
+        _tag: String,
     ) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new(
             streaming_url + "/streaming",
