@@ -16,6 +16,8 @@ pub struct File {
     properties: Properties,
     url: Option<String>,
     thumbnail_url: Option<String>,
+    blurhash: Option<String>,
+    comment: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -88,8 +90,8 @@ impl Into<MegalodonEntities::Attachment> for File {
             preview_url: self.thumbnail_url,
             text_url: self.url,
             meta: Some(meta),
-            description: None,
-            blurhash: None,
+            description: self.comment,
+            blurhash: self.blurhash,
         }
     }
 }
