@@ -1944,9 +1944,11 @@ impl megalodon::Megalodon for Firefish {
             .post::<entities::List>("/api/users/lists/show", &params, None)
             .await?;
         let mut accounts = [].to_vec();
-        for user_id in list.json.user_ids.into_iter() {
-            let res = self.get_account(user_id).await?;
-            accounts.extend([res.json]);
+        if let Some(ids) = list.json.user_ids {
+            for user_id in ids.into_iter() {
+                let res = self.get_account(user_id).await?;
+                accounts.extend([res.json]);
+            }
         }
         Ok(Response::<Vec<MegalodonEntities::Account>>::new(
             accounts,
