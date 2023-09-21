@@ -2240,11 +2240,16 @@ impl megalodon::Megalodon for Firefish {
     async fn get_instance_custom_emojis(
         &self,
     ) -> Result<Response<Vec<MegalodonEntities::Emoji>>, Error> {
-        Err(Error::new_own(
-            "Firefish does not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let params = HashMap::<&str, Value>::new();
+        let res = self
+            .client
+            .post::<entities::Meta>("/api/meta", &params, None)
+            .await?;
+        Ok(Response::<Vec<MegalodonEntities::Emoji>>::new(
+            res.json.emojis.into_iter().map(|e| e.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
