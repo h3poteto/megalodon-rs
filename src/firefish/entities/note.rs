@@ -129,7 +129,7 @@ impl Into<MegalodonEntities::Status> for Note {
                 })
                 .collect();
         }
-        let emoji_reactions = Some(map_reactions(self.reactions, self.my_reaction));
+        let emoji_reactions = Some(map_reactions(self.reactions, self.my_reaction.clone()));
 
         MegalodonEntities::Status {
             id: self.id,
@@ -149,7 +149,7 @@ impl Into<MegalodonEntities::Status> for Note {
             reblogs_count: self.renote_count,
             favourites_count: 0,
             reblogged: None,
-            favourited: None,
+            favourited: Some(self.my_reaction.is_some()),
             muted: None,
             sensitive: self
                 .files

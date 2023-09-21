@@ -7,7 +7,7 @@ pub struct List {
     id: String,
     // created_at: DateTime<Utc>,
     name: String,
-    pub user_ids: Vec<String>,
+    pub user_ids: Option<Vec<String>>,
 }
 
 impl Into<MegalodonEntities::List> for List {
