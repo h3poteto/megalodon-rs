@@ -3,6 +3,8 @@ use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
+use super::Field;
+
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct UserDetail {
@@ -84,22 +86,6 @@ pub struct UserDetail {
     // muted_instances: Option<Vec<String>>,
     // muting_notification_types: Option<Vec<String>>,
     // email_notification_types: Option<Vec<String>>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct Field {
-    name: String,
-    value: String,
-}
-
-impl Into<MegalodonEntities::Field> for Field {
-    fn into(self) -> MegalodonEntities::Field {
-        MegalodonEntities::Field {
-            name: self.name,
-            value: self.value,
-            verified_at: None,
-        }
-    }
 }
 
 impl Into<MegalodonEntities::Account> for UserDetail {

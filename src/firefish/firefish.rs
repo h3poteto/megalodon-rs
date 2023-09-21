@@ -2176,10 +2176,9 @@ impl megalodon::Megalodon for Firefish {
     }
 
     async fn get_instance(&self) -> Result<Response<MegalodonEntities::Instance>, Error> {
-        let params = HashMap::<&str, Value>::from([("detail", Value::Bool(true))]);
         let res = self
             .client
-            .post::<entities::Meta>("/api/meta", &params, None)
+            .get::<entities::Instance>("/api/v1/instance", None)
             .await?;
         Ok(Response::<MegalodonEntities::Instance>::new(
             res.json.into(),

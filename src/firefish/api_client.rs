@@ -30,6 +30,61 @@ impl APIClient {
         }
     }
 
+    pub async fn get<T>(
+        &self,
+        path: &str,
+        headers: Option<HeaderMap>,
+    ) -> Result<Response<T>, MegalodonError>
+    where
+        T: DeserializeOwned + Debug,
+    {
+        let url_str = format!("{}{}", self.base_url, path);
+        let url = Url::parse(&*url_str)?;
+        let client = reqwest::Client::builder()
+            .user_agent(&self.user_agent)
+            .build()?;
+
+        let mut req = client.get(url);
+        if let Some(token) = &self.access_token {
+            req = req.bearer_auth(token);
+        }
+        if let Some(headers) = headers {
+            req = req.headers(headers);
+        }
+
+        let res = req.send().await?;
+        let status = res.status();
+        match status {
+            reqwest::StatusCode::OK
+            | reqwest::StatusCode::CREATED
+            | reqwest::StatusCode::ACCEPTED
+            | reqwest::StatusCode::NO_CONTENT => {
+                let res = Response::<T>::from_reqwest(res).await?;
+                Ok(res)
+            }
+            reqwest::StatusCode::PARTIAL_CONTENT => Err(MegalodonError::new_own(
+                String::from("The requested resource is still being processed"),
+                Kind::HTTPPartialContentError,
+                Some(url_str),
+                Some(status.as_u16()),
+            )),
+            _ => match res.text().await {
+                Ok(text) => Err(MegalodonError::new_own(
+                    text,
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
+                )),
+                Err(_err) => Err(MegalodonError::new_own(
+                    "Unknown error".to_string(),
+                    Kind::HTTPStatusError,
+                    Some(url_str),
+                    Some(status.as_u16()),
+                )),
+            },
+        }
+    }
+
     pub async fn post<T>(
         &self,
         path: &str,
