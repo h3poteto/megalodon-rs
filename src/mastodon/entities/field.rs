@@ -25,6 +25,7 @@ impl Into<MegalodonEntities::Field> for Field {
             name: self.name,
             value: self.value,
             verified_at: self.verified_at,
+            verified: None,
         }
     }
 }
