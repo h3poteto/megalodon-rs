@@ -5,6 +5,7 @@ use serde::Deserialize;
 pub struct Field {
     name: String,
     value: String,
+    verified: Option<bool>,
 }
 
 impl Into<MegalodonEntities::Field> for Field {
@@ -13,6 +14,7 @@ impl Into<MegalodonEntities::Field> for Field {
             name: self.name,
             value: self.value,
             verified_at: None,
+            verified: self.verified,
         }
     }
 }
