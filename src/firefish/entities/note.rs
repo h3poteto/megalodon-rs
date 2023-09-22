@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::{collections::HashMap, str::FromStr};
@@ -94,6 +95,20 @@ impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
     }
 }
 
+fn convert_html(plain: String) -> String {
+    let c = plain
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace(r"'", "&#39;")
+        .replace(r"`", "&#x60;");
+    Regex::new(r"\r?\n")
+        .unwrap()
+        .replace_all(c.as_str(), "<br>")
+        .to_string()
+}
+
 impl Into<MegalodonEntities::Status> for Note {
     fn into(self) -> MegalodonEntities::Status {
         let mut uri = "".to_string();
@@ -111,7 +126,7 @@ impl Into<MegalodonEntities::Status> for Note {
         }
         let mut content = "".to_string();
         if let Some(text) = self.text.clone() {
-            content = text;
+            content = convert_html(text);
         }
 
         let mut spoiler_text = "".to_string();
@@ -213,5 +228,21 @@ impl Into<MegalodonEntities::Conversation> for Note {
             last_status: Some(self.into()),
             unread: false,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_convert_html() {
+        let plain_html = String::from("<p>hoge\nfuga\nfuga<p>");
+        let escaped_html = String::from("&lt;p&gt;hoge<br>fuga<br>fuga&lt;p&gt;");
+        assert_eq!(convert_html(plain_html), escaped_html);
+
+        let plain_text = String::from("hoge\nfuga\nfuga");
+        let html_text = String::from("hoge<br>fuga<br>fuga");
+        assert_eq!(convert_html(plain_text), html_text);
     }
 }
