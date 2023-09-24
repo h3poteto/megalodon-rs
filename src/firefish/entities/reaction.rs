@@ -42,3 +42,196 @@ pub(crate) fn map_reaction(
         })
         .collect()
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_map_reaction() {
+        let emojis = vec![
+            Emoji {
+                name: String::from("foxverified"),
+                url: String::from("https://example.com/files/foxverified"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("verificado"),
+                url: String::from("https://example.com/files/verificado"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("kawaii@firefish.example"),
+                url: String::from("https://example.com/proxy/firefishexample/kawaii"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("ablobcatnodfast@."),
+                url: String::from("https://example.com/files/ablobcatnodfast"),
+                category: None,
+            },
+        ];
+        let reactions = HashMap::from([
+            (String::from(":ablobcatnodfast@.:"), 2),
+            (String::from(":kawaii@firefish.example:"), 1),
+        ]);
+
+        let res = map_reaction(emojis, reactions, None);
+        assert_eq!(res.len(), 2);
+
+        let ablobcat = res
+            .iter()
+            .find(|r| r.name == String::from("ablobcatnodfast"));
+        assert_ne!(ablobcat, None);
+
+        assert_eq!(
+            ablobcat.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 2,
+                me: false,
+                name: String::from("ablobcatnodfast"),
+                url: Some(String::from("https://example.com/files/ablobcatnodfast")),
+                static_url: Some(String::from("https://example.com/files/ablobcatnodfast")),
+                accounts: None,
+            },
+        );
+
+        let kawaii = res
+            .iter()
+            .find(|r| r.name == String::from("kawaii@firefish.example"));
+        assert_ne!(kawaii, None);
+
+        assert_eq!(
+            kawaii.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 1,
+                me: false,
+                name: String::from("kawaii@firefish.example"),
+                url: Some(String::from(
+                    "https://example.com/proxy/firefishexample/kawaii"
+                )),
+                static_url: Some(String::from(
+                    "https://example.com/proxy/firefishexample/kawaii"
+                )),
+                accounts: None,
+            }
+        );
+    }
+
+    #[test]
+    fn test_map_reaction_empty_emojis() {
+        let emojis = vec![];
+        let reactions = HashMap::from([
+            (String::from(":ablobcatnodfast@.:"), 2),
+            (String::from(":kawaii@firefish.example:"), 1),
+        ]);
+
+        let res = map_reaction(emojis, reactions, None);
+        assert_eq!(res.len(), 2);
+
+        let ablobcat = res
+            .iter()
+            .find(|r| r.name == String::from("ablobcatnodfast"));
+        assert_ne!(ablobcat, None);
+
+        assert_eq!(
+            ablobcat.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 2,
+                me: false,
+                name: String::from("ablobcatnodfast"),
+                url: None,
+                static_url: None,
+                accounts: None,
+            },
+        );
+
+        let kawaii = res
+            .iter()
+            .find(|r| r.name == String::from("kawaii@firefish.example"));
+        assert_ne!(kawaii, None);
+
+        assert_eq!(
+            kawaii.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 1,
+                me: false,
+                name: String::from("kawaii@firefish.example"),
+                url: None,
+                static_url: None,
+                accounts: None,
+            }
+        );
+    }
+
+    #[test]
+    fn test_map_reaction_with_me() {
+        let emojis = vec![
+            Emoji {
+                name: String::from("foxverified"),
+                url: String::from("https://example.com/files/foxverified"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("verificado"),
+                url: String::from("https://example.com/files/verificado"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("kawaii@firefish.example"),
+                url: String::from("https://example.com/proxy/firefishexample/kawaii"),
+                category: None,
+            },
+            Emoji {
+                name: String::from("ablobcatnodfast@."),
+                url: String::from("https://example.com/files/ablobcatnodfast"),
+                category: None,
+            },
+        ];
+        let reactions = HashMap::from([
+            (String::from(":ablobcatnodfast@.:"), 2),
+            (String::from(":kawaii@firefish.example:"), 1),
+        ]);
+
+        let res = map_reaction(emojis, reactions, Some(String::from(":ablobcatnodfast@.:")));
+        assert_eq!(res.len(), 2);
+
+        let ablobcat = res
+            .iter()
+            .find(|r| r.name == String::from("ablobcatnodfast"));
+        assert_ne!(ablobcat, None);
+
+        assert_eq!(
+            ablobcat.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 2,
+                me: true,
+                name: String::from("ablobcatnodfast"),
+                url: Some(String::from("https://example.com/files/ablobcatnodfast")),
+                static_url: Some(String::from("https://example.com/files/ablobcatnodfast")),
+                accounts: None,
+            },
+        );
+
+        let kawaii = res
+            .iter()
+            .find(|r| r.name == String::from("kawaii@firefish.example"));
+        assert_ne!(kawaii, None);
+
+        assert_eq!(
+            kawaii.unwrap(),
+            &MegalodonEntities::Reaction {
+                count: 1,
+                me: false,
+                name: String::from("kawaii@firefish.example"),
+                url: Some(String::from(
+                    "https://example.com/proxy/firefishexample/kawaii"
+                )),
+                static_url: Some(String::from(
+                    "https://example.com/proxy/firefishexample/kawaii"
+                )),
+                accounts: None,
+            }
+        );
+    }
+}

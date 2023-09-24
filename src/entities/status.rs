@@ -5,7 +5,7 @@ use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Status {
     pub id: String,
     pub uri: String,
@@ -40,7 +40,7 @@ pub struct Status {
     pub bookmarked: Option<bool>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum StatusVisibility {
     Public,
@@ -74,7 +74,7 @@ impl FromStr for StatusVisibility {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Tag {
     pub name: String,
     pub url: String,

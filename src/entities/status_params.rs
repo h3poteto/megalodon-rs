@@ -2,7 +2,7 @@ use super::StatusVisibility;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct StatusParams {
     pub text: String,
     pub in_reply_to_id: Option<String>,

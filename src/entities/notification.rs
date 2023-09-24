@@ -5,7 +5,7 @@ use core::str::FromStr;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Notification {
     pub account: Option<Account>,
     pub created_at: DateTime<Utc>,
@@ -17,7 +17,7 @@ pub struct Notification {
     pub r#type: NotificationType,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationType {
     Follow,

@@ -2,7 +2,7 @@ use super::{Emoji, Field};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct FollowRequest {
     pub id: u64,
     pub username: String,
