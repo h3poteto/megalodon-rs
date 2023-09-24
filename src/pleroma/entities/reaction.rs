@@ -16,6 +16,8 @@ impl Into<MegalodonEntities::Reaction> for Reaction {
             count: self.count,
             me: self.me,
             name: self.name,
+            url: None,
+            static_url: None,
             accounts: self
                 .accounts
                 .map(|i| i.into_iter().map(|a| a.into()).collect()),

@@ -3,9 +3,9 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Emoji {
-    name: String,
-    url: String,
-    category: Option<String>,
+    pub(crate) name: String,
+    pub(crate) url: String,
+    pub(crate) category: Option<String>,
 }
 
 impl Into<MegalodonEntities::Emoji> for Emoji {

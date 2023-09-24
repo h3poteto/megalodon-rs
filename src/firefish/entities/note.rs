@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::{collections::HashMap, str::FromStr};
 
+use super::reaction::map_reaction;
 use super::{Emoji, File, Poll, User};
 use crate::entities as MegalodonEntities;
 use crate::error::{Error, Kind};
@@ -11,28 +12,28 @@ use crate::error::{Error, Kind};
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Note {
-    id: String,
-    created_at: DateTime<Utc>,
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<Utc>,
     // user_id: String,
     pub user: User,
-    text: Option<String>,
-    cw: Option<String>,
-    visibility: StatusVisibility,
-    renote_count: u32,
-    replies_count: u32,
-    reactions: HashMap<String, u32>,
-    emojis: Option<Vec<Emoji>>,
+    pub(crate) text: Option<String>,
+    pub(crate) cw: Option<String>,
+    pub(crate) visibility: StatusVisibility,
+    pub(crate) renote_count: u32,
+    pub(crate) replies_count: u32,
+    pub(crate) reactions: HashMap<String, u32>,
+    pub(crate) emojis: Option<Vec<Emoji>>,
     // file_ids: Option<Vec<String>>,
-    files: Option<Vec<File>>,
-    reply_id: Option<String>,
+    pub(crate) files: Option<Vec<File>>,
+    pub(crate) reply_id: Option<String>,
     // renote_id: Option<String>,
-    uri: Option<String>,
+    pub(crate) uri: Option<String>,
     // reply: Option<Box<Note>>,
-    renote: Option<Box<Note>>,
-    tags: Option<Vec<String>>,
-    poll: Option<Poll>,
+    pub(crate) renote: Option<Box<Note>>,
+    pub(crate) tags: Option<Vec<String>>,
+    pub(crate) poll: Option<Poll>,
     // mentions: Option<Vec<String>>,
-    my_reaction: Option<String>,
+    pub(crate) my_reaction: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
@@ -144,7 +145,11 @@ impl Into<MegalodonEntities::Status> for Note {
                 })
                 .collect();
         }
-        let emoji_reactions = Some(map_reactions(self.reactions, self.my_reaction.clone()));
+        let emoji_reactions = Some(map_reaction(
+            self.emojis.clone().unwrap_or_default(),
+            self.reactions,
+            self.my_reaction.clone(),
+        ));
 
         MegalodonEntities::Status {
             id: self.id,
@@ -157,9 +162,12 @@ impl Into<MegalodonEntities::Status> for Note {
             content,
             plain_content: self.text,
             created_at: self.created_at,
-            emojis: self
-                .emojis
-                .map_or([].to_vec(), |o| o.into_iter().map(|e| e.into()).collect()),
+            emojis: self.emojis.map_or([].to_vec(), |o| {
+                o.into_iter()
+                    .filter(|e| !e.name.contains("@"))
+                    .map(|e| e.into())
+                    .collect()
+            }),
             replies_count: self.replies_count,
             reblogs_count: self.renote_count,
             favourites_count: 0,
@@ -186,36 +194,6 @@ impl Into<MegalodonEntities::Status> for Note {
             quote: quoted,
             bookmarked: None,
         }
-    }
-}
-
-fn map_reactions(
-    reactions: HashMap<String, u32>,
-    my_reaction: Option<String>,
-) -> Vec<MegalodonEntities::Reaction> {
-    if let Some(my) = my_reaction {
-        reactions
-            .into_iter()
-            .map(|(key, value)| {
-                let me = my == key;
-                MegalodonEntities::Reaction {
-                    count: value,
-                    me,
-                    name: key,
-                    accounts: None,
-                }
-            })
-            .collect()
-    } else {
-        reactions
-            .into_iter()
-            .map(|(key, value)| MegalodonEntities::Reaction {
-                count: value,
-                me: false,
-                name: key,
-                accounts: None,
-            })
-            .collect()
     }
 }
 
