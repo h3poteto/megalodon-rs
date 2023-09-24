@@ -120,6 +120,7 @@ impl Into<MegalodonEntities::Notification> for Notification {
             id: self.id,
             status: self.status.map(|i| i.into()),
             emoji: self.emoji,
+            reaction: None,
             target: self.target.map(|i| i.into()),
             r#type: self.r#type.into(),
         }

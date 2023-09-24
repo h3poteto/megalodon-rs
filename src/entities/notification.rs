@@ -1,22 +1,23 @@
-use super::{Account, Status};
+use super::{Account, Reaction, Status};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Notification {
     pub account: Option<Account>,
     pub created_at: DateTime<Utc>,
     pub id: String,
     pub status: Option<Status>,
     pub emoji: Option<String>,
+    pub reaction: Option<Reaction>,
     pub target: Option<Account>,
     pub r#type: NotificationType,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationType {
     Follow,
@@ -27,7 +28,10 @@ pub enum NotificationType {
     PollVote,
     PollExpired,
     Status,
+    // EmojiReaction contains only emoji as string.
     EmojiReaction,
+    // Reaction contains reaction object instead of emoji.
+    Reaction,
     Update,
     Move,
     AdminSignup,
@@ -49,6 +53,7 @@ impl fmt::Display for NotificationType {
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Status => write!(f, "status"),
             NotificationType::EmojiReaction => write!(f, "emoji_reaction"),
+            NotificationType::Reaction => write!(f, "reaction"),
             NotificationType::Update => write!(f, "update"),
             NotificationType::Move => write!(f, "move"),
             NotificationType::AdminSignup => write!(f, "admin.sign_up"),
@@ -73,6 +78,7 @@ impl FromStr for NotificationType {
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
             "emoji_reaction" => Ok(NotificationType::EmojiReaction),
+            "reaction" => Ok(NotificationType::Reaction),
             "update" => Ok(NotificationType::Update),
             "move" => Ok(NotificationType::Move),
             "admin.sign_up" => Ok(NotificationType::AdminSignup),

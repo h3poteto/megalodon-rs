@@ -2,7 +2,7 @@ use super::{status, Emoji};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Announcement {
     pub id: String,
     pub content: String,
@@ -21,7 +21,7 @@ pub struct Announcement {
     pub reactions: Vec<Reaction>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Account {
     pub id: String,
     pub username: String,
@@ -29,13 +29,13 @@ pub struct Account {
     pub acct: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Status {
     pub id: String,
     pub url: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Reaction {
     pub name: String,
     pub count: i64,

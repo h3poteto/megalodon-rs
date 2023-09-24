@@ -1,11 +1,11 @@
-use std::fmt;
-
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fmt;
 
 use crate::entities as MegalodonEntities;
 
-use super::{Note, User};
+use super::{reaction::map_reaction, Note, User};
 
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -67,6 +67,9 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
             MegalodonEntities::notification::NotificationType::EmojiReaction => {
                 NotificationType::Reaction
             }
+            MegalodonEntities::notification::NotificationType::Reaction => {
+                NotificationType::Reaction
+            }
             MegalodonEntities::notification::NotificationType::PollVote => {
                 NotificationType::PollVote
             }
@@ -106,7 +109,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
             NotificationType::Renote => MegalodonEntities::notification::NotificationType::Reblog,
             NotificationType::Quote => MegalodonEntities::notification::NotificationType::Reblog,
             NotificationType::Reaction => {
-                MegalodonEntities::notification::NotificationType::EmojiReaction
+                MegalodonEntities::notification::NotificationType::Reaction
             }
             NotificationType::PollVote => {
                 MegalodonEntities::notification::NotificationType::PollVote
@@ -131,12 +134,28 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
 
 impl Into<MegalodonEntities::Notification> for Notification {
     fn into(self) -> MegalodonEntities::Notification {
+        let emojis = if let Some(note) = &self.note {
+            note.clone().emojis.unwrap_or_default()
+        } else {
+            [].to_vec()
+        };
+        let reactions = map_reaction(
+            emojis,
+            HashMap::<String, u32>::from([(self.reaction, 1)]),
+            None,
+        );
+        let reaction = if reactions.len() > 0 {
+            Some(reactions[0].clone())
+        } else {
+            None
+        };
         MegalodonEntities::Notification {
             account: self.user.map(|u| u.into()),
             created_at: self.created_at,
             id: self.id,
             status: self.note.map(|n| n.into()),
-            emoji: Some(self.reaction),
+            emoji: None,
+            reaction,
             target: None,
             r#type: self.r#type.into(),
         }

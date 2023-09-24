@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use super::{Emoji, PollOption};
 use chrono::{DateTime, Utc};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Poll {
     pub id: String,
     pub expires_at: Option<DateTime<Utc>>,

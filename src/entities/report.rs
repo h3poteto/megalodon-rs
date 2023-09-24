@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use super::Account;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Report {
     pub id: String,
     pub action_taken: bool,

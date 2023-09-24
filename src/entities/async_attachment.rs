@@ -5,7 +5,7 @@ use super::{
     Attachment,
 };
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub struct AsyncAttachment {
     pub id: String,
     pub r#type: AttachmentType,
@@ -18,7 +18,7 @@ pub struct AsyncAttachment {
     pub blurhash: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub enum UploadMedia {
     Attachment(Attachment),
     AsyncAttachment(AsyncAttachment),

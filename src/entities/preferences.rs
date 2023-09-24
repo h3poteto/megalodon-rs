@@ -5,7 +5,7 @@ use std::str::FromStr;
 use super::StatusVisibility;
 use crate::error::{Error, Kind};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Preferences {
     pub posting_default_visibility: StatusVisibility,
     pub posting_default_sensitive: bool,
@@ -14,7 +14,7 @@ pub struct Preferences {
     pub reading_expand_spoilers: bool,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ExpandMedia {
     Default,

@@ -4,7 +4,7 @@ use std::str::FromStr;
 
 use crate::error::Error;
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub struct Attachment {
     pub id: String,
     pub r#type: AttachmentType,
@@ -17,7 +17,7 @@ pub struct Attachment {
     pub blurhash: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub struct AttachmentMeta {
     pub original: Option<MetaSub>,
     pub small: Option<MetaSub>,
@@ -34,7 +34,7 @@ pub struct AttachmentMeta {
     pub audio_channel: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub struct MetaSub {
     // For Image, Gifv, Video
     pub width: Option<u32>,
@@ -50,13 +50,13 @@ pub struct MetaSub {
     pub bitrate: Option<u32>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
 pub struct Focus {
     pub x: f64,
     pub y: f64,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum AttachmentType {
     Image,
