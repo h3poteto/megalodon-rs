@@ -212,18 +212,39 @@ impl Firefish {
         q: String,
         options: Option<&megalodon::SearchInputOptions>,
     ) -> Result<Response<MegalodonEntities::Results>, Error> {
-        let accounts = self.search_accounts(q.clone(), options).await?;
-        let hashtags = self.search_hashtags(q.clone(), options).await?;
-        let statuses = self.search_statuses(q, options).await?;
+        let accounts = self
+            .search_accounts(q.clone(), options)
+            .await
+            .map(|r| r.json)
+            .unwrap_or_else(|e| {
+                log::warn!("{}", e);
+                [].to_vec()
+            });
+        let hashtags = self
+            .search_hashtags(q.clone(), options)
+            .await
+            .map(|r| r.json)
+            .unwrap_or_else(|e| {
+                log::warn!("{}", e);
+                [].to_vec()
+            });
+        let statuses = self
+            .search_statuses(q, options)
+            .await
+            .map(|r| r.json)
+            .unwrap_or_else(|e| {
+                log::warn!("{}", e);
+                [].to_vec()
+            });
         Ok(Response::<MegalodonEntities::Results>::new(
             MegalodonEntities::Results {
-                accounts: accounts.json.into_iter().map(|i| i.into()).collect(),
-                statuses: statuses.json.into_iter().map(|i| i.into()).collect(),
-                hashtags: hashtags.json.into_iter().map(|i| i.into()).collect(),
+                accounts: accounts.into_iter().map(|i| i.into()).collect(),
+                statuses: statuses.into_iter().map(|i| i.into()).collect(),
+                hashtags: hashtags.into_iter().map(|i| i.into()).collect(),
             },
-            accounts.status,
-            accounts.status_text,
-            accounts.header,
+            200,
+            String::from("200"),
+            reqwest::header::HeaderMap::default(),
         ))
     }
 }
