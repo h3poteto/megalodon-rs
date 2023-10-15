@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use rand::RngCore;
+use regex::Regex;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
@@ -246,6 +247,18 @@ impl Firefish {
             String::from("200"),
             reqwest::header::HeaderMap::default(),
         ))
+    }
+
+    fn reaction_name(&self, name: String) -> String {
+        let re = Regex::new(
+            r"\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F",
+        )
+        .unwrap();
+        if re.is_match(name.as_str()) {
+            name
+        } else {
+            format!(":{}:", name)
+        }
     }
 }
 
@@ -2332,7 +2345,7 @@ impl megalodon::Megalodon for Firefish {
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
         let params = HashMap::<&str, Value>::from([
             ("noteId", Value::String(id.clone())),
-            ("reaction", Value::String(emoji)),
+            ("reaction", Value::String(self.reaction_name(emoji))),
         ]);
         let _ = self
             .client
@@ -2345,9 +2358,12 @@ impl megalodon::Megalodon for Firefish {
     async fn delete_emoji_reaction(
         &self,
         id: String,
-        _emoji: String,
+        emoji: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        let params = HashMap::<&str, Value>::from([("noteId", Value::String(id.clone()))]);
+        let params = HashMap::<&str, Value>::from([
+            ("noteId", Value::String(id.clone())),
+            ("reaction", Value::String(self.reaction_name(emoji))),
+        ]);
         let _ = self
             .client
             .post::<()>("/api/notes/reactions/delete", &params, None)
