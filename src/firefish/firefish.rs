@@ -4,7 +4,7 @@ use rand::RngCore;
 use regex::Regex;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 use tokio::io::AsyncRead;
 use tokio_util::codec::{BytesCodec, FramedRead};
 
@@ -259,6 +259,30 @@ impl Firefish {
         } else {
             format!(":{}:", name)
         }
+    }
+
+    async fn get_default_post_privacy(
+        &self,
+    ) -> Result<Response<MegalodonEntities::StatusVisibility>, Error> {
+        let scopes = serde_json::to_value(["client", "base"]).unwrap();
+        let params = HashMap::<&str, Value>::from([
+            (
+                "key",
+                serde_json::Value::String("defaultNoteVisibility".to_string()),
+            ),
+            ("scope", scopes),
+        ]);
+        let res = self
+            .client
+            .post::<String>("/api/i/registry/get-unsecure", &params, None)
+            .await?;
+        let visibility = entities::note::StatusVisibility::from_str(res.json.as_str())?;
+        Ok(Response::<MegalodonEntities::StatusVisibility>::new(
+            visibility.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
     }
 }
 
@@ -1148,11 +1172,19 @@ impl megalodon::Megalodon for Firefish {
     }
 
     async fn get_preferences(&self) -> Result<Response<MegalodonEntities::Preferences>, Error> {
-        Err(Error::new_own(
-            "Firefish does not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let params = HashMap::<&str, Value>::new();
+        let res = self
+            .client
+            .post::<entities::UserDetail>("/api/i", &params, None)
+            .await?;
+
+        let visibility = self.get_default_post_privacy().await?;
+        let preferences = entities::preferences::convert_preferences(res.json, visibility.json);
+        Ok(Response::<MegalodonEntities::Preferences>::new(
+            preferences,
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 

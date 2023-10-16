@@ -17,6 +17,7 @@ pub mod mute;
 pub mod note;
 pub mod notification;
 pub mod poll;
+pub mod preferences;
 pub mod reaction;
 pub mod relation;
 pub mod session;
