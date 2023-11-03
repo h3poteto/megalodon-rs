@@ -60,10 +60,11 @@ pub mod streaming;
 
 pub use self::megalodon::Megalodon;
 pub use detector::detector;
+use serde::{Deserialize, Serialize};
 pub use streaming::Streaming;
 
 /// Which SNS.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub enum SNS {
     /// SNS is Mastodon.
     Mastodon,
