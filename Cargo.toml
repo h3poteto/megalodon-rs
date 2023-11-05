@@ -8,7 +8,13 @@ license = "MIT"
 repository = "https://github.com/h3poteto/megalodon-rs"
 homepage = "https://github.com/h3poteto/megalodon-rs"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[package.metadata.docs.rs]
+features = ["native-tls", "rustls-tls"]
+
+[features]
+default = ["rustls-tls"]
+native-tls = ["tokio-tungstenite/native-tls", "reqwest/native-tls", "oauth2/native-tls"]
+rustls-tls = ["tokio-tungstenite/rustls-tls-native-roots", "reqwest/rustls-tls", "oauth2/rustls-tls"]
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
@@ -22,7 +28,7 @@ url = "2.4.1"
 oauth2 = { version = "4.4" }
 sha1 = { version = "0.10" }
 hex = { version = "0.4" }
-tokio-tungstenite = { version = "0.20", features = ["native-tls"] }
+tokio-tungstenite = { version = "0.20"}
 urlencoding = { version = "2.1" }
 log = "0.4"
 thiserror = "1"
