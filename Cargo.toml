@@ -33,7 +33,7 @@ urlencoding = { version = "2.1" }
 log = "0.4"
 thiserror = "1"
 futures-util = "0.3"
-http = "0.2"
+http = "1.0"
 rand = "0.8"
 regex = "1"
 uuid = { version = "1.5", features = ["v4"]}
