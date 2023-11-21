@@ -23,7 +23,7 @@ reqwest = { version = "0.11", features = ["json", "multipart", "stream"] }
 tokio = { version = "1", features = ["full"] }
 tokio-util = { version = "0.7.10", features = ["codec"] }
 serde_json = "1.0.108"
-serde = { version = "1.0.190", features = ["derive"] }
+serde = { version = "1.0.193", features = ["derive"] }
 url = "2.4.1"
 oauth2 = { version = "4.4" }
 sha1 = { version = "0.10" }
