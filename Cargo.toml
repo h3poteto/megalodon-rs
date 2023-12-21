@@ -1,6 +1,6 @@
 [package]
 name = "megalodon"
-version = "0.11.6"
+version = "0.11.7"
 edition = "2021"
 authors = ["Akira Fukushima <h3.poteto@gmail.com>"]
 description = "Mastodon and Pleroma API client library for Rust."
