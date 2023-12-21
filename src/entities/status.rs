@@ -17,6 +17,7 @@ pub struct Status {
     pub content: String,
     pub plain_content: Option<String>,
     pub created_at: DateTime<Utc>,
+    pub edited_at: Option<DateTime<Utc>>,
     pub emojis: Vec<Emoji>,
     pub replies_count: u32,
     pub reblogs_count: u32,

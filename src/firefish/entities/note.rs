@@ -162,6 +162,7 @@ impl Into<MegalodonEntities::Status> for Note {
             content,
             plain_content: self.text,
             created_at: self.created_at,
+            edited_at: None,
             emojis: self.emojis.map_or([].to_vec(), |o| {
                 o.into_iter()
                     .filter(|e| !e.name.contains("@"))
