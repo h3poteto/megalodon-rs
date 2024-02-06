@@ -38,6 +38,7 @@ pub(crate) fn map_reaction(
                 url: url.clone(),
                 static_url: url,
                 accounts: None,
+                account_ids: None,
             }
         })
         .collect()

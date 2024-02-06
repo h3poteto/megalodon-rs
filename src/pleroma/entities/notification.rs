@@ -1,4 +1,4 @@
-use super::{Account, Status};
+use super::{Account, Reaction, Status};
 use crate::error::{Error, Kind};
 
 use crate::entities as MegalodonEntities;
@@ -15,7 +15,23 @@ pub struct Notification {
     status: Option<Status>,
     r#type: NotificationType,
     emoji: Option<String>,
+    emoji_url: Option<String>,
     target: Option<Account>,
+}
+
+impl Notification {
+    fn map_reaction(&self) -> Option<Reaction> {
+        let shortcode = self.emoji.clone()?;
+        let name = shortcode.replace(":", "");
+        Some(Reaction {
+            count: 1,
+            me: false,
+            name,
+            url: self.emoji_url.clone(),
+            accounts: None,
+            account_ids: None,
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -104,7 +120,7 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 MegalodonEntities::notification::NotificationType::PollExpired
             }
             NotificationType::PleromaEmojiReaction => {
-                MegalodonEntities::notification::NotificationType::EmojiReaction
+                MegalodonEntities::notification::NotificationType::Reaction
             }
             NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
             NotificationType::Move => MegalodonEntities::notification::NotificationType::Move,
@@ -114,13 +130,13 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
 
 impl Into<MegalodonEntities::Notification> for Notification {
     fn into(self) -> MegalodonEntities::Notification {
+        let reaction = self.clone().map_reaction();
         MegalodonEntities::Notification {
             account: Some(self.account.into()),
             created_at: self.created_at,
             id: self.id,
             status: self.status.map(|i| i.into()),
-            emoji: self.emoji,
-            reaction: None,
+            reaction: reaction.map(|i| i.into()),
             target: self.target.map(|i| i.into()),
             r#type: self.r#type.into(),
         }
