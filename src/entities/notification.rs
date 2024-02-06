@@ -11,7 +11,6 @@ pub struct Notification {
     pub created_at: DateTime<Utc>,
     pub id: String,
     pub status: Option<Status>,
-    pub emoji: Option<String>,
     pub reaction: Option<Reaction>,
     pub target: Option<Account>,
     pub r#type: NotificationType,
@@ -28,9 +27,6 @@ pub enum NotificationType {
     PollVote,
     PollExpired,
     Status,
-    // EmojiReaction contains only emoji as string.
-    EmojiReaction,
-    // Reaction contains reaction object instead of emoji.
     Reaction,
     Update,
     Move,
@@ -52,7 +48,6 @@ impl fmt::Display for NotificationType {
             NotificationType::PollExpired => write!(f, "poll_expired"),
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Status => write!(f, "status"),
-            NotificationType::EmojiReaction => write!(f, "emoji_reaction"),
             NotificationType::Reaction => write!(f, "reaction"),
             NotificationType::Update => write!(f, "update"),
             NotificationType::Move => write!(f, "move"),
@@ -77,7 +72,6 @@ impl FromStr for NotificationType {
             "poll_vote" => Ok(NotificationType::PollVote),
             "follow_request" => Ok(NotificationType::FollowRequest),
             "status" => Ok(NotificationType::Status),
-            "emoji_reaction" => Ok(NotificationType::EmojiReaction),
             "reaction" => Ok(NotificationType::Reaction),
             "update" => Ok(NotificationType::Update),
             "move" => Ok(NotificationType::Move),

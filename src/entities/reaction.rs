@@ -10,4 +10,5 @@ pub struct Reaction {
     pub url: Option<String>,
     pub static_url: Option<String>,
     pub accounts: Option<Vec<Account>>,
+    pub account_ids: Option<Vec<String>>,
 }

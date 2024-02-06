@@ -17,7 +17,7 @@ pub struct Notification {
     // user_id: Option<String>,
     user: Option<User>,
     note: Option<Note>,
-    reaction: String,
+    reaction: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
@@ -64,9 +64,6 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
             MegalodonEntities::notification::NotificationType::Follow => NotificationType::Follow,
             MegalodonEntities::notification::NotificationType::Mention => NotificationType::Mention,
             MegalodonEntities::notification::NotificationType::Reblog => NotificationType::Renote,
-            MegalodonEntities::notification::NotificationType::EmojiReaction => {
-                NotificationType::Reaction
-            }
             MegalodonEntities::notification::NotificationType::Reaction => {
                 NotificationType::Reaction
             }
@@ -139,11 +136,11 @@ impl Into<MegalodonEntities::Notification> for Notification {
         } else {
             [].to_vec()
         };
-        let reactions = map_reaction(
-            emojis,
-            HashMap::<String, u32>::from([(self.reaction, 1)]),
-            None,
-        );
+        let reactions = if let Some(reaction) = self.reaction {
+            map_reaction(emojis, HashMap::<String, u32>::from([(reaction, 1)]), None)
+        } else {
+            [].to_vec()
+        };
         let reaction = if reactions.len() > 0 {
             Some(reactions[0].clone())
         } else {
@@ -154,7 +151,6 @@ impl Into<MegalodonEntities::Notification> for Notification {
             created_at: self.created_at,
             id: self.id,
             status: self.note.map(|n| n.into()),
-            emoji: None,
             reaction,
             target: None,
             r#type: self.r#type.into(),
