@@ -94,6 +94,7 @@ mod test {
                 url: Some(String::from("https://example.com/files/ablobcatnodfast")),
                 static_url: Some(String::from("https://example.com/files/ablobcatnodfast")),
                 accounts: None,
+                account_ids: None,
             },
         );
 
@@ -115,6 +116,7 @@ mod test {
                     "https://example.com/proxy/firefishexample/kawaii"
                 )),
                 accounts: None,
+                account_ids: None,
             }
         );
     }
@@ -144,6 +146,7 @@ mod test {
                 url: None,
                 static_url: None,
                 accounts: None,
+                account_ids: None,
             },
         );
 
@@ -161,6 +164,7 @@ mod test {
                 url: None,
                 static_url: None,
                 accounts: None,
+                account_ids: None,
             }
         );
     }
@@ -211,6 +215,7 @@ mod test {
                 url: Some(String::from("https://example.com/files/ablobcatnodfast")),
                 static_url: Some(String::from("https://example.com/files/ablobcatnodfast")),
                 accounts: None,
+                account_ids: None,
             },
         );
 
@@ -232,6 +237,7 @@ mod test {
                     "https://example.com/proxy/firefishexample/kawaii"
                 )),
                 accounts: None,
+                account_ids: None,
             }
         );
     }
