@@ -38,4 +38,4 @@ regex = "1"
 uuid = { version = "1.6", features = ["v4"]}
 
 [dev-dependencies]
-env_logger = "0.10"
+env_logger = "0.11"
