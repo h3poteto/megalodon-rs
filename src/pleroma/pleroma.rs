@@ -2883,7 +2883,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .put::<entities::Status>(
                 format!(
-                    "/api/v1/pleroma/statuses/{}/reactions/{}",
+                    "/api/v1/pleroma/statuses/{}/reactions/:{}:",
                     id,
                     encode(emoji.as_str())
                 )
@@ -2910,7 +2910,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .delete::<entities::Status>(
                 format!(
-                    "/api/v1/pleroma/statuses/{}/reactions/{}",
+                    "/api/v1/pleroma/statuses/{}/reactions/:{}:",
                     id,
                     encode(emoji.as_str())
                 )
@@ -2955,7 +2955,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .get::<entities::Reaction>(
                 format!(
-                    "/api/v1/pleroma/statuses/{}/reactions/{}",
+                    "/api/v1/pleroma/statuses/{}/reactions/:{}:",
                     id,
                     encode(emoji.as_str())
                 )
