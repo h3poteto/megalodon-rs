@@ -1554,7 +1554,7 @@ impl megalodon::Megalodon for Mastodon {
         let params = HashMap::new();
         let Response { json: _, status, status_text, header } = self
             .client
-            .delete::<entities::Status>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
+            .delete::<Value>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
             .await?;
 
         Ok(Response::new((), status, status_text, header))
