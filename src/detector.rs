@@ -207,7 +207,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_detector_akkoma() {
-        let sns = detector("https://pleroma.noellabo.jp").await;
+        let sns = detector("https://blob.cat").await;
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Pleroma);
