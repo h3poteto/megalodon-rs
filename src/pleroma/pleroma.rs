@@ -1478,12 +1478,17 @@ impl megalodon::Megalodon for Pleroma {
 
     async fn delete_status(&self, id: String) -> Result<Response<()>, Error> {
         let params = HashMap::new();
-        let res = self
+        let Response {
+            json: _,
+            status,
+            status_text,
+            header,
+        } = self
             .client
-            .delete::<()>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
+            .delete::<Value>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
             .await?;
 
-        Ok(res)
+        Ok(Response::new((), status, status_text, header))
     }
 
     async fn get_status_context(
