@@ -13,7 +13,6 @@ This library is Rust version of [megalodon](https://github.com/h3poteto/megalodo
 - [x] Friendica
 - [x] Firefish
 - [x] Akkoma (Unofficial)
-- [x] Wildebeest (Unofficial)
 
 ## Features
 - [x] REST API
