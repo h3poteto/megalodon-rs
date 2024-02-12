@@ -85,7 +85,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
-                "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 _ => {
@@ -115,7 +114,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
-                "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 _ => {
@@ -145,7 +143,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "akkoma" => Ok(SNS::Pleroma),
                 "mastodon" => Ok(SNS::Mastodon),
                 "friendica" => Ok(SNS::Friendica),
-                "wildebeest" => Ok(SNS::Mastodon),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 _ => {
@@ -214,14 +211,6 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Pleroma);
-    }
-
-    #[tokio::test]
-    async fn test_detector_wildebeest() {
-        let sns = detector("https://wildebeest.mirror-kt.dev").await;
-
-        assert!(sns.is_ok());
-        assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
     #[tokio::test]
