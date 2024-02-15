@@ -29,8 +29,8 @@ pub struct PleromaConfig {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PleromaMetadata {
     pub account_activation_required: bool,
-    pub birthday_min_age: u32,
-    pub birthday_required: bool,
+    pub birthday_min_age: Option<u32>,
+    pub birthday_required: Option<bool>,
     pub features: Vec<String>,
     pub federation: Federation,
     pub fields_limits: FieldsLimits,
