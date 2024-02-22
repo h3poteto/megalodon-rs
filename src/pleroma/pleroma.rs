@@ -1430,6 +1430,20 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
+    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+        let res = self
+            .client
+            .get::<MegalodonEntities::StatusSource>(format!("/api/v1/statuses/{}/source", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::StatusSource>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn edit_status(
         &self,
         id: String,

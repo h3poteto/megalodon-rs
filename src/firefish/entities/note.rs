@@ -198,6 +198,17 @@ impl Into<MegalodonEntities::Status> for Note {
     }
 }
 
+impl Into<MegalodonEntities::StatusSource> for Note {
+    fn into(self) -> MegalodonEntities::StatusSource {
+        let Self {id, text, cw, ..} = self;
+        MegalodonEntities::StatusSource {
+            id,
+            text: text.unwrap_or_default(),
+            spoiler_text: cw.unwrap_or_default(),
+        }
+    }
+}
+
 impl Into<MegalodonEntities::Conversation> for Note {
     fn into(self) -> MegalodonEntities::Conversation {
         let accounts: Vec<MegalodonEntities::Account> = [self.user.clone().into()].to_vec();
