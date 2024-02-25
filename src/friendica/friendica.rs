@@ -1267,7 +1267,7 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
-    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(&self, _id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         // Check https://wiki.friendi.ca/docs/api-mastodon#currently_unimplemented_endpoints
         Err(Error::new_own(
             "Friendica does not support".to_string(),
