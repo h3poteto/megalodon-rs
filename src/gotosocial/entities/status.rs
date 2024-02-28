@@ -117,6 +117,7 @@ impl Into<MegalodonEntities::Status> for Status {
             content: self.content,
             plain_content: None,
             created_at: self.created_at,
+            edited_at: None,
             emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
             replies_count: self.replies_count,
             reblogs_count: self.reblogs_count,

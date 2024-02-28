@@ -8,9 +8,9 @@ use crate::error::{Error, Kind};
 use crate::streaming::{Message, Streaming};
 use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
-use http;
 use serde::Deserialize;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
+use tokio_tungstenite::tungstenite::http::StatusCode;
 use tokio_tungstenite::{
     connect_async, tungstenite::error, tungstenite::protocol::frame::coding::CloseCode,
     tungstenite::protocol::Message as WebSocketMessage,
@@ -161,7 +161,7 @@ impl WebSocket {
             log::error!("Failed to connect: {}", e);
             match e {
                 error::Error::Http(response) => match response.status() {
-                    http::StatusCode::UNAUTHORIZED => InnerError::new(InnerKind::UnauthorizedError),
+                    StatusCode::UNAUTHORIZED => InnerError::new(InnerKind::UnauthorizedError),
                     _ => InnerError::new(InnerKind::ConnectionError),
                 },
                 _ => InnerError::new(InnerKind::ConnectionError),

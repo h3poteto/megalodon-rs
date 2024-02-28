@@ -15,7 +15,6 @@ pub struct Relationship {
     showing_reblogs: bool,
     endorsed: bool,
     notifying: bool,
-    #[allow(dead_code)]
     note: String,
 }
 
@@ -25,7 +24,6 @@ impl Into<MegalodonEntities::Relationship> for Relationship {
             id: self.id,
             following: self.following,
             followed_by: self.followed_by,
-            delivery_following: None,
             blocking: self.blocking,
             blocked_by: self.blocked_by,
             muting: self.muting,
@@ -35,6 +33,7 @@ impl Into<MegalodonEntities::Relationship> for Relationship {
             showing_reblogs: self.showing_reblogs,
             endorsed: self.endorsed,
             notifying: self.notifying,
+            note: Some(self.note),
         }
     }
 }

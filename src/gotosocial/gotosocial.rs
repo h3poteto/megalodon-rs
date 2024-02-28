@@ -14,11 +14,12 @@ use oauth2::basic::BasicClient;
 use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
+use rand::RngCore;
 use reqwest::header::HeaderMap;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
-use tokio::fs::File;
+use tokio::{fs::File, io::AsyncRead};
 use tokio_util::codec::{BytesCodec, FramedRead};
 
 /// Gotosocial API client which satisfies megalodon trait.
@@ -92,7 +93,7 @@ impl megalodon::Megalodon for Gotosocial {
                 app.client_id.clone(),
                 app.client_secret.clone(),
                 scope,
-                app.redirect_uri.clone(),
+                app.redirect_uri.clone().unwrap(),
             )
             .await?;
         app.url = Some(url);
@@ -1500,16 +1501,16 @@ impl megalodon::Megalodon for Gotosocial {
         ))
     }
 
-    async fn upload_media(
+    async fn upload_media_reader(
         &self,
-        file_path: String,
+        reader: Box<dyn AsyncRead + Sync + Send + Unpin>,
         options: Option<&megalodon::UploadMediaInputOptions>,
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
-        let file = File::open(file_path.clone()).await?;
+        let mut file_name_unhash = [0; 32];
+        rand::thread_rng().fill_bytes(&mut file_name_unhash);
+        let file_name = hex::encode(Sha1::digest(file_name_unhash));
 
-        let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
-
-        let stream = FramedRead::new(file, BytesCodec::new());
+        let stream = FramedRead::new(reader, BytesCodec::new());
         let file_body = reqwest::Body::wrap_stream(stream);
         let part = reqwest::multipart::Part::stream(file_body).file_name(file_name);
 
@@ -1608,6 +1609,7 @@ impl megalodon::Megalodon for Gotosocial {
         &self,
         _id: String,
         _choices: Vec<u32>,
+        _status_id: Option<String>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
@@ -1866,7 +1868,7 @@ impl megalodon::Megalodon for Gotosocial {
     async fn get_conversation_timeline(
         &self,
         _options: Option<&megalodon::GetConversationTimelineInputOptions>,
-    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+    ) -> Result<Response<Vec<MegalodonEntities::Conversation>>, Error> {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
@@ -2232,11 +2234,13 @@ impl megalodon::Megalodon for Gotosocial {
     async fn search(
         &self,
         q: String,
-        r#type: &megalodon::SearchType,
         options: Option<&megalodon::SearchInputOptions>,
     ) -> Result<Response<MegalodonEntities::Results>, Error> {
-        let mut params = Vec::<String>::from([format!("q={}", q), format!("type={}", r#type)]);
+        let mut params = Vec::<String>::from([format!("q={}", q)]);
         if let Some(options) = options {
+            if let Some(t) = &options.r#type {
+                params.push(format!("type={}", t));
+            }
             if let Some(limit) = options.limit {
                 params.push(format!("limit={}", limit));
             }

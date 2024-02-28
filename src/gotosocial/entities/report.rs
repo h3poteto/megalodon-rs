@@ -40,12 +40,13 @@ impl Into<MegalodonEntities::Report> for Report {
         MegalodonEntities::Report {
             id: self.id,
             action_taken: self.action_taken,
-            category: self.category.into(),
-            comment: self.comment,
-            forwarded: self.forwarded,
+            action_taken_at: None,
             status_ids: self.status_ids,
+            category: Some(self.category.into()),
+            comment: Some(self.comment),
+            forwarded: Some(self.forwarded),
             rule_ids: self.rule_ids,
-            target_account: self.target_account.into(),
+            target_account: Some(self.target_account.into()),
         }
     }
 }

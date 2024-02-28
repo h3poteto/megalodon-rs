@@ -47,11 +47,13 @@ impl Into<MegalodonEntities::Card> for Card {
             image: self.image,
             author_name: self.author_name,
             author_url: self.author_url,
-            provider_name: self.provider_name,
-            provider_url: self.provider_url,
+            provider_name: self.provider_name.map_or(String::from(""), |f| f),
+            provider_url: self.provider_url.map_or(String::from(""), |f| f),
             html: self.html,
             width: self.width,
             height: self.height,
+            embed_url: None,
+            blurhash: None,
         }
     }
 }
