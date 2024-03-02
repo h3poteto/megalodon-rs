@@ -2429,7 +2429,20 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
-    fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn streaming_url(&self) -> String {
+        let instance = self.get_instance().await;
+        if let Ok(instance) = instance {
+            match instance.json.urls {
+                Some(urls) => return urls.streaming_api,
+                _ => {}
+            };
+        }
+
+        self.base_url.clone()
+    }
+
+    async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("user"),
@@ -2441,7 +2454,8 @@ impl megalodon::Megalodon for Firefish {
         Box::new(c)
     }
 
-    fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("globalTimeline"),
@@ -2453,7 +2467,8 @@ impl megalodon::Megalodon for Firefish {
         Box::new(c)
     }
 
-    fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("localTimeline"),
@@ -2465,7 +2480,8 @@ impl megalodon::Megalodon for Firefish {
         Box::new(c)
     }
 
-    fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("conversation"),
@@ -2477,11 +2493,8 @@ impl megalodon::Megalodon for Firefish {
         Box::new(c)
     }
 
-    fn tag_streaming(
-        &self,
-        streaming_url: String,
-        _tag: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn tag_streaming(&self, _tag: String) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("hashtag"),
@@ -2493,11 +2506,8 @@ impl megalodon::Megalodon for Firefish {
         Box::new(c)
     }
 
-    fn list_streaming(
-        &self,
-        streaming_url: String,
-        list_id: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync> {
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/streaming",
             String::from("list"),

@@ -6,8 +6,8 @@ use megalodon::{generator, streaming::Message};
 async fn main() {
     env_logger::init();
 
-    let Ok(url) = env::var("FIREFISH_STREAMING_URL") else {
-        println!("Specify FIREFISH_STREAMING_URL!!");
+    let Ok(url) = env::var("FIREFISH_URL") else {
+        println!("Specify FIREFISH_URL!!");
         return;
     };
     let Ok(token) = env::var("FIREFISH_ACCESS_TOKEN") else {
@@ -25,7 +25,7 @@ async fn streaming(url: &str, access_token: String) {
         Some(access_token),
         None,
     );
-    let streaming = client.local_streaming(url.to_string());
+    let streaming = client.local_streaming().await;
 
     streaming
         .listen(Box::new(|message| match message {

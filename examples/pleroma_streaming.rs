@@ -5,13 +5,13 @@ use std::env;
 async fn main() {
     env_logger::init();
 
-    let Ok(url) = env::var("PLEROMA_STREAMING_URL") else {
-        println!("Specify PLEROMA_STREAMING_URL!!");
-        return
+    let Ok(url) = env::var("PLEROMA_URL") else {
+        println!("Specify PLEROMA_URL!!");
+        return;
     };
     let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     streaming(url.as_str(), token).await;
@@ -24,7 +24,7 @@ async fn streaming(url: &str, access_token: String) {
         Some(access_token),
         None,
     );
-    let streaming = client.user_streaming(url.to_string());
+    let streaming = client.user_streaming().await;
 
     streaming
         .listen(Box::new(|message| match message {
