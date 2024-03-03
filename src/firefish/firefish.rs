@@ -1318,6 +1318,20 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
+    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+        let params = HashMap::<&str, Value>::from([("noteId", Value::String(id))]);
+        let res = self
+            .client
+            .post::<entities::Note>("/api/notes/show", &params, None)
+            .await?;
+        Ok(Response::<MegalodonEntities::StatusSource>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn edit_status(
         &self,
         id: String,
