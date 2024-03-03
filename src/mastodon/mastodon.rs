@@ -18,6 +18,7 @@ use rand::RngCore;
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::HashMap;
+use std::ops::Sub;
 use tokio::{fs::File, io::AsyncRead};
 use tokio_util::codec::{BytesCodec, FramedRead};
 
@@ -1416,6 +1417,9 @@ impl megalodon::Megalodon for Mastodon {
     ) -> Result<Response<megalodon::PostStatusOutput>, Error> {
         let mut params =
             HashMap::<&str, Value>::from([("status", serde_json::Value::String(status))]);
+
+        let mut is_scheduled = false;
+
         if let Some(options) = options {
             if let Some(media_ids) = &options.media_ids {
                 if let Some(json_media_ids) = serde_json::to_value(media_ids).ok() {
@@ -1447,10 +1451,16 @@ impl megalodon::Megalodon for Mastodon {
                 );
             }
             if let Some(scheduled_at) = options.scheduled_at {
-                params.insert(
-                    "scheduled_at",
-                    serde_json::to_value(scheduled_at.to_rfc3339()).unwrap(),
-                );
+
+                // https://docs.joinmastodon.org/methods/statuses/#form-data-parameters
+                // scheduled_at must be at least 5 mins in the futur
+                if scheduled_at.sub(Utc::now()).num_minutes() > 5 {
+                    is_scheduled = true;
+                    params.insert(
+                        "scheduled_at",
+                        serde_json::to_value(scheduled_at.to_rfc3339()).unwrap(),
+                    );
+                }
             }
             if let Some(language) = &options.language {
                 params.insert("language", serde_json::Value::String(language.clone()));
@@ -1463,7 +1473,7 @@ impl megalodon::Megalodon for Mastodon {
             }
         }
 
-        if params.contains_key("scheduled_at") {
+        if is_scheduled {
             let res = self
                 .client
                 .post::<entities::ScheduledStatus>("/api/v1/statuses", &params, None)
