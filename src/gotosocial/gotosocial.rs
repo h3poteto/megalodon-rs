@@ -1229,6 +1229,18 @@ impl megalodon::Megalodon for Gotosocial {
         ))
     }
 
+    async fn get_status_source(
+        &self,
+        _id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+        Err(Error::new_own(
+            "Gotosocial doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn edit_status(
         &self,
         _id: String,
