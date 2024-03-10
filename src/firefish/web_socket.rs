@@ -11,14 +11,17 @@ use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
 use serde_json::json;
 use tokio::net::TcpStream;
-use tokio_tungstenite::tungstenite::client::IntoClientRequest;
-use tokio_tungstenite::tungstenite::http::StatusCode;
-use tokio_tungstenite::MaybeTlsStream;
-use tokio_tungstenite::WebSocketStream;
 use tokio_tungstenite::{
-    connect_async, tungstenite::error, tungstenite::protocol::frame::coding::CloseCode,
-    tungstenite::protocol::Message as WebSocketMessage,
+    connect_async,
+    tungstenite::{
+        client::IntoClientRequest,
+        http::StatusCode,
+        protocol::{frame::coding::CloseCode, Message as WebSocketMessage},
+        Error as WebSocketError,
+    },
+    MaybeTlsStream, WebSocketStream,
 };
+use tracing::{debug, error, info, warn};
 use url::Url;
 use uuid::Uuid;
 
@@ -86,7 +89,7 @@ impl WebSocket {
                 "note" => {
                     let res = serde_json::from_value::<entities::Note>(mes.body.body.clone())
                         .map_err(|e| {
-                            log::error!(
+                            error!(
                                 "failed to parse note: {}\n{}",
                                 e.to_string(),
                                 &mes.body.body
@@ -99,7 +102,7 @@ impl WebSocket {
                     let res =
                         serde_json::from_value::<entities::Notification>(mes.body.body.clone())
                             .map_err(|e| {
-                                log::error!(
+                                error!(
                                     "failed to parse notification: {}\n{}",
                                     e.to_string(),
                                     &mes.body.body
@@ -111,7 +114,7 @@ impl WebSocket {
                 "mention" => {
                     let res = serde_json::from_value::<entities::Note>(mes.body.body.clone())
                         .map_err(|e| {
-                            log::error!(
+                            error!(
                                 "failed to parse note: {}\n{}",
                                 e.to_string(),
                                 &mes.body.body
@@ -121,7 +124,7 @@ impl WebSocket {
                     Ok(Message::Conversation(res.into()))
                 }
                 unknown => {
-                    log::warn!("Unknown body type message is received: {}", unknown);
+                    warn!("Unknown body type message is received: {}", unknown);
                     Ok(Message::Heartbeat())
                 }
             }
@@ -139,7 +142,7 @@ impl WebSocket {
         loop {
             match self.do_connect(url, &callback).await {
                 Ok(()) => {
-                    log::info!("connection for {} is  closed", url);
+                    info!("connection for {} is  closed", url);
                     return;
                 }
                 Err(err) => match err.kind {
@@ -148,11 +151,11 @@ impl WebSocket {
                     | InnerKind::UnusualSocketCloseError
                     | InnerKind::TimeoutError => {
                         thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
-                        log::info!("Reconnecting to {}", url);
+                        info!("Reconnecting to {}", url);
                         continue;
                     }
                     InnerKind::UnauthorizedError => {
-                        log::info!("Unauthorized so give up");
+                        info!("Unauthorized so give up");
                         return;
                     }
                 },
@@ -169,15 +172,15 @@ impl WebSocket {
             .unwrap()
             .into_client_request()
             .map_err(|e| {
-                log::error!("Failed to parse url: {}", e);
+                error!("Failed to parse url: {}", e);
                 InnerError::new(InnerKind::ConnectionError)
             })?;
         req.headers_mut()
             .insert("User-Agent", self.user_agent.parse().unwrap());
         let (socket, response) = connect_async(req).await.map_err(|e| {
-            log::error!("Failed to connect: {}", e);
+            error!("Failed to connect: {}", e);
             match e {
-                error::Error::Http(response) => match response.status() {
+                WebSocketError::Http(response) => match response.status() {
                     StatusCode::UNAUTHORIZED => InnerError::new(InnerKind::UnauthorizedError),
                     _ => InnerError::new(InnerKind::ConnectionError),
                 },
@@ -185,11 +188,11 @@ impl WebSocket {
             }
         })?;
 
-        log::debug!("Connected to {}", url);
-        log::debug!("Response HTTP code: {}", response.status());
-        log::debug!("Response contains the following headers:");
+        debug!("Connected to {}", url);
+        debug!("Response HTTP code: {}", response.status());
+        debug!("Response contains the following headers:");
         for (ref header, _value) in response.headers() {
-            log::debug!("* {}", header);
+            debug!("* {}", header);
         }
 
         let mut socket = self.connect_channel(socket).await;
@@ -201,15 +204,15 @@ impl WebSocket {
             )
             .await
             .map_err(|e| {
-                log::error!("Timeout reading message: {}", e);
+                error!("Timeout reading message: {}", e);
                 InnerError::new(InnerKind::TimeoutError)
             })?;
             let Some(r) = res else {
-                log::warn!("Response is empty");
+                warn!("Response is empty");
                 continue;
             };
             let msg = r.map_err(|e| {
-                log::error!("Failed to read message: {}", e);
+                error!("Failed to read message: {}", e);
                 InnerError::new(InnerKind::SocketReadError)
             })?;
             if msg.is_ping() {
@@ -217,17 +220,17 @@ impl WebSocket {
                     .send(WebSocketMessage::Pong(Vec::<u8>::new()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
             }
             if msg.is_close() {
                 let _ = socket.close(None).await.map_err(|e| {
-                    log::error!("{:#?}", e);
+                    error!("{:#?}", e);
                     e
                 });
                 if let WebSocketMessage::Close(Some(close)) = msg {
-                    log::warn!("Connection to {} is closed because {}", url, close.code);
+                    warn!("Connection to {} is closed because {}", url, close.code);
                     if close.code != CloseCode::Normal {
                         return Err(InnerError::new(InnerKind::UnusualSocketCloseError));
                     }
@@ -239,7 +242,7 @@ impl WebSocket {
                     callback(message);
                 }
                 Err(err) => {
-                    log::warn!("{}", err);
+                    warn!("{}", err);
                 }
             }
         }
@@ -262,7 +265,7 @@ impl WebSocket {
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
             }
@@ -278,7 +281,7 @@ impl WebSocket {
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
                 let home = json!({
@@ -291,12 +294,12 @@ impl WebSocket {
                         }
                     },
                 });
-                log::debug!("Sending {:?}", &home);
+                debug!("Sending {:?}", &home);
                 let _ = socket
                     .send(WebSocketMessage::Text(home.to_string()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
             }
@@ -312,12 +315,12 @@ impl WebSocket {
                         }
                     },
                 });
-                log::debug!("Sending {:?}", &data);
+                debug!("Sending {:?}", &data);
                 let _ = socket
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
             }
@@ -332,12 +335,12 @@ impl WebSocket {
                         }
                     },
                 });
-                log::debug!("Sending {:?}", &data);
+                debug!("Sending {:?}", &data);
                 let _ = socket
                     .send(WebSocketMessage::Text(data.to_string()))
                     .await
                     .map_err(|e| {
-                        log::error!("{:#?}", e);
+                        error!("{:#?}", e);
                         e
                     });
             }

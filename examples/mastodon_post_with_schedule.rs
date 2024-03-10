@@ -5,15 +5,15 @@ use megalodon::{error, generator, megalodon::PostStatusInputOptions};
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("MASTODON_URL") else {
         println!("Specify MASTODON_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
         println!("Specify MASTODON_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Mastodon, url, Some(token), None);

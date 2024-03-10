@@ -7,21 +7,21 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let file_path = "./sample.jpg".to_string();
     let Ok(res) = upload_media(url.as_str(), token.to_owned(), file_path.to_string()).await else {
         println!("failed to upload media");
-        return
+        return;
     };
     match res {
         entities::UploadMedia::AsyncAttachment(_) => {
@@ -32,7 +32,7 @@ async fn main() {
             let file_path = "./sample2.jpg".to_string();
             let Ok(res) = upload_media(url.as_str(), token.to_owned(), file_path).await else {
                 println!("failed to upload media");
-                return
+                return;
             };
             match res {
                 entities::UploadMedia::AsyncAttachment(_) => {

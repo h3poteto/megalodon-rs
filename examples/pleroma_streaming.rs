@@ -3,15 +3,15 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("PLEROMA_STREAMING_URL") else {
         println!("Specify PLEROMA_STREAMING_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     streaming(url.as_str(), token).await;

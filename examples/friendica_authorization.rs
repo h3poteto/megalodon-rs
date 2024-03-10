@@ -3,11 +3,11 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Friendica, url, None, None);
