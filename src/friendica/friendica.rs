@@ -122,7 +122,7 @@ impl megalodon::Megalodon for Friendica {
             .client
             .post::<oauth::AppDataFromServer>("/api/v1/apps", &params, None)
             .await?;
-        Ok(MegalodonOAuth::AppData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn fetch_access_token(
@@ -146,7 +146,7 @@ impl megalodon::Megalodon for Friendica {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn refresh_access_token(
@@ -168,7 +168,7 @@ impl megalodon::Megalodon for Friendica {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn revoke_access_token(
@@ -1267,7 +1267,10 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
-    async fn get_status_source(&self, _id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(
+        &self,
+        _id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         // Check https://wiki.friendi.ca/docs/api-mastodon#currently_unimplemented_endpoints
         Err(Error::new_own(
             "Friendica does not support".to_string(),

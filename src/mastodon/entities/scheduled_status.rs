@@ -11,14 +11,14 @@ pub struct ScheduledStatus {
     media_attachments: Vec<Attachment>,
 }
 
-impl Into<MegalodonEntities::ScheduledStatus> for ScheduledStatus {
-    fn into(self) -> MegalodonEntities::ScheduledStatus {
+impl From<ScheduledStatus> for MegalodonEntities::ScheduledStatus {
+    fn from(val: ScheduledStatus) -> Self {
         MegalodonEntities::ScheduledStatus {
-            id: self.id,
-            scheduled_at: self.scheduled_at,
-            params: self.params.into(),
+            id: val.id,
+            scheduled_at: val.scheduled_at,
+            params: val.params.into(),
             media_attachments: Some(
-                self.media_attachments
+                val.media_attachments
                     .into_iter()
                     .map(|i| i.into())
                     .collect(),
@@ -27,8 +27,8 @@ impl Into<MegalodonEntities::ScheduledStatus> for ScheduledStatus {
     }
 }
 
-impl Into<megalodon::PostStatusOutput> for ScheduledStatus {
-    fn into(self) -> megalodon::PostStatusOutput {
-        megalodon::PostStatusOutput::ScheduledStatus(self.into())
+impl From<ScheduledStatus> for megalodon::PostStatusOutput {
+    fn from(val: ScheduledStatus) -> Self {
+        megalodon::PostStatusOutput::ScheduledStatus(val.into())
     }
 }

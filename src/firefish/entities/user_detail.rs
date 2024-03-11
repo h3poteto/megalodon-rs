@@ -88,73 +88,73 @@ pub struct UserDetail {
     // email_notification_types: Option<Vec<String>>,
 }
 
-impl Into<MegalodonEntities::Account> for UserDetail {
-    fn into(self) -> MegalodonEntities::Account {
-        let mut acct = self.username.clone();
-        if let Some(host) = self.host {
-            acct = format!("{}@{}", self.username, host);
+impl From<UserDetail> for MegalodonEntities::Account {
+    fn from(val: UserDetail) -> Self {
+        let mut acct = val.username.clone();
+        if let Some(host) = val.host {
+            acct = format!("{}@{}", val.username, host);
         }
         let mut display_name = "".to_string();
-        if let Some(name) = self.name {
+        if let Some(name) = val.name {
             display_name = name;
         }
         let mut note = "".to_string();
-        if let Some(description) = self.description {
+        if let Some(description) = val.description {
             note = description;
         }
         let mut avatar = "".to_string();
-        if let Some(avatar_url) = self.avatar_url {
+        if let Some(avatar_url) = val.avatar_url {
             avatar = avatar_url;
         }
         let mut avatar_static = "".to_string();
-        if let Some(avatar_color) = self.avatar_color {
+        if let Some(avatar_color) = val.avatar_color {
             avatar_static = avatar_color;
         }
         let mut header = "".to_string();
-        if let Some(banner_url) = self.banner_url {
+        if let Some(banner_url) = val.banner_url {
             header = banner_url;
         }
         let mut header_static = "".to_string();
-        if let Some(banner_color) = self.banner_color {
+        if let Some(banner_color) = val.banner_color {
             header_static = banner_color;
         }
         let mut bot = false;
-        if let Some(is_bot) = self.is_bot {
+        if let Some(is_bot) = val.is_bot {
             bot = is_bot;
         }
 
         let source = MegalodonEntities::Source {
             privacy: None,
-            sensitive: self.always_mark_nsfw,
-            language: self.lang,
+            sensitive: val.always_mark_nsfw,
+            language: val.lang,
             note: note.clone(),
             fields: None,
         };
 
         MegalodonEntities::Account {
-            id: self.id,
-            username: self.username,
+            id: val.id,
+            username: val.username,
             acct: acct.clone(),
             display_name,
-            locked: self.is_locked,
+            locked: val.is_locked,
             discoverable: None,
             group: None,
-            noindex: self.is_indexable,
-            suspended: Some(self.is_suspended),
-            limited: Some(self.is_silenced),
-            created_at: self.created_at,
-            followers_count: self.followers_count,
-            following_count: self.following_count,
-            statuses_count: self.notes_count,
+            noindex: val.is_indexable,
+            suspended: Some(val.is_suspended),
+            limited: Some(val.is_silenced),
+            created_at: val.created_at,
+            followers_count: val.followers_count,
+            following_count: val.following_count,
+            statuses_count: val.notes_count,
             note,
             url: acct,
             avatar,
             avatar_static,
             header,
             header_static,
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
             moved: None,
-            fields: self.fields.into_iter().map(|j| j.into()).collect(),
+            fields: val.fields.into_iter().map(|j| j.into()).collect(),
             bot,
             source: Some(source),
             role: None,

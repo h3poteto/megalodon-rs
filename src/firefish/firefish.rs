@@ -329,7 +329,7 @@ impl megalodon::Megalodon for Firefish {
             .post::<oauth::AppDataFromServer>("/api/app/create", &params, None)
             .await?;
         if let Some(_) = res.json.secret {
-            Ok(MegalodonOAuth::AppData::from(res.json.into()))
+            Ok(res.json.into())
         } else {
             Err(Error::new_own(
                 "secret does not exist".to_string(),
@@ -355,7 +355,7 @@ impl megalodon::Megalodon for Firefish {
             .client
             .post::<oauth::TokenDataFromServer>("/api/auth/session/userKey", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn refresh_access_token(
@@ -1318,7 +1318,10 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
-    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         let params = HashMap::<&str, Value>::from([("noteId", Value::String(id))]);
         let res = self
             .client

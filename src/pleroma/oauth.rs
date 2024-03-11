@@ -22,28 +22,28 @@ pub struct TokenDataFromServer {
     refresh_token: Option<String>,
 }
 
-impl Into<oauth::AppData> for AppDataFromServer {
-    fn into(self) -> oauth::AppData {
+impl From<AppDataFromServer> for oauth::AppData {
+    fn from(val: AppDataFromServer) -> Self {
         oauth::AppData::new(
-            self.id,
-            self.name,
-            self.website,
-            Some(self.redirect_uri),
-            self.client_id,
-            self.client_secret,
+            val.id,
+            val.name,
+            val.website,
+            Some(val.redirect_uri),
+            val.client_id,
+            val.client_secret,
         )
     }
 }
 
-impl Into<oauth::TokenData> for TokenDataFromServer {
-    fn into(self) -> oauth::TokenData {
+impl From<TokenDataFromServer> for oauth::TokenData {
+    fn from(val: TokenDataFromServer) -> Self {
         oauth::TokenData::new(
-            self.access_token,
-            self.token_type,
-            Some(self.scope),
-            Some(self.created_at),
-            self.expires_in,
-            self.refresh_token,
+            val.access_token,
+            val.token_type,
+            Some(val.scope),
+            Some(val.created_at),
+            val.expires_in,
+            val.refresh_token,
         )
     }
 }

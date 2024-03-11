@@ -12,8 +12,8 @@ impl From<MegalodonEntities::Role> for Role {
     }
 }
 
-impl Into<MegalodonEntities::Role> for Role {
-    fn into(self) -> MegalodonEntities::Role {
-        MegalodonEntities::Role { name: self.name }
+impl From<Role> for MegalodonEntities::Role {
+    fn from(val: Role) -> Self {
+        MegalodonEntities::Role { name: val.name }
     }
 }

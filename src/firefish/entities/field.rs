@@ -8,13 +8,13 @@ pub struct Field {
     verified: Option<bool>,
 }
 
-impl Into<MegalodonEntities::Field> for Field {
-    fn into(self) -> MegalodonEntities::Field {
+impl From<Field> for MegalodonEntities::Field {
+    fn from(val: Field) -> Self {
         MegalodonEntities::Field {
-            name: self.name,
-            value: self.value,
+            name: val.name,
+            value: val.value,
             verified_at: None,
-            verified: self.verified,
+            verified: val.verified,
         }
     }
 }

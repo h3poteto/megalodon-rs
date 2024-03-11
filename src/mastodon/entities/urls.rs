@@ -6,10 +6,10 @@ pub struct URLs {
     streaming_api: String,
 }
 
-impl Into<MegalodonEntities::URLs> for URLs {
-    fn into(self) -> MegalodonEntities::URLs {
+impl From<URLs> for MegalodonEntities::URLs {
+    fn from(val: URLs) -> Self {
         MegalodonEntities::URLs {
-            streaming_api: self.streaming_api,
+            streaming_api: val.streaming_api,
         }
     }
 }

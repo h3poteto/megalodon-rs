@@ -25,14 +25,14 @@ impl From<MegalodonEntities::Source> for Source {
     }
 }
 
-impl Into<MegalodonEntities::Source> for Source {
-    fn into(self) -> MegalodonEntities::Source {
+impl From<Source> for MegalodonEntities::Source {
+    fn from(val: Source) -> Self {
         MegalodonEntities::Source {
-            privacy: self.privacy,
-            sensitive: self.sensitive,
-            language: self.language,
-            note: self.note,
-            fields: self
+            privacy: val.privacy,
+            sensitive: val.sensitive,
+            language: val.language,
+            note: val.note,
+            fields: val
                 .fields
                 .map(|i| i.into_iter().map(|j| j.into()).collect()),
         }

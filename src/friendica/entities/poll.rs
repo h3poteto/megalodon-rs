@@ -16,18 +16,18 @@ pub struct Poll {
     emojis: Vec<Emoji>,
 }
 
-impl Into<MegalodonEntities::Poll> for Poll {
-    fn into(self) -> MegalodonEntities::Poll {
+impl From<Poll> for MegalodonEntities::Poll {
+    fn from(val: Poll) -> Self {
         MegalodonEntities::Poll {
-            id: self.id,
-            expires_at: self.expires_at,
-            expired: self.expired,
-            multiple: self.multiple,
-            votes_count: self.votes_count,
-            voters_count: self.voters_count,
-            options: self.options.into_iter().map(|i| i.into()).collect(),
-            voted: self.voted,
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
+            id: val.id,
+            expires_at: val.expires_at,
+            expired: val.expired,
+            multiple: val.multiple,
+            votes_count: val.votes_count,
+            voters_count: val.voters_count,
+            options: val.options.into_iter().map(|i| i.into()).collect(),
+            voted: val.voted,
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
         }
     }
 }

@@ -8,12 +8,12 @@ pub struct Application {
     vapid_key: Option<String>,
 }
 
-impl Into<MegalodonEntities::Application> for Application {
-    fn into(self) -> MegalodonEntities::Application {
+impl From<Application> for MegalodonEntities::Application {
+    fn from(val: Application) -> Self {
         MegalodonEntities::Application {
-            name: self.name,
-            website: self.website,
-            vapid_key: self.vapid_key,
+            name: val.name,
+            website: val.website,
+            vapid_key: val.vapid_key,
         }
     }
 }

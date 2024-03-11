@@ -54,35 +54,35 @@ impl From<MegalodonEntities::FollowRequest> for FollowRequest {
     }
 }
 
-impl Into<MegalodonEntities::FollowRequest> for FollowRequest {
-    fn into(self) -> MegalodonEntities::FollowRequest {
+impl From<FollowRequest> for MegalodonEntities::FollowRequest {
+    fn from(val: FollowRequest) -> Self {
         MegalodonEntities::FollowRequest {
-            id: self.id,
-            username: self.username,
-            acct: self.acct,
-            display_name: self.display_name,
-            locked: self.locked,
-            bot: self.bot,
-            discoverable: self.discoverable,
-            group: self.group,
-            created_at: self.created_at,
-            note: self.note,
-            url: self.url,
-            avatar: self.avatar,
-            avatar_static: self.avatar_static,
-            header: self.header,
-            header_static: self.header_static,
-            followers_count: self.followers_count,
-            following_count: self.following_count,
-            statuses_count: self.statuses_count,
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
-            fields: self.fields.into_iter().map(|i| i.into()).collect(),
+            id: val.id,
+            username: val.username,
+            acct: val.acct,
+            display_name: val.display_name,
+            locked: val.locked,
+            bot: val.bot,
+            discoverable: val.discoverable,
+            group: val.group,
+            created_at: val.created_at,
+            note: val.note,
+            url: val.url,
+            avatar: val.avatar,
+            avatar_static: val.avatar_static,
+            header: val.header,
+            header_static: val.header_static,
+            followers_count: val.followers_count,
+            following_count: val.following_count,
+            statuses_count: val.statuses_count,
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
+            fields: val.fields.into_iter().map(|i| i.into()).collect(),
         }
     }
 }
 
-impl Into<megalodon::FollowRequestOutput> for FollowRequest {
-    fn into(self) -> megalodon::FollowRequestOutput {
-        megalodon::FollowRequestOutput::FollowRequest(self.into())
+impl From<FollowRequest> for megalodon::FollowRequestOutput {
+    fn from(val: FollowRequest) -> Self {
+        megalodon::FollowRequestOutput::FollowRequest(val.into())
     }
 }

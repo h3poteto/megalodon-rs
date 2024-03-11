@@ -7,11 +7,11 @@ pub struct Report {
     pub action_taken: bool,
 }
 
-impl Into<MegalodonEntities::Report> for Report {
-    fn into(self) -> MegalodonEntities::Report {
+impl From<Report> for MegalodonEntities::Report {
+    fn from(val: Report) -> Self {
         MegalodonEntities::Report {
-            id: self.id,
-            action_taken: self.action_taken,
+            id: val.id,
+            action_taken: val.action_taken,
             action_taken_at: None,
             category: None,
             comment: None,

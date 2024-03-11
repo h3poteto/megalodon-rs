@@ -16,19 +16,19 @@ pub struct Relation {
     is_renote_muted: bool,
 }
 
-impl Into<MegalodonEntities::Relationship> for Relation {
-    fn into(self) -> MegalodonEntities::Relationship {
+impl From<Relation> for MegalodonEntities::Relationship {
+    fn from(val: Relation) -> Self {
         MegalodonEntities::Relationship {
-            id: self.id,
-            following: self.is_following,
-            followed_by: self.is_followed,
-            blocking: self.is_blocking,
-            blocked_by: self.is_blocked,
-            muting: self.is_muted,
+            id: val.id,
+            following: val.is_following,
+            followed_by: val.is_followed,
+            blocking: val.is_blocking,
+            blocked_by: val.is_blocked,
+            muting: val.is_muted,
             muting_notifications: false,
-            requested: self.has_pending_follow_request_from_you,
+            requested: val.has_pending_follow_request_from_you,
             domain_blocking: false,
-            showing_reblogs: self.is_renote_muted,
+            showing_reblogs: val.is_renote_muted,
             endorsed: false,
             notifying: false,
             note: None,

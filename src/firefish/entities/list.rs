@@ -10,11 +10,11 @@ pub struct List {
     pub user_ids: Option<Vec<String>>,
 }
 
-impl Into<MegalodonEntities::List> for List {
-    fn into(self) -> MegalodonEntities::List {
+impl From<List> for MegalodonEntities::List {
+    fn from(val: List) -> Self {
         MegalodonEntities::List {
-            id: self.id,
-            title: self.name,
+            id: val.id,
+            title: val.name,
             replies_policy: None,
         }
     }

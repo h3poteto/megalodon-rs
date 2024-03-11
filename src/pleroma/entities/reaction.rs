@@ -12,16 +12,16 @@ pub struct Reaction {
     pub url: Option<String>,
 }
 
-impl Into<MegalodonEntities::Reaction> for Reaction {
-    fn into(self) -> MegalodonEntities::Reaction {
+impl From<Reaction> for MegalodonEntities::Reaction {
+    fn from(val: Reaction) -> Self {
         MegalodonEntities::Reaction {
-            count: self.count,
-            me: self.me,
-            name: self.name,
-            url: self.url.clone(),
-            static_url: self.url,
-            account_ids: self.account_ids,
-            accounts: self
+            count: val.count,
+            me: val.me,
+            name: val.name,
+            url: val.url.clone(),
+            static_url: val.url,
+            account_ids: val.account_ids,
+            accounts: val
                 .accounts
                 .clone()
                 .map(|i| i.into_iter().map(|a| a.into()).collect()),

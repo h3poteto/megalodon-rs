@@ -97,9 +97,9 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
     }
 }
 
-impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
-    fn into(self) -> MegalodonEntities::notification::NotificationType {
-        match self {
+impl From<NotificationType> for MegalodonEntities::notification::NotificationType {
+    fn from(val: NotificationType) -> Self {
+        match val {
             NotificationType::Follow => MegalodonEntities::notification::NotificationType::Follow,
             NotificationType::Mention => MegalodonEntities::notification::NotificationType::Mention,
             NotificationType::Reply => MegalodonEntities::notification::NotificationType::Mention,
@@ -129,14 +129,14 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
     }
 }
 
-impl Into<MegalodonEntities::Notification> for Notification {
-    fn into(self) -> MegalodonEntities::Notification {
-        let emojis = if let Some(note) = &self.note {
+impl From<Notification> for MegalodonEntities::Notification {
+    fn from(val: Notification) -> Self {
+        let emojis = if let Some(note) = &val.note {
             note.clone().emojis.unwrap_or_default()
         } else {
             [].to_vec()
         };
-        let reactions = if let Some(reaction) = self.reaction {
+        let reactions = if let Some(reaction) = val.reaction {
             map_reaction(emojis, HashMap::<String, u32>::from([(reaction, 1)]), None)
         } else {
             [].to_vec()
@@ -147,13 +147,13 @@ impl Into<MegalodonEntities::Notification> for Notification {
             None
         };
         MegalodonEntities::Notification {
-            account: self.user.map(|u| u.into()),
-            created_at: self.created_at,
-            id: self.id,
-            status: self.note.map(|n| n.into()),
+            account: val.user.map(|u| u.into()),
+            created_at: val.created_at,
+            id: val.id,
+            status: val.note.map(|n| n.into()),
             reaction,
             target: None,
-            r#type: self.r#type.into(),
+            r#type: val.r#type.into(),
         }
     }
 }

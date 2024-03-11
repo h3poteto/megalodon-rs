@@ -16,18 +16,18 @@ pub struct Announcement {
     // is_good_news: bool,
 }
 
-impl Into<MegalodonEntities::Announcement> for Announcement {
-    fn into(self) -> MegalodonEntities::Announcement {
+impl From<Announcement> for MegalodonEntities::Announcement {
+    fn from(val: Announcement) -> Self {
         MegalodonEntities::Announcement {
-            id: self.id,
-            content: format!("{}\n{}", self.title, self.text),
+            id: val.id,
+            content: format!("{}\n{}", val.title, val.text),
             starts_at: None,
             ends_at: None,
             published: true,
             all_day: true,
-            published_at: self.created_at,
-            updated_at: self.updated_at,
-            read: self.is_read,
+            published_at: val.created_at,
+            updated_at: val.updated_at,
+            read: val.is_read,
             mentions: [].to_vec(),
             statuses: [].to_vec(),
             tags: [].to_vec(),

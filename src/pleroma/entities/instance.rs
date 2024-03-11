@@ -59,32 +59,32 @@ pub struct PollLimits {
     pub max_options: u32,
 }
 
-impl Into<MegalodonEntities::Instance> for Instance {
-    fn into(self) -> MegalodonEntities::Instance {
+impl From<Instance> for MegalodonEntities::Instance {
+    fn from(val: Instance) -> Self {
         MegalodonEntities::Instance {
-            uri: self.uri,
-            title: self.title,
-            description: self.description,
-            email: self.email,
-            version: self.version,
-            thumbnail: self.thumbnail,
-            urls: Some(self.urls.into()),
-            stats: self.stats.into(),
-            languages: self.languages,
-            registrations: self.registrations,
-            approval_required: self.approval_required,
+            uri: val.uri,
+            title: val.title,
+            description: val.description,
+            email: val.email,
+            version: val.version,
+            thumbnail: val.thumbnail,
+            urls: Some(val.urls.into()),
+            stats: val.stats.into(),
+            languages: val.languages,
+            registrations: val.registrations,
+            approval_required: val.approval_required,
             invites_enabled: None,
             configuration: MegalodonEntities::instance::InstanceConfig {
                 statuses: MegalodonEntities::instance::Statuses {
-                    max_characters: self.max_toot_chars,
-                    max_media_attachments: self.max_media_attachments,
+                    max_characters: val.max_toot_chars,
+                    max_media_attachments: val.max_media_attachments,
                     characters_reserved_per_url: None,
                 },
                 polls: Some(MegalodonEntities::instance::Polls {
-                    max_options: self.poll_limits.max_options,
-                    max_characters_per_option: self.poll_limits.max_option_chars,
-                    min_expiration: self.poll_limits.min_expiration,
-                    max_expiration: self.poll_limits.max_expiration,
+                    max_options: val.poll_limits.max_options,
+                    max_characters_per_option: val.poll_limits.max_option_chars,
+                    min_expiration: val.poll_limits.min_expiration,
+                    max_expiration: val.poll_limits.max_expiration,
                 }),
             },
             contact_account: None,

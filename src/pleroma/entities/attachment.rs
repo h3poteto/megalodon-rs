@@ -63,9 +63,9 @@ pub enum AttachmentType {
     Unknown,
 }
 
-impl Into<MegalodonEntities::attachment::AttachmentType> for AttachmentType {
-    fn into(self) -> MegalodonEntities::attachment::AttachmentType {
-        match self {
+impl From<AttachmentType> for MegalodonEntities::attachment::AttachmentType {
+    fn from(val: AttachmentType) -> Self {
+        match val {
             AttachmentType::Image => MegalodonEntities::attachment::AttachmentType::Image,
             AttachmentType::Gifv => MegalodonEntities::attachment::AttachmentType::Gifv,
             AttachmentType::Video => MegalodonEntities::attachment::AttachmentType::Video,
@@ -75,61 +75,58 @@ impl Into<MegalodonEntities::attachment::AttachmentType> for AttachmentType {
     }
 }
 
-impl Into<MegalodonEntities::Attachment> for Attachment {
-    fn into(self) -> MegalodonEntities::Attachment {
+impl From<Attachment> for MegalodonEntities::Attachment {
+    fn from(val: Attachment) -> Self {
         MegalodonEntities::Attachment {
-            id: self.id,
-            r#type: self.r#type.into(),
-            url: self.url,
-            remote_url: self.remote_url,
-            preview_url: self.preview_url,
-            text_url: self.text_url,
-            meta: self.meta.map(|i| i.into()),
-            description: self.description,
-            blurhash: self.blurhash,
+            id: val.id,
+            r#type: val.r#type.into(),
+            url: val.url,
+            remote_url: val.remote_url,
+            preview_url: val.preview_url,
+            text_url: val.text_url,
+            meta: val.meta.map(|i| i.into()),
+            description: val.description,
+            blurhash: val.blurhash,
         }
     }
 }
 
-impl Into<MegalodonEntities::attachment::AttachmentMeta> for AttachmentMeta {
-    fn into(self) -> MegalodonEntities::attachment::AttachmentMeta {
+impl From<AttachmentMeta> for MegalodonEntities::attachment::AttachmentMeta {
+    fn from(val: AttachmentMeta) -> Self {
         MegalodonEntities::attachment::AttachmentMeta {
-            original: self.original.map(|i| i.into()),
-            small: self.small.map(|i| i.into()),
-            focus: self.focus.map(|i| i.into()),
-            length: self.length,
-            duration: self.duration,
-            fps: self.fps,
-            size: self.size,
-            width: self.width,
-            height: self.height,
-            aspect: self.aspect,
-            audio_encode: self.audio_encode,
-            audio_bitrate: self.audio_bitrate,
-            audio_channel: self.audio_channel,
+            original: val.original.map(|i| i.into()),
+            small: val.small.map(|i| i.into()),
+            focus: val.focus.map(|i| i.into()),
+            length: val.length,
+            duration: val.duration,
+            fps: val.fps,
+            size: val.size,
+            width: val.width,
+            height: val.height,
+            aspect: val.aspect,
+            audio_encode: val.audio_encode,
+            audio_bitrate: val.audio_bitrate,
+            audio_channel: val.audio_channel,
         }
     }
 }
 
-impl Into<MegalodonEntities::attachment::MetaSub> for MetaSub {
-    fn into(self) -> MegalodonEntities::attachment::MetaSub {
+impl From<MetaSub> for MegalodonEntities::attachment::MetaSub {
+    fn from(val: MetaSub) -> Self {
         MegalodonEntities::attachment::MetaSub {
-            width: self.width,
-            height: self.height,
-            size: self.size,
-            aspect: self.aspect,
-            frame_rate: self.frame_rate,
-            duration: self.duration,
-            bitrate: self.bitrate,
+            width: val.width,
+            height: val.height,
+            size: val.size,
+            aspect: val.aspect,
+            frame_rate: val.frame_rate,
+            duration: val.duration,
+            bitrate: val.bitrate,
         }
     }
 }
 
-impl Into<MegalodonEntities::attachment::Focus> for Focus {
-    fn into(self) -> MegalodonEntities::attachment::Focus {
-        MegalodonEntities::attachment::Focus {
-            x: self.x,
-            y: self.y,
-        }
+impl From<Focus> for MegalodonEntities::attachment::Focus {
+    fn from(val: Focus) -> Self {
+        MegalodonEntities::attachment::Focus { x: val.x, y: val.y }
     }
 }

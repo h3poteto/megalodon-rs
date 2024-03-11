@@ -23,23 +23,23 @@ pub struct Instance {
     pub contact_account: Account,
 }
 
-impl Into<MegalodonEntities::Instance> for Instance {
-    fn into(self) -> MegalodonEntities::Instance {
+impl From<Instance> for MegalodonEntities::Instance {
+    fn from(val: Instance) -> Self {
         MegalodonEntities::Instance {
-            uri: self.uri,
-            title: self.title,
-            description: self.description,
-            email: self.email,
-            version: self.version,
-            thumbnail: self.thumbnail,
-            urls: Some(self.urls.into()),
-            stats: self.stats.into(),
-            languages: self.languages,
-            registrations: self.registrations,
-            approval_required: self.approval_required,
-            invites_enabled: Some(self.invites_enabled),
-            configuration: self.configuration.into(),
-            contact_account: Some(self.contact_account.into()),
+            uri: val.uri,
+            title: val.title,
+            description: val.description,
+            email: val.email,
+            version: val.version,
+            thumbnail: val.thumbnail,
+            urls: Some(val.urls.into()),
+            stats: val.stats.into(),
+            languages: val.languages,
+            registrations: val.registrations,
+            approval_required: val.approval_required,
+            invites_enabled: Some(val.invites_enabled),
+            configuration: val.configuration.into(),
+            contact_account: Some(val.contact_account.into()),
             rules: None,
         }
     }
@@ -50,10 +50,10 @@ pub struct URLs {
     pub streaming_api: String,
 }
 
-impl Into<MegalodonEntities::URLs> for URLs {
-    fn into(self) -> MegalodonEntities::URLs {
+impl From<URLs> for MegalodonEntities::URLs {
+    fn from(val: URLs) -> Self {
         MegalodonEntities::URLs {
-            streaming_api: self.streaming_api,
+            streaming_api: val.streaming_api,
         }
     }
 }
@@ -65,12 +65,12 @@ pub struct Stats {
     pub domain_count: u32,
 }
 
-impl Into<MegalodonEntities::Stats> for Stats {
-    fn into(self) -> MegalodonEntities::Stats {
+impl From<Stats> for MegalodonEntities::Stats {
+    fn from(val: Stats) -> Self {
         MegalodonEntities::Stats {
-            user_count: self.user_count,
-            status_count: self.status_count,
-            domain_count: self.domain_count,
+            user_count: val.user_count,
+            status_count: val.status_count,
+            domain_count: val.domain_count,
         }
     }
 }
@@ -82,11 +82,11 @@ pub struct InstanceConfig {
     pub polls: Polls,
 }
 
-impl Into<MegalodonEntities::instance::InstanceConfig> for InstanceConfig {
-    fn into(self) -> MegalodonEntities::instance::InstanceConfig {
+impl From<InstanceConfig> for MegalodonEntities::instance::InstanceConfig {
+    fn from(val: InstanceConfig) -> Self {
         MegalodonEntities::instance::InstanceConfig {
-            statuses: self.statuses.into(),
-            polls: Some(self.polls.into()),
+            statuses: val.statuses.into(),
+            polls: Some(val.polls.into()),
         }
     }
 }
@@ -98,12 +98,12 @@ pub struct Statuses {
     pub characters_reserved_per_url: u32,
 }
 
-impl Into<MegalodonEntities::instance::Statuses> for Statuses {
-    fn into(self) -> MegalodonEntities::instance::Statuses {
+impl From<Statuses> for MegalodonEntities::instance::Statuses {
+    fn from(val: Statuses) -> Self {
         MegalodonEntities::instance::Statuses {
-            max_characters: self.max_characters,
-            max_media_attachments: Some(self.max_media_attachments),
-            characters_reserved_per_url: Some(self.characters_reserved_per_url),
+            max_characters: val.max_characters,
+            max_media_attachments: Some(val.max_media_attachments),
+            characters_reserved_per_url: Some(val.characters_reserved_per_url),
         }
     }
 }
@@ -126,13 +126,13 @@ pub struct Polls {
     pub max_expiration: u32,
 }
 
-impl Into<MegalodonEntities::instance::Polls> for Polls {
-    fn into(self) -> MegalodonEntities::instance::Polls {
+impl From<Polls> for MegalodonEntities::instance::Polls {
+    fn from(val: Polls) -> Self {
         MegalodonEntities::instance::Polls {
-            max_options: self.max_options,
-            max_characters_per_option: self.max_characters_per_option,
-            min_expiration: self.min_expiration,
-            max_expiration: self.max_expiration,
+            max_options: val.max_options,
+            max_characters_per_option: val.max_characters_per_option,
+            min_expiration: val.min_expiration,
+            max_expiration: val.max_expiration,
         }
     }
 }

@@ -10,13 +10,13 @@ pub struct Conversation {
     unread: bool,
 }
 
-impl Into<MegalodonEntities::Conversation> for Conversation {
-    fn into(self) -> MegalodonEntities::Conversation {
+impl From<Conversation> for MegalodonEntities::Conversation {
+    fn from(val: Conversation) -> Self {
         MegalodonEntities::Conversation {
-            id: self.id,
-            accounts: self.accounts.into_iter().map(|i| i.into()).collect(),
-            last_status: self.last_status.map(|i| i.into()),
-            unread: self.unread,
+            id: val.id,
+            accounts: val.accounts.into_iter().map(|i| i.into()).collect(),
+            last_status: val.last_status.map(|i| i.into()),
+            unread: val.unread,
         }
     }
 }

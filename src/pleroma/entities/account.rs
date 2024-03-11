@@ -67,47 +67,47 @@ impl From<MegalodonEntities::Account> for Account {
     }
 }
 
-impl Into<MegalodonEntities::Account> for Account {
-    fn into(self) -> MegalodonEntities::Account {
+impl From<Account> for MegalodonEntities::Account {
+    fn from(val: Account) -> Self {
         let mut moved_account: Option<Box<MegalodonEntities::Account>> = None;
-        if let Some(moved) = self.moved {
+        if let Some(moved) = val.moved {
             let ma: Account = *moved;
             moved_account = Some(Box::new(ma.into()));
         }
         MegalodonEntities::Account {
-            id: self.id,
-            username: self.username,
-            acct: self.acct,
-            display_name: self.display_name,
-            locked: self.locked,
-            discoverable: self.discoverable,
+            id: val.id,
+            username: val.username,
+            acct: val.acct,
+            display_name: val.display_name,
+            locked: val.locked,
+            discoverable: val.discoverable,
             group: None,
-            noindex: self.noindex,
-            suspended: self.suspended,
-            limited: self.limited,
-            created_at: self.created_at,
-            followers_count: self.followers_count,
-            following_count: self.following_count,
-            statuses_count: self.statuses_count,
-            note: self.note,
-            url: self.url,
-            avatar: self.avatar,
-            avatar_static: self.avatar_static,
-            header: self.header,
-            header_static: self.header_static,
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
+            noindex: val.noindex,
+            suspended: val.suspended,
+            limited: val.limited,
+            created_at: val.created_at,
+            followers_count: val.followers_count,
+            following_count: val.following_count,
+            statuses_count: val.statuses_count,
+            note: val.note,
+            url: val.url,
+            avatar: val.avatar,
+            avatar_static: val.avatar_static,
+            header: val.header,
+            header_static: val.header_static,
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
             moved: moved_account,
-            fields: self.fields.into_iter().map(|j| j.into()).collect(),
-            bot: self.bot,
-            source: self.source.map(|i| i.into()),
+            fields: val.fields.into_iter().map(|j| j.into()).collect(),
+            bot: val.bot,
+            source: val.source.map(|i| i.into()),
             role: None,
             mute_expires_at: None,
         }
     }
 }
 
-impl Into<megalodon::FollowRequestOutput> for Account {
-    fn into(self) -> megalodon::FollowRequestOutput {
-        megalodon::FollowRequestOutput::Account(self.into())
+impl From<Account> for megalodon::FollowRequestOutput {
+    fn from(val: Account) -> Self {
+        megalodon::FollowRequestOutput::Account(val.into())
     }
 }

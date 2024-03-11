@@ -10,13 +10,13 @@ pub struct FeaturedTag {
     last_status_at: DateTime<Utc>,
 }
 
-impl Into<MegalodonEntities::FeaturedTag> for FeaturedTag {
-    fn into(self) -> MegalodonEntities::FeaturedTag {
+impl From<FeaturedTag> for MegalodonEntities::FeaturedTag {
+    fn from(val: FeaturedTag) -> Self {
         MegalodonEntities::FeaturedTag {
-            id: self.id,
-            name: self.name,
-            statuses_count: self.statuses_count,
-            last_status_at: self.last_status_at,
+            id: val.id,
+            name: val.name,
+            statuses_count: val.statuses_count,
+            last_status_at: val.last_status_at,
         }
     }
 }

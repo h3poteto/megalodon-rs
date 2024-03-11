@@ -11,12 +11,12 @@ pub struct Stats {
     instances: u32,
 }
 
-impl Into<MegalodonEntities::Stats> for Stats {
-    fn into(self) -> MegalodonEntities::Stats {
+impl From<Stats> for MegalodonEntities::Stats {
+    fn from(val: Stats) -> Self {
         MegalodonEntities::Stats {
-            user_count: self.users_count,
-            status_count: self.notes_count,
-            domain_count: self.instances,
+            user_count: val.users_count,
+            status_count: val.notes_count,
+            domain_count: val.instances,
         }
     }
 }

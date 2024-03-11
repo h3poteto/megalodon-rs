@@ -25,9 +25,9 @@ pub enum NotificationType {
     Update,
 }
 
-impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
-    fn into(self) -> MegalodonEntities::notification::NotificationType {
-        match self {
+impl From<NotificationType> for MegalodonEntities::notification::NotificationType {
+    fn from(val: NotificationType) -> Self {
+        match val {
             NotificationType::Follow => MegalodonEntities::notification::NotificationType::Follow,
             NotificationType::FollowRequest => {
                 MegalodonEntities::notification::NotificationType::FollowRequest
@@ -46,16 +46,16 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
     }
 }
 
-impl Into<MegalodonEntities::Notification> for Notification {
-    fn into(self) -> MegalodonEntities::Notification {
+impl From<Notification> for MegalodonEntities::Notification {
+    fn from(val: Notification) -> Self {
         MegalodonEntities::Notification {
-            account: Some(self.account.into()),
-            created_at: self.created_at,
-            id: self.id,
-            status: self.status.map(|i| i.into()),
+            account: Some(val.account.into()),
+            created_at: val.created_at,
+            id: val.id,
+            status: val.status.map(|i| i.into()),
             reaction: None,
             target: None,
-            r#type: self.r#type.into(),
+            r#type: val.r#type.into(),
         }
     }
 }

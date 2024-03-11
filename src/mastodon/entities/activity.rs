@@ -9,13 +9,13 @@ pub struct Activity {
     registrations: String,
 }
 
-impl Into<MegalodonEntities::Activity> for Activity {
-    fn into(self) -> MegalodonEntities::Activity {
+impl From<Activity> for MegalodonEntities::Activity {
+    fn from(val: Activity) -> Self {
         MegalodonEntities::Activity {
-            week: self.week,
-            statuses: self.statuses,
-            logins: self.logins,
-            registrations: self.registrations,
+            week: val.week,
+            statuses: val.statuses,
+            logins: val.logins,
+            registrations: val.registrations,
         }
     }
 }
