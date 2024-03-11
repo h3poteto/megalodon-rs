@@ -9,16 +9,16 @@ async fn main() {
 
     let Ok(url) = env::var("MASTODON_URL") else {
         println!("Specify MASTODON_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
         println!("Specify MASTODON_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Mastodon, url, Some(token), None);
 
-    let scheduled_at = Utc::now() + Duration::minutes(6);
+    let scheduled_at = Utc::now() + Duration::try_minutes(6).unwrap();
     println!("scheduled at {:#?}", scheduled_at);
 
     match post_status(&client, "Test", scheduled_at).await {
