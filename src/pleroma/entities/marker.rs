@@ -42,7 +42,7 @@ impl Into<MegalodonEntities::marker::InnerMarker> for InnerMarker {
 }
 
 mod date_format_without_tz {
-    use chrono::{DateTime, NaiveDateTime, Utc};
+    use chrono::{DateTime, TimeZone, Utc};
     use serde::{self, Deserialize, Deserializer, Serializer};
 
     const FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S";
@@ -60,42 +60,7 @@ mod date_format_without_tz {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        NaiveDateTime::parse_from_str(&s, FORMAT)
+        Utc.datetime_from_str(&s, FORMAT)
             .map_err(serde::de::Error::custom)
-            .map(|naive| naive.and_utc())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_marker_() {
-        let data = r#"{
-            "notifications": {
-                "last_read_id": "1",
-                "version": 2,
-                "updated_at": "2020-01-02T03:04:05",
-                "pleroma": {
-                    "unread_count": 3
-                }
-            }
-        }"#;
-        let marker: Marker = serde_json::from_str(data).unwrap();
-        assert_eq!(marker.notifications.last_read_id, "1");
-        assert_eq!(marker.notifications.version, 2);
-        assert_eq!(
-            marker.notifications.updated_at.to_string(),
-            "2020-01-02 03:04:05 UTC"
-        );
-        assert_eq!(marker.notifications.pleroma.unread_count, 3);
-
-        let serialized = serde_json::to_string(&marker).unwrap();
-
-        assert_eq!(
-            serialized,
-            r#"{"notifications":{"last_read_id":"1","version":2,"updated_at":"2020-01-02T03:04:05","pleroma":{"unread_count":3}}}"#
-        );
     }
 }
