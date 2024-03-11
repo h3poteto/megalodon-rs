@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("MASTODON_STREAMING_URL") else {
         println!("Specify MASTODON_STREAMING_URL!!");
-        return
+        return;
     };
 
     streaming(url.as_str()).await;

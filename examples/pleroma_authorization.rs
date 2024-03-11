@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Pleroma, url, None, None);

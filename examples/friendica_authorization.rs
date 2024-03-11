@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Friendica, url, None, None);

@@ -7,11 +7,11 @@ async fn main() {
 
     let Ok(url) = env::var("MASTODON_URL") else {
         println!("Specify MASTODON_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("MASTODON_ACCESS_TOKEN") else {
         println!("Specify MASTODON_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let file_path = "./sample.jpg".to_string();

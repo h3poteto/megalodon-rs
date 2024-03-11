@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
     match instance(url.as_str()).await {
         Ok(response) => {

@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("MASTODON_URL") else {
         println!("Specify MASTODON_URL!!");
-        return
+        return;
     };
     let client = generator(megalodon::SNS::Mastodon, url, None, None);
     let options = megalodon::megalodon::AppInputOptions {

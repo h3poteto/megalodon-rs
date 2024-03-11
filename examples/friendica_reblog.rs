@@ -8,15 +8,15 @@ async fn main() {
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("FRIENDICA_ACCESS_TOKEN") else {
         println!("Specify FRIENDICA_ACCESS_TOKEN!!");
-        return
+        return;
     };
     let Ok(status_id) = env::var("STATUS_ID") else {
         println!("Specify STATUS_ID!!");
-        return
+        return;
     };
 
     let res = reblog_status(url.as_str(), token, status_id).await;

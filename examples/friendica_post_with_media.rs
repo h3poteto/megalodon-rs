@@ -11,11 +11,11 @@ async fn main() {
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("FRIENDICA_ACCESS_TOKEN") else {
         println!("Specify FRIENDICA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Friendica, url, Some(token), None);
@@ -23,7 +23,7 @@ async fn main() {
     let file_path = "./sample.jpg".to_string();
     let Ok(res) = upload_media(&client, file_path.to_string()).await else {
         println!("failed to upload media");
-        return
+        return;
     };
 
     let media_1: entities::Attachment;
@@ -45,7 +45,7 @@ async fn main() {
     let file_path = "./sample2.jpg".to_string();
     let Ok(res) = upload_media(&client, file_path).await else {
         println!("error");
-        return
+        return;
     };
     let media_2: entities::Attachment;
     match res {

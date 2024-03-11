@@ -7,11 +7,11 @@ async fn main() {
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let res = get_notifications(url.as_str(), token).await;

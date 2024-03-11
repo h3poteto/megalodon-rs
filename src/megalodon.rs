@@ -364,7 +364,10 @@ pub trait Megalodon {
     async fn get_status(&self, id: String) -> Result<Response<entities::Status>, Error>;
 
     /// Obtain the source properties for a status so that it can be edited.
-    async fn get_status_source(&self, id: String) -> Result<Response<entities::StatusSource>, Error>;
+    async fn get_status_source(
+        &self,
+        id: String,
+    ) -> Result<Response<entities::StatusSource>, Error>;
 
     /// Edit a status.
     async fn edit_status(

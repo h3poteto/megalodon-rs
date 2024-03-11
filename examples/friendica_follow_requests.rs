@@ -8,11 +8,11 @@ async fn main() {
 
     let Ok(url) = env::var("FRIENDICA_URL") else {
         println!("Specify FRIENDICA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("FRIENDICA_ACCESS_TOKEN") else {
         println!("Specify FRIENDICA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let res = follow_requests(url.as_str(), token).await;

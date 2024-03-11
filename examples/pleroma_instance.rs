@@ -7,7 +7,7 @@ async fn main() {
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
-        return
+        return;
     };
     match instance(url.as_str()).await {
         Ok(response) => {
