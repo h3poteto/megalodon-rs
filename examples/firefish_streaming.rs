@@ -4,7 +4,7 @@ use megalodon::{generator, streaming::Message};
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("FIREFISH_URL") else {
         println!("Specify FIREFISH_URL!!");

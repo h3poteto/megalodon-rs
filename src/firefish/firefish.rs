@@ -7,6 +7,7 @@ use sha1::{Digest, Sha1};
 use std::{collections::HashMap, str::FromStr};
 use tokio::io::AsyncRead;
 use tokio_util::codec::{BytesCodec, FramedRead};
+use tracing::warn;
 
 use super::{
     api_client::{APIClient, DEFAULT_SCOPES},
@@ -218,7 +219,7 @@ impl Firefish {
             .await
             .map(|r| r.json)
             .unwrap_or_else(|e| {
-                log::warn!("{}", e);
+                warn!("{}", e);
                 [].to_vec()
             });
         let hashtags = self
@@ -226,7 +227,7 @@ impl Firefish {
             .await
             .map(|r| r.json)
             .unwrap_or_else(|e| {
-                log::warn!("{}", e);
+                warn!("{}", e);
                 [].to_vec()
             });
         let statuses = self
@@ -234,7 +235,7 @@ impl Firefish {
             .await
             .map(|r| r.json)
             .unwrap_or_else(|e| {
-                log::warn!("{}", e);
+                warn!("{}", e);
                 [].to_vec()
             });
         Ok(Response::<MegalodonEntities::Results>::new(
@@ -1318,7 +1319,10 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
-    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         let params = HashMap::<&str, Value>::from([("noteId", Value::String(id))]);
         let res = self
             .client

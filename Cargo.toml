@@ -13,13 +13,25 @@ features = ["native-tls", "rustls-tls"]
 
 [features]
 default = ["rustls-tls"]
-native-tls = ["tokio-tungstenite/native-tls", "reqwest/native-tls", "oauth2/native-tls"]
-rustls-tls = ["tokio-tungstenite/rustls-tls-native-roots", "reqwest/rustls-tls", "oauth2/rustls-tls"]
+native-tls = [
+    "tokio-tungstenite/native-tls",
+    "reqwest/native-tls",
+    "oauth2/native-tls",
+]
+rustls-tls = [
+    "tokio-tungstenite/rustls-tls-native-roots",
+    "reqwest/rustls-tls",
+    "oauth2/rustls-tls",
+]
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 async-trait = "0.1.77"
-reqwest = { version = "0.11", features = ["json", "multipart", "stream"], default-features =  false }
+reqwest = { version = "0.11", features = [
+    "json",
+    "multipart",
+    "stream",
+], default-features = false }
 tokio = { version = "1", features = ["full"] }
 tokio-util = { version = "0.7.10", features = ["codec"] }
 serde_json = "1.0.114"
@@ -28,14 +40,14 @@ url = "2.5.0"
 oauth2 = { version = "4.4" }
 sha1 = { version = "0.10" }
 hex = { version = "0.4" }
-tokio-tungstenite = { version = "0.21"}
+tokio-tungstenite = { version = "0.21" }
 urlencoding = { version = "2.1" }
-log = "0.4"
 thiserror = "1"
 futures-util = "0.3"
 rand = "0.8"
 regex = "1"
-uuid = { version = "1.7", features = ["v4"]}
+uuid = { version = "1.7", features = ["v4"] }
+tracing = "0.1.40"
 
 [dev-dependencies]
-env_logger = "0.11"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }

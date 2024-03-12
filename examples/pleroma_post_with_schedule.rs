@@ -5,15 +5,15 @@ use megalodon::{entities, error, generator, megalodon::PostStatusInputOptions};
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
-        return
+        return;
     };
     let Ok(token) = env::var("PLEROMA_ACCESS_TOKEN") else {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
-        return
+        return;
     };
 
     let client = generator(megalodon::SNS::Pleroma, url, Some(token), None);

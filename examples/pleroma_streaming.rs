@@ -3,7 +3,7 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("PLEROMA_URL") else {
         println!("Specify PLEROMA_URL!!");
