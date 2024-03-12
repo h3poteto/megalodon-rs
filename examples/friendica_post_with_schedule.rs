@@ -18,7 +18,7 @@ async fn main() {
 
     let client = generator(megalodon::SNS::Friendica, url, Some(token), None);
 
-    let scheduled_at = Utc::now() + Duration::minutes(6);
+    let scheduled_at = Utc::now() + Duration::try_minutes(6).unwrap();
     println!("scheduled at {:#?}", scheduled_at);
 
     match post_status(&client, "Test", scheduled_at).await {
