@@ -27,7 +27,6 @@ pub mod user_detail;
 
 pub use account::Account;
 pub use announcement::Announcement;
-#[allow(unused_imports)]
 pub use app::App;
 pub use blocking::Blocking;
 pub use created_note::CreatedNote;
@@ -44,13 +43,10 @@ pub use meta::Meta;
 pub use mute::Mute;
 pub use note::Note;
 pub use notification::Notification;
-#[allow(unused_imports)]
 pub use poll::Poll;
-#[allow(unused_imports)]
 pub use reaction::Reaction;
 pub use relation::Relation;
 pub use session::Session;
-#[allow(unused_imports)]
 pub use stats::Stats;
 pub use user::User;
 pub use user_detail::UserDetail;

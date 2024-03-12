@@ -5,8 +5,8 @@ use std::env;
 async fn main() {
     env_logger::init();
 
-    let Ok(url) = env::var("MASTODON_STREAMING_URL") else {
-        println!("Specify MASTODON_STREAMING_URL!!");
+    let Ok(url) = env::var("MASTODON_URL") else {
+        println!("Specify MASTODON_URL!!");
         return;
     };
 
@@ -15,7 +15,7 @@ async fn main() {
 
 async fn streaming(url: &str) {
     let client = generator(megalodon::SNS::Mastodon, url.to_string(), None, None);
-    let streaming = client.local_streaming(url.to_string());
+    let streaming = client.local_streaming().await;
 
     streaming
         .listen(Box::new(|message| match message {
