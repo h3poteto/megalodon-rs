@@ -3044,8 +3044,21 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
-    fn user_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn streaming_url(&self) -> String {
+        let instance = self.get_instance().await;
+        if let Ok(instance) = instance {
+            match instance.json.urls {
+                Some(urls) => return urls.streaming_api,
+                _ => {}
+            };
+        }
+
+        self.base_url.clone()
+    }
+
+    async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("user"),
@@ -3057,8 +3070,9 @@ impl megalodon::Megalodon for Mastodon {
         Box::new(c)
     }
 
-    fn public_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("public"),
@@ -3070,8 +3084,9 @@ impl megalodon::Megalodon for Mastodon {
         Box::new(c)
     }
 
-    fn local_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("public:local"),
@@ -3083,8 +3098,9 @@ impl megalodon::Megalodon for Mastodon {
         Box::new(c)
     }
 
-    fn direct_streaming(&self, streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("direct"),
@@ -3096,12 +3112,9 @@ impl megalodon::Megalodon for Mastodon {
         Box::new(c)
     }
 
-    fn tag_streaming(
-        &self,
-        streaming_url: String,
-        tag: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn tag_streaming(&self, tag: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("tag={}", tag)]);
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("hashtag"),
@@ -3113,12 +3126,9 @@ impl megalodon::Megalodon for Mastodon {
         Box::new(c)
     }
 
-    fn list_streaming(
-        &self,
-        streaming_url: String,
-        list_id: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("list={}", list_id)]);
+        let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
             streaming_url + "/api/v1/streaming",
             String::from("list"),

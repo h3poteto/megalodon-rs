@@ -2702,45 +2702,49 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
-    fn user_streaming(&self, _streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn streaming_url(&self) -> String {
+        let instance = self.get_instance().await;
+        if let Ok(instance) = instance {
+            match instance.json.urls {
+                Some(urls) => return urls.streaming_api,
+                _ => {}
+            };
+        }
+
+        self.base_url.clone()
+    }
+
+    async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
-    fn public_streaming(&self, _streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
-    fn local_streaming(&self, _streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
-    fn direct_streaming(&self, _streaming_url: String) -> Box<dyn Streaming + Send + Sync> {
+    async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
-    fn tag_streaming(
-        &self,
-        _streaming_url: String,
-        _tag: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn tag_streaming(&self, _tag: String) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
-    fn list_streaming(
-        &self,
-        _streaming_url: String,
-        _list_id: String,
-    ) -> Box<dyn Streaming + Send + Sync> {
+    async fn list_streaming(&self, _list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
