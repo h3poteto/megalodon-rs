@@ -29,39 +29,30 @@ pub struct Properties {
     // avg_color: String,
 }
 
-impl Into<MegalodonEntities::Attachment> for File {
-    fn into(self) -> MegalodonEntities::Attachment {
+impl From<File> for MegalodonEntities::Attachment {
+    fn from(val: File) -> Self {
         let mut url = "".to_string();
-        if let Some(u) = self.url.clone() {
+        if let Some(u) = val.url.clone() {
             url = u;
         };
 
         let mut attachment_type = MegalodonEntities::attachment::AttachmentType::Unknown;
-        if self.r#type.as_str() == "image/gif" {
+        if val.r#type.as_str() == "image/gif" {
             attachment_type = MegalodonEntities::attachment::AttachmentType::Gifv;
-        } else if Regex::new(r"^image")
-            .unwrap()
-            .is_match(self.r#type.as_str())
-        {
+        } else if Regex::new(r"^image").unwrap().is_match(val.r#type.as_str()) {
             attachment_type = MegalodonEntities::attachment::AttachmentType::Image;
         }
-        if Regex::new(r"^audio")
-            .unwrap()
-            .is_match(self.r#type.as_str())
-        {
+        if Regex::new(r"^audio").unwrap().is_match(val.r#type.as_str()) {
             attachment_type = MegalodonEntities::attachment::AttachmentType::Audio;
         }
-        if Regex::new(r"^video")
-            .unwrap()
-            .is_match(self.r#type.as_str())
-        {
+        if Regex::new(r"^video").unwrap().is_match(val.r#type.as_str()) {
             attachment_type = MegalodonEntities::attachment::AttachmentType::Video;
         }
 
         let meta = MegalodonEntities::attachment::AttachmentMeta {
             original: Some(MegalodonEntities::attachment::MetaSub {
-                width: self.properties.width,
-                height: self.properties.height,
+                width: val.properties.width,
+                height: val.properties.height,
                 size: None,
                 aspect: None,
                 frame_rate: None,
@@ -74,8 +65,8 @@ impl Into<MegalodonEntities::Attachment> for File {
             duration: None,
             fps: None,
             size: None,
-            width: self.properties.width,
-            height: self.properties.height,
+            width: val.properties.width,
+            height: val.properties.height,
             aspect: None,
             audio_encode: None,
             audio_bitrate: None,
@@ -83,21 +74,21 @@ impl Into<MegalodonEntities::Attachment> for File {
         };
 
         MegalodonEntities::Attachment {
-            id: self.id,
+            id: val.id,
             r#type: attachment_type,
             url,
-            remote_url: self.url.clone(),
-            preview_url: self.thumbnail_url,
-            text_url: self.url,
+            remote_url: val.url.clone(),
+            preview_url: val.thumbnail_url,
+            text_url: val.url,
             meta: Some(meta),
-            description: self.comment,
-            blurhash: self.blurhash,
+            description: val.comment,
+            blurhash: val.blurhash,
         }
     }
 }
 
-impl Into<MegalodonEntities::UploadMedia> for File {
-    fn into(self) -> MegalodonEntities::UploadMedia {
-        MegalodonEntities::UploadMedia::Attachment(self.into())
+impl From<File> for MegalodonEntities::UploadMedia {
+    fn from(val: File) -> Self {
+        MegalodonEntities::UploadMedia::Attachment(val.into())
     }
 }

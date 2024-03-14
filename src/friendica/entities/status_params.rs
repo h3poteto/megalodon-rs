@@ -15,21 +15,21 @@ pub struct StatusParams {
     application_id: String,
 }
 
-impl Into<MegalodonEntities::StatusParams> for StatusParams {
-    fn into(self) -> MegalodonEntities::StatusParams {
+impl From<StatusParams> for MegalodonEntities::StatusParams {
+    fn from(val: StatusParams) -> Self {
         let mut app_id: Option<u32> = None;
-        if let Ok(val) = self.application_id.parse::<u32>() {
+        if let Ok(val) = val.application_id.parse::<u32>() {
             app_id = Some(val);
         }
 
         MegalodonEntities::StatusParams {
-            text: self.text,
-            in_reply_to_id: self.in_reply_to_id,
-            media_ids: self.media_ids,
-            sensitive: self.sensitive,
-            spoiler_text: self.spoiler_text,
-            visibility: self.visibility.map(|i| i.into()),
-            scheduled_at: self.scheduled_at,
+            text: val.text,
+            in_reply_to_id: val.in_reply_to_id,
+            media_ids: val.media_ids,
+            sensitive: val.sensitive,
+            spoiler_text: val.spoiler_text,
+            visibility: val.visibility.map(|i| i.into()),
+            scheduled_at: val.scheduled_at,
             application_id: app_id,
         }
     }

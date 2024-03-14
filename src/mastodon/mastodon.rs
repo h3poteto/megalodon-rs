@@ -129,7 +129,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::AppDataFromServer>("/api/v1/apps", &params, None)
             .await?;
-        Ok(MegalodonOAuth::AppData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn fetch_access_token(
@@ -153,7 +153,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn refresh_access_token(
@@ -175,7 +175,7 @@ impl megalodon::Megalodon for Mastodon {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn revoke_access_token(
@@ -1451,7 +1451,6 @@ impl megalodon::Megalodon for Mastodon {
                 );
             }
             if let Some(scheduled_at) = options.scheduled_at {
-
                 // https://docs.joinmastodon.org/methods/statuses/#form-data-parameters
                 // scheduled_at must be at least 5 mins in the futur
                 if scheduled_at.sub(Utc::now()).num_minutes() > 5 {
@@ -1514,7 +1513,10 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
-    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         let res = self
             .client
             .get::<entities::StatusSource>(format!("/api/v1/statuses/{}/source", id).as_str(), None)
@@ -1576,7 +1578,12 @@ impl megalodon::Megalodon for Mastodon {
 
     async fn delete_status(&self, id: String) -> Result<Response<()>, Error> {
         let params = HashMap::new();
-        let Response { json: _, status, status_text, header } = self
+        let Response {
+            json: _,
+            status,
+            status_text,
+            header,
+        } = self
             .client
             .delete::<Value>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
             .await?;

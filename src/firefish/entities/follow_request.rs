@@ -11,14 +11,14 @@ pub struct FollowRequest {
     // followee: User,
 }
 
-impl Into<MegalodonEntities::Account> for FollowRequest {
-    fn into(self) -> MegalodonEntities::Account {
-        self.follower.into()
+impl From<FollowRequest> for MegalodonEntities::Account {
+    fn from(val: FollowRequest) -> Self {
+        val.follower.into()
     }
 }
 
-impl Into<megalodon::FollowRequestOutput> for FollowRequest {
-    fn into(self) -> megalodon::FollowRequestOutput {
-        megalodon::FollowRequestOutput::Account(self.into())
+impl From<FollowRequest> for megalodon::FollowRequestOutput {
+    fn from(val: FollowRequest) -> Self {
+        megalodon::FollowRequestOutput::Account(val.into())
     }
 }

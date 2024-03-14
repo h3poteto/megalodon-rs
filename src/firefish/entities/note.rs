@@ -84,9 +84,9 @@ impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
     }
 }
 
-impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
-    fn into(self) -> MegalodonEntities::status::StatusVisibility {
-        match self {
+impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
+    fn from(val: StatusVisibility) -> Self {
+        match val {
             StatusVisibility::Public => MegalodonEntities::status::StatusVisibility::Public,
             StatusVisibility::Home => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Followers => MegalodonEntities::status::StatusVisibility::Private,
@@ -110,33 +110,33 @@ fn convert_html(plain: String) -> String {
         .to_string()
 }
 
-impl Into<MegalodonEntities::Status> for Note {
-    fn into(self) -> MegalodonEntities::Status {
+impl From<Note> for MegalodonEntities::Status {
+    fn from(val: Note) -> Self {
         let mut uri = "".to_string();
-        if let Some(u) = self.uri.clone() {
+        if let Some(u) = val.uri.clone() {
             uri = u;
         }
         let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
         let mut quoted = false;
-        if let Some(renote) = self.renote {
+        if let Some(renote) = val.renote {
             let rs: Note = *renote;
             reblog_status = Some(Box::new(rs.into()));
-            if let Some(_) = self.text.clone() {
+            if let Some(_) = val.text.clone() {
                 quoted = true;
             }
         }
         let mut content = "".to_string();
-        if let Some(text) = self.text.clone() {
+        if let Some(text) = val.text.clone() {
             content = convert_html(text);
         }
 
         let mut spoiler_text = "".to_string();
-        if let Some(cw) = self.cw {
+        if let Some(cw) = val.cw {
             spoiler_text = cw;
         }
 
         let mut tags: Vec<MegalodonEntities::status::Tag> = [].to_vec();
-        if let Some(hashtags) = self.tags {
+        if let Some(hashtags) = val.tags {
             tags = hashtags
                 .into_iter()
                 .map(|t| MegalodonEntities::status::Tag {
@@ -146,48 +146,48 @@ impl Into<MegalodonEntities::Status> for Note {
                 .collect();
         }
         let emoji_reactions = Some(map_reaction(
-            self.emojis.clone().unwrap_or_default(),
-            self.reactions,
-            self.my_reaction.clone(),
+            val.emojis.clone().unwrap_or_default(),
+            val.reactions,
+            val.my_reaction.clone(),
         ));
 
         MegalodonEntities::Status {
-            id: self.id,
+            id: val.id,
             uri: uri.clone(),
-            url: self.uri,
-            account: self.user.into(),
-            in_reply_to_id: self.reply_id,
+            url: val.uri,
+            account: val.user.into(),
+            in_reply_to_id: val.reply_id,
             in_reply_to_account_id: None,
             reblog: reblog_status,
             content,
-            plain_content: self.text,
-            created_at: self.created_at,
+            plain_content: val.text,
+            created_at: val.created_at,
             edited_at: None,
-            emojis: self.emojis.map_or([].to_vec(), |o| {
+            emojis: val.emojis.map_or([].to_vec(), |o| {
                 o.into_iter()
                     .filter(|e| !e.name.contains("@"))
                     .map(|e| e.into())
                     .collect()
             }),
-            replies_count: self.replies_count,
-            reblogs_count: self.renote_count,
+            replies_count: val.replies_count,
+            reblogs_count: val.renote_count,
             favourites_count: 0,
             reblogged: None,
-            favourited: Some(self.my_reaction.is_some()),
+            favourited: Some(val.my_reaction.is_some()),
             muted: None,
-            sensitive: self
+            sensitive: val
                 .files
                 .as_ref()
                 .map_or(false, |f| f.iter().any(|f| f.is_sensitive)),
             spoiler_text,
-            visibility: self.visibility.into(),
-            media_attachments: self
+            visibility: val.visibility.into(),
+            media_attachments: val
                 .files
                 .map_or([].to_vec(), |f| f.into_iter().map(|f| f.into()).collect()),
             mentions: [].to_vec(),
             tags,
             card: None,
-            poll: self.poll.map(|p| p.into()),
+            poll: val.poll.map(|p| p.into()),
             application: None,
             language: None,
             pinned: None,
@@ -198,9 +198,9 @@ impl Into<MegalodonEntities::Status> for Note {
     }
 }
 
-impl Into<MegalodonEntities::StatusSource> for Note {
-    fn into(self) -> MegalodonEntities::StatusSource {
-        let Self {id, text, cw, ..} = self;
+impl From<Note> for MegalodonEntities::StatusSource {
+    fn from(val: Note) -> Self {
+        let Note { id, text, cw, .. } = val;
         MegalodonEntities::StatusSource {
             id,
             text: text.unwrap_or_default(),
@@ -209,13 +209,13 @@ impl Into<MegalodonEntities::StatusSource> for Note {
     }
 }
 
-impl Into<MegalodonEntities::Conversation> for Note {
-    fn into(self) -> MegalodonEntities::Conversation {
-        let accounts: Vec<MegalodonEntities::Account> = [self.user.clone().into()].to_vec();
+impl From<Note> for MegalodonEntities::Conversation {
+    fn from(val: Note) -> Self {
+        let accounts: Vec<MegalodonEntities::Account> = [val.user.clone().into()].to_vec();
         MegalodonEntities::Conversation {
-            id: self.id.clone(),
+            id: val.id.clone(),
             accounts,
-            last_status: Some(self.into()),
+            last_status: Some(val.into()),
             unread: false,
         }
     }

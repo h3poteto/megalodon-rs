@@ -15,17 +15,17 @@ pub struct StatusParams {
     application_id: u32,
 }
 
-impl Into<MegalodonEntities::StatusParams> for StatusParams {
-    fn into(self) -> MegalodonEntities::StatusParams {
+impl From<StatusParams> for MegalodonEntities::StatusParams {
+    fn from(val: StatusParams) -> Self {
         MegalodonEntities::StatusParams {
-            text: self.text,
-            in_reply_to_id: self.in_reply_to_id,
-            media_ids: self.media_ids,
-            sensitive: self.sensitive,
-            spoiler_text: self.spoiler_text,
-            visibility: self.visibility.map(|i| i.into()),
-            scheduled_at: self.scheduled_at,
-            application_id: Some(self.application_id),
+            text: val.text,
+            in_reply_to_id: val.in_reply_to_id,
+            media_ids: val.media_ids,
+            sensitive: val.sensitive,
+            spoiler_text: val.spoiler_text,
+            visibility: val.visibility.map(|i| i.into()),
+            scheduled_at: val.scheduled_at,
+            application_id: Some(val.application_id),
         }
     }
 }

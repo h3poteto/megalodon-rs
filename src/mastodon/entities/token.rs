@@ -9,13 +9,13 @@ pub struct Token {
     created_at: u64,
 }
 
-impl Into<MegalodonEntities::Token> for Token {
-    fn into(self) -> MegalodonEntities::Token {
+impl From<Token> for MegalodonEntities::Token {
+    fn from(val: Token) -> Self {
         MegalodonEntities::Token {
-            access_token: self.access_token,
-            token_type: self.token_type,
-            scope: self.scope,
-            created_at: self.created_at,
+            access_token: val.access_token,
+            token_type: val.token_type,
+            scope: val.scope,
+            created_at: val.created_at,
         }
     }
 }

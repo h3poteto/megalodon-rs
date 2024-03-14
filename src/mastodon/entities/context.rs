@@ -8,11 +8,11 @@ pub struct Context {
     descendants: Vec<Status>,
 }
 
-impl Into<MegalodonEntities::Context> for Context {
-    fn into(self) -> MegalodonEntities::Context {
+impl From<Context> for MegalodonEntities::Context {
+    fn from(val: Context) -> Self {
         MegalodonEntities::Context {
-            ancestors: self.ancestors.into_iter().map(|i| i.into()).collect(),
-            descendants: self.descendants.into_iter().map(|i| i.into()).collect(),
+            ancestors: val.ancestors.into_iter().map(|i| i.into()).collect(),
+            descendants: val.descendants.into_iter().map(|i| i.into()).collect(),
         }
     }
 }

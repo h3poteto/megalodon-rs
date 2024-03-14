@@ -10,13 +10,13 @@ pub struct Tag {
     following: Option<bool>,
 }
 
-impl Into<MegalodonEntities::Tag> for Tag {
-    fn into(self) -> MegalodonEntities::Tag {
+impl From<Tag> for MegalodonEntities::Tag {
+    fn from(val: Tag) -> Self {
         MegalodonEntities::Tag {
-            name: self.name,
-            url: self.url,
-            history: self.history.into_iter().map(|j| j.into()).collect(),
-            following: self.following,
+            name: val.name,
+            url: val.url,
+            history: val.history.into_iter().map(|j| j.into()).collect(),
+            following: val.following,
         }
     }
 }

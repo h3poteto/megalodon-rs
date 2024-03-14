@@ -104,9 +104,9 @@ impl<'de> de::Deserialize<'de> for NotificationType {
     }
 }
 
-impl Into<MegalodonEntities::notification::NotificationType> for NotificationType {
-    fn into(self) -> MegalodonEntities::notification::NotificationType {
-        match self {
+impl From<NotificationType> for MegalodonEntities::notification::NotificationType {
+    fn from(val: NotificationType) -> Self {
+        match val {
             NotificationType::Follow => MegalodonEntities::notification::NotificationType::Follow,
             NotificationType::FollowRequest => {
                 MegalodonEntities::notification::NotificationType::FollowRequest
@@ -128,17 +128,17 @@ impl Into<MegalodonEntities::notification::NotificationType> for NotificationTyp
     }
 }
 
-impl Into<MegalodonEntities::Notification> for Notification {
-    fn into(self) -> MegalodonEntities::Notification {
-        let reaction = self.clone().map_reaction();
+impl From<Notification> for MegalodonEntities::Notification {
+    fn from(val: Notification) -> Self {
+        let reaction = val.clone().map_reaction();
         MegalodonEntities::Notification {
-            account: Some(self.account.into()),
-            created_at: self.created_at,
-            id: self.id,
-            status: self.status.map(|i| i.into()),
+            account: Some(val.account.into()),
+            created_at: val.created_at,
+            id: val.id,
+            status: val.status.map(|i| i.into()),
             reaction: reaction.map(|i| i.into()),
-            target: self.target.map(|i| i.into()),
-            r#type: self.r#type.into(),
+            target: val.target.map(|i| i.into()),
+            r#type: val.r#type.into(),
         }
     }
 }

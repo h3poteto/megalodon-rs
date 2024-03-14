@@ -22,14 +22,14 @@ impl From<MegalodonEntities::Emoji> for Emoji {
     }
 }
 
-impl Into<MegalodonEntities::Emoji> for Emoji {
-    fn into(self) -> MegalodonEntities::Emoji {
+impl From<Emoji> for MegalodonEntities::Emoji {
+    fn from(val: Emoji) -> Self {
         MegalodonEntities::Emoji {
-            shortcode: self.shortcode,
-            static_url: self.static_url,
-            url: self.url,
-            visible_in_picker: self.visible_in_picker,
-            category: self.category,
+            shortcode: val.shortcode,
+            static_url: val.static_url,
+            url: val.url,
+            visible_in_picker: val.visible_in_picker,
+            category: val.category,
         }
     }
 }

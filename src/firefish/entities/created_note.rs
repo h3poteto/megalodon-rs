@@ -9,14 +9,14 @@ pub struct CreatedNote {
     created_note: Note,
 }
 
-impl Into<MegalodonEntities::Status> for CreatedNote {
-    fn into(self) -> MegalodonEntities::Status {
-        self.created_note.into()
+impl From<CreatedNote> for MegalodonEntities::Status {
+    fn from(val: CreatedNote) -> Self {
+        val.created_note.into()
     }
 }
 
-impl Into<megalodon::PostStatusOutput> for CreatedNote {
-    fn into(self) -> megalodon::PostStatusOutput {
-        megalodon::PostStatusOutput::Status(self.into())
+impl From<CreatedNote> for megalodon::PostStatusOutput {
+    fn from(val: CreatedNote) -> Self {
+        megalodon::PostStatusOutput::Status(val.into())
     }
 }

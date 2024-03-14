@@ -7,11 +7,11 @@ pub struct Hashtag {
     pub tag: String,
 }
 
-impl Into<MegalodonEntities::Tag> for Hashtag {
-    fn into(self) -> MegalodonEntities::Tag {
+impl From<Hashtag> for MegalodonEntities::Tag {
+    fn from(val: Hashtag) -> Self {
         MegalodonEntities::Tag {
-            name: self.tag.clone(),
-            url: self.tag,
+            name: val.tag.clone(),
+            url: val.tag,
             history: [].to_vec(),
             following: None,
         }

@@ -11,12 +11,12 @@ pub struct History {
     accounts: usize,
 }
 
-impl Into<MegalodonEntities::History> for History {
-    fn into(self) -> MegalodonEntities::History {
+impl From<History> for MegalodonEntities::History {
+    fn from(val: History) -> Self {
         MegalodonEntities::History {
-            day: self.day,
-            uses: self.uses,
-            accounts: self.accounts,
+            day: val.day,
+            uses: val.uses,
+            accounts: val.accounts,
         }
     }
 }

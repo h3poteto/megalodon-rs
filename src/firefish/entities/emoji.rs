@@ -8,14 +8,14 @@ pub struct Emoji {
     pub(crate) category: Option<String>,
 }
 
-impl Into<MegalodonEntities::Emoji> for Emoji {
-    fn into(self) -> MegalodonEntities::Emoji {
+impl From<Emoji> for MegalodonEntities::Emoji {
+    fn from(val: Emoji) -> Self {
         MegalodonEntities::Emoji {
-            shortcode: self.name,
-            static_url: self.url.clone(),
-            url: self.url,
+            shortcode: val.name,
+            static_url: val.url.clone(),
+            url: val.url,
             visible_in_picker: true,
-            category: self.category,
+            category: val.category,
         }
     }
 }

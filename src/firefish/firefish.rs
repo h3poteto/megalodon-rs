@@ -330,7 +330,7 @@ impl megalodon::Megalodon for Firefish {
             .post::<oauth::AppDataFromServer>("/api/app/create", &params, None)
             .await?;
         if let Some(_) = res.json.secret {
-            Ok(MegalodonOAuth::AppData::from(res.json.into()))
+            Ok(res.json.into())
         } else {
             Err(Error::new_own(
                 "secret does not exist".to_string(),
@@ -356,7 +356,7 @@ impl megalodon::Megalodon for Firefish {
             .client
             .post::<oauth::TokenDataFromServer>("/api/auth/session/userKey", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn refresh_access_token(

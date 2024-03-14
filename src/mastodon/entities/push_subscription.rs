@@ -18,25 +18,25 @@ struct Alerts {
     poll: bool,
 }
 
-impl Into<MegalodonEntities::PushSubscription> for PushSubscription {
-    fn into(self) -> MegalodonEntities::PushSubscription {
+impl From<PushSubscription> for MegalodonEntities::PushSubscription {
+    fn from(val: PushSubscription) -> Self {
         MegalodonEntities::PushSubscription {
-            id: self.id,
-            endpoint: self.endpoint,
-            server_key: self.server_key,
-            alerts: self.alerts.into(),
+            id: val.id,
+            endpoint: val.endpoint,
+            server_key: val.server_key,
+            alerts: val.alerts.into(),
         }
     }
 }
 
-impl Into<MegalodonEntities::push_subscription::Alerts> for Alerts {
-    fn into(self) -> MegalodonEntities::push_subscription::Alerts {
+impl From<Alerts> for MegalodonEntities::push_subscription::Alerts {
+    fn from(val: Alerts) -> Self {
         MegalodonEntities::push_subscription::Alerts {
-            follow: self.follow,
-            favourite: self.favourite,
-            mention: self.mention,
-            reblog: self.reblog,
-            poll: self.poll,
+            follow: val.follow,
+            favourite: val.favourite,
+            mention: val.mention,
+            reblog: val.reblog,
+            poll: val.poll,
         }
     }
 }

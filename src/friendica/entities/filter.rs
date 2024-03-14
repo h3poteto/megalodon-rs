@@ -21,9 +21,9 @@ pub enum FilterContext {
     Thread,
 }
 
-impl Into<MegalodonEntities::filter::FilterContext> for FilterContext {
-    fn into(self) -> MegalodonEntities::filter::FilterContext {
-        match self {
+impl From<FilterContext> for MegalodonEntities::filter::FilterContext {
+    fn from(val: FilterContext) -> Self {
+        match val {
             FilterContext::Home => MegalodonEntities::filter::FilterContext::Home,
             FilterContext::Notifications => MegalodonEntities::filter::FilterContext::Notifications,
             FilterContext::Public => MegalodonEntities::filter::FilterContext::Public,
@@ -32,15 +32,15 @@ impl Into<MegalodonEntities::filter::FilterContext> for FilterContext {
     }
 }
 
-impl Into<MegalodonEntities::Filter> for Filter {
-    fn into(self) -> MegalodonEntities::Filter {
+impl From<Filter> for MegalodonEntities::Filter {
+    fn from(val: Filter) -> Self {
         MegalodonEntities::Filter {
-            id: self.id,
-            phrase: self.phrase,
-            context: self.context.into_iter().map(|i| i.into()).collect(),
-            expires_at: self.expires_at,
-            irreversible: self.irreversible,
-            whole_word: self.whole_word,
+            id: val.id,
+            phrase: val.phrase,
+            context: val.context.into_iter().map(|i| i.into()).collect(),
+            expires_at: val.expires_at,
+            irreversible: val.irreversible,
+            whole_word: val.whole_word,
         }
     }
 }

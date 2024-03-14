@@ -43,55 +43,55 @@ pub struct Reaction {
     static_url: Option<String>,
 }
 
-impl Into<MegalodonEntities::Announcement> for Announcement {
-    fn into(self) -> MegalodonEntities::Announcement {
+impl From<Announcement> for MegalodonEntities::Announcement {
+    fn from(val: Announcement) -> Self {
         MegalodonEntities::Announcement {
-            id: self.id,
-            content: self.content,
-            starts_at: self.starts_at,
-            ends_at: self.ends_at,
-            published: self.published,
-            all_day: self.all_day,
-            published_at: self.published_at,
-            updated_at: Some(self.updated_at),
+            id: val.id,
+            content: val.content,
+            starts_at: val.starts_at,
+            ends_at: val.ends_at,
+            published: val.published,
+            all_day: val.all_day,
+            published_at: val.published_at,
+            updated_at: Some(val.updated_at),
             read: None,
-            mentions: self.mentions.into_iter().map(|i| i.into()).collect(),
-            statuses: self.statuses.into_iter().map(|i| i.into()).collect(),
-            tags: self.tags.into_iter().map(|i| i.into()).collect(),
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
-            reactions: self.reactions.into_iter().map(|i| i.into()).collect(),
+            mentions: val.mentions.into_iter().map(|i| i.into()).collect(),
+            statuses: val.statuses.into_iter().map(|i| i.into()).collect(),
+            tags: val.tags.into_iter().map(|i| i.into()).collect(),
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
+            reactions: val.reactions.into_iter().map(|i| i.into()).collect(),
         }
     }
 }
 
-impl Into<MegalodonEntities::announcement::Account> for Account {
-    fn into(self) -> MegalodonEntities::announcement::Account {
+impl From<Account> for MegalodonEntities::announcement::Account {
+    fn from(val: Account) -> Self {
         MegalodonEntities::announcement::Account {
-            id: self.id,
-            username: self.username,
-            url: self.url,
-            acct: self.acct,
+            id: val.id,
+            username: val.username,
+            url: val.url,
+            acct: val.acct,
         }
     }
 }
 
-impl Into<MegalodonEntities::announcement::Status> for Status {
-    fn into(self) -> MegalodonEntities::announcement::Status {
+impl From<Status> for MegalodonEntities::announcement::Status {
+    fn from(val: Status) -> Self {
         MegalodonEntities::announcement::Status {
-            id: self.id,
-            url: self.url,
+            id: val.id,
+            url: val.url,
         }
     }
 }
 
-impl Into<MegalodonEntities::announcement::Reaction> for Reaction {
-    fn into(self) -> MegalodonEntities::announcement::Reaction {
+impl From<Reaction> for MegalodonEntities::announcement::Reaction {
+    fn from(val: Reaction) -> Self {
         MegalodonEntities::announcement::Reaction {
-            name: self.name,
-            count: self.count,
-            me: self.me,
-            url: self.url,
-            static_url: self.static_url,
+            name: val.name,
+            count: val.count,
+            me: val.me,
+            url: val.url,
+            static_url: val.static_url,
         }
     }
 }

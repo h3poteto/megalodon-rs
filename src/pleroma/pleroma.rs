@@ -122,7 +122,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .post::<oauth::AppDataFromServer>("/api/v1/apps", &params, None)
             .await?;
-        Ok(MegalodonOAuth::AppData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn fetch_access_token(
@@ -146,7 +146,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn refresh_access_token(
@@ -168,7 +168,7 @@ impl megalodon::Megalodon for Pleroma {
             .client
             .post::<oauth::TokenDataFromServer>("/oauth/token", &params, None)
             .await?;
-        Ok(MegalodonOAuth::TokenData::from(res.json.into()))
+        Ok(res.json.into())
     }
 
     async fn revoke_access_token(
@@ -1430,7 +1430,10 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
-    async fn get_status_source(&self, id: String) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
+    async fn get_status_source(
+        &self,
+        id: String,
+    ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         let res = self
             .client
             .get::<entities::StatusSource>(format!("/api/v1/statuses/{}/source", id).as_str(), None)

@@ -80,18 +80,19 @@ pub struct Tag {
     pub name: String,
     pub url: String,
 }
-impl Into<MegalodonEntities::status::Tag> for Tag {
-    fn into(self) -> MegalodonEntities::status::Tag {
+
+impl From<Tag> for MegalodonEntities::status::Tag {
+    fn from(val: Tag) -> Self {
         MegalodonEntities::status::Tag {
-            name: self.name,
-            url: self.url,
+            name: val.name,
+            url: val.url,
         }
     }
 }
 
-impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
-    fn into(self) -> MegalodonEntities::status::StatusVisibility {
-        match self {
+impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
+    fn from(val: StatusVisibility) -> Self {
+        match val {
             StatusVisibility::Public => MegalodonEntities::status::StatusVisibility::Public,
             StatusVisibility::Unlisted => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Private => MegalodonEntities::status::StatusVisibility::Private,
@@ -100,62 +101,62 @@ impl Into<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
     }
 }
 
-impl Into<MegalodonEntities::Status> for Status {
-    fn into(self) -> MegalodonEntities::Status {
+impl From<Status> for MegalodonEntities::Status {
+    fn from(val: Status) -> Self {
         let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
         let mut quoted = false;
-        if let Some(reblog) = self.reblog {
+        if let Some(reblog) = val.reblog {
             let rs: Status = *reblog;
             reblog_status = Some(Box::new(rs.into()));
-        } else if let Some(quote) = self.quote {
+        } else if let Some(quote) = val.quote {
             let rs: Status = *quote;
             reblog_status = Some(Box::new(rs.into()));
             quoted = true;
         }
 
         MegalodonEntities::Status {
-            id: self.id,
-            uri: self.uri,
-            url: self.url,
-            account: self.account.into(),
-            in_reply_to_id: self.in_reply_to_id,
-            in_reply_to_account_id: self.in_reply_to_account_id,
+            id: val.id,
+            uri: val.uri,
+            url: val.url,
+            account: val.account.into(),
+            in_reply_to_id: val.in_reply_to_id,
+            in_reply_to_account_id: val.in_reply_to_account_id,
             reblog: reblog_status,
-            content: self.content,
+            content: val.content,
             plain_content: None,
-            created_at: self.created_at,
-            edited_at: self.edited_at,
-            emojis: self.emojis.into_iter().map(|i| i.into()).collect(),
-            replies_count: self.replies_count,
-            reblogs_count: self.reblogs_count,
-            favourites_count: self.favourites_count,
-            reblogged: self.reblogged,
-            favourited: self.favourited,
-            muted: self.muted,
-            sensitive: self.sensitive,
-            spoiler_text: self.spoiler_text,
-            visibility: self.visibility.into(),
-            media_attachments: self
+            created_at: val.created_at,
+            edited_at: val.edited_at,
+            emojis: val.emojis.into_iter().map(|i| i.into()).collect(),
+            replies_count: val.replies_count,
+            reblogs_count: val.reblogs_count,
+            favourites_count: val.favourites_count,
+            reblogged: val.reblogged,
+            favourited: val.favourited,
+            muted: val.muted,
+            sensitive: val.sensitive,
+            spoiler_text: val.spoiler_text,
+            visibility: val.visibility.into(),
+            media_attachments: val
                 .media_attachments
                 .into_iter()
                 .map(|i| i.into())
                 .collect(),
-            mentions: self.mentions.into_iter().map(|i| i.into()).collect(),
-            tags: self.tags.into_iter().map(|i| i.into()).collect(),
-            card: self.card.map(|i| i.into()),
-            poll: self.poll.map(|i| i.into()),
-            application: self.application.map(|i| i.into()),
-            language: self.language,
-            pinned: self.pinned,
+            mentions: val.mentions.into_iter().map(|i| i.into()).collect(),
+            tags: val.tags.into_iter().map(|i| i.into()).collect(),
+            card: val.card.map(|i| i.into()),
+            poll: val.poll.map(|i| i.into()),
+            application: val.application.map(|i| i.into()),
+            language: val.language,
+            pinned: val.pinned,
             emoji_reactions: None,
             quote: quoted,
-            bookmarked: self.bookmarked,
+            bookmarked: val.bookmarked,
         }
     }
 }
 
-impl Into<megalodon::PostStatusOutput> for Status {
-    fn into(self) -> megalodon::PostStatusOutput {
-        megalodon::PostStatusOutput::Status(self.into())
+impl From<Status> for megalodon::PostStatusOutput {
+    fn from(val: Status) -> Self {
+        megalodon::PostStatusOutput::Status(val.into())
     }
 }

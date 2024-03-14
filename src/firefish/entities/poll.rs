@@ -19,36 +19,36 @@ pub struct Choice {
     is_voted: Option<bool>,
 }
 
-impl Into<MegalodonEntities::PollOption> for Choice {
-    fn into(self) -> MegalodonEntities::PollOption {
+impl From<Choice> for MegalodonEntities::PollOption {
+    fn from(val: Choice) -> Self {
         MegalodonEntities::PollOption {
-            title: self.text,
-            votes_count: Some(self.votes),
+            title: val.text,
+            votes_count: Some(val.votes),
         }
     }
 }
 
-impl Into<MegalodonEntities::Poll> for Poll {
-    fn into(self) -> MegalodonEntities::Poll {
+impl From<Poll> for MegalodonEntities::Poll {
+    fn from(val: Poll) -> Self {
         let mut expired = false;
-        if let Some(at) = self.expires_at {
+        if let Some(at) = val.expires_at {
             let now = Utc::now();
             let diff = now - at;
             if diff.num_seconds() > 0 {
                 expired = true;
             }
         }
-        let votes_count: u32 = self.choices.iter().map(|c| c.votes).sum();
+        let votes_count: u32 = val.choices.iter().map(|c| c.votes).sum();
 
         MegalodonEntities::Poll {
             id: "".to_string(),
-            expires_at: self.expires_at,
+            expires_at: val.expires_at,
             expired,
-            multiple: self.multiple,
+            multiple: val.multiple,
             votes_count,
             voters_count: None,
-            options: self.choices.clone().into_iter().map(|c| c.into()).collect(),
-            voted: Some(self.choices.iter().any(|c| {
+            options: val.choices.clone().into_iter().map(|c| c.into()).collect(),
+            voted: Some(val.choices.iter().any(|c| {
                 if let Some(voted) = c.is_voted {
                     voted
                 } else {

@@ -9,13 +9,13 @@ pub struct Mention {
     acct: String,
 }
 
-impl Into<MegalodonEntities::Mention> for Mention {
-    fn into(self) -> MegalodonEntities::Mention {
+impl From<Mention> for MegalodonEntities::Mention {
+    fn from(val: Mention) -> Self {
         MegalodonEntities::Mention {
-            id: self.id,
-            username: self.username,
-            url: self.url,
-            acct: self.acct,
+            id: val.id,
+            username: val.username,
+            url: val.url,
+            acct: val.acct,
         }
     }
 }

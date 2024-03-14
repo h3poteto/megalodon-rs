@@ -11,14 +11,14 @@ pub struct IdentityProof {
     profile_url: String,
 }
 
-impl Into<MegalodonEntities::IdentityProof> for IdentityProof {
-    fn into(self) -> MegalodonEntities::IdentityProof {
+impl From<IdentityProof> for MegalodonEntities::IdentityProof {
+    fn from(val: IdentityProof) -> Self {
         MegalodonEntities::IdentityProof {
-            provider: self.provider,
-            provider_username: self.provider_username,
-            updated_at: self.updated_at,
-            proof_url: self.proof_url,
-            profile_url: self.profile_url,
+            provider: val.provider,
+            provider_username: val.provider_username,
+            updated_at: val.updated_at,
+            proof_url: val.proof_url,
+            profile_url: val.profile_url,
         }
     }
 }

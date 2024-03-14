@@ -24,38 +24,38 @@ pub struct User {
     pub online_status: Option<String>,
 }
 
-impl Into<MegalodonEntities::Account> for User {
-    fn into(self) -> MegalodonEntities::Account {
-        let mut acct = self.username.clone();
-        if let Some(host) = self.host {
-            acct = format!("{}@{}", self.username, host);
+impl From<User> for MegalodonEntities::Account {
+    fn from(val: User) -> Self {
+        let mut acct = val.username.clone();
+        if let Some(host) = val.host {
+            acct = format!("{}@{}", val.username, host);
         }
         let mut display_name = "".to_string();
-        if let Some(name) = self.name {
+        if let Some(name) = val.name {
             display_name = name;
         }
         let mut avatar = "".to_string();
-        if let Some(avatar_url) = self.avatar_url {
+        if let Some(avatar_url) = val.avatar_url {
             avatar = avatar_url;
         }
         let mut avatar_static = "".to_string();
-        if let Some(avatar_color) = self.avatar_color {
+        if let Some(avatar_color) = val.avatar_color {
             avatar_static = avatar_color;
         }
         let mut bot = false;
-        if let Some(is_bot) = self.is_bot {
+        if let Some(is_bot) = val.is_bot {
             bot = is_bot;
         }
 
         MegalodonEntities::Account {
-            id: self.id,
-            username: self.username,
+            id: val.id,
+            username: val.username,
             acct: acct.clone(),
             display_name,
             locked: false,
             discoverable: None,
             group: None,
-            noindex: self.is_indexable,
+            noindex: val.is_indexable,
             moved: None,
             suspended: None,
             limited: None,
@@ -69,7 +69,7 @@ impl Into<MegalodonEntities::Account> for User {
             avatar_static,
             header: "".to_string(),
             header_static: "".to_string(),
-            emojis: self.emojis.into_iter().map(|e| e.into()).collect(),
+            emojis: val.emojis.into_iter().map(|e| e.into()).collect(),
             fields: [].to_vec(),
             bot,
             source: None,

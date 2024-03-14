@@ -7,11 +7,11 @@ pub struct List {
     title: String,
 }
 
-impl Into<MegalodonEntities::List> for List {
-    fn into(self) -> MegalodonEntities::List {
+impl From<List> for MegalodonEntities::List {
+    fn from(val: List) -> Self {
         MegalodonEntities::List {
-            id: self.id,
-            title: self.title,
+            id: val.id,
+            title: val.title,
             replies_policy: None,
         }
     }

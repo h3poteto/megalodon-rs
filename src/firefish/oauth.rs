@@ -13,15 +13,15 @@ pub struct AppDataFromServer {
     pub is_authorized: Option<bool>,
 }
 
-impl Into<oauth::AppData> for AppDataFromServer {
-    fn into(self) -> oauth::AppData {
+impl From<AppDataFromServer> for oauth::AppData {
+    fn from(val: AppDataFromServer) -> Self {
         oauth::AppData::new(
-            self.id,
-            self.name,
+            val.id,
+            val.name,
             None,
-            self.callback_url,
+            val.callback_url,
             "".to_string(),
-            self.secret.unwrap(),
+            val.secret.unwrap(),
         )
     }
 }
@@ -33,10 +33,10 @@ pub struct TokenDataFromServer {
     access_token: String,
 }
 
-impl Into<oauth::TokenData> for TokenDataFromServer {
-    fn into(self) -> oauth::TokenData {
+impl From<TokenDataFromServer> for oauth::TokenData {
+    fn from(val: TokenDataFromServer) -> Self {
         oauth::TokenData::new(
-            self.access_token,
+            val.access_token,
             "Firefish".to_string(),
             None,
             None,

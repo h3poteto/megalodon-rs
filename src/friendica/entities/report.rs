@@ -22,9 +22,9 @@ pub enum Category {
     Other,
 }
 
-impl Into<MegalodonEntities::report::Category> for Category {
-    fn into(self) -> MegalodonEntities::report::Category {
-        match self {
+impl From<Category> for MegalodonEntities::report::Category {
+    fn from(val: Category) -> Self {
+        match val {
             Category::Spam => MegalodonEntities::report::Category::Spam,
             Category::Violation => MegalodonEntities::report::Category::Violation,
             Category::Other => MegalodonEntities::report::Category::Other,
@@ -32,18 +32,18 @@ impl Into<MegalodonEntities::report::Category> for Category {
     }
 }
 
-impl Into<MegalodonEntities::Report> for Report {
-    fn into(self) -> MegalodonEntities::Report {
+impl From<Report> for MegalodonEntities::Report {
+    fn from(val: Report) -> Self {
         MegalodonEntities::Report {
-            id: self.id,
-            action_taken: self.action_taken,
+            id: val.id,
+            action_taken: val.action_taken,
             action_taken_at: None,
-            category: Some(self.category.into()),
-            comment: Some(self.comment),
-            forwarded: Some(self.forwarded),
-            status_ids: self.status_ids,
-            rule_ids: self.rule_ids,
-            target_account: Some(self.target_account.into()),
+            category: Some(val.category.into()),
+            comment: Some(val.comment),
+            forwarded: Some(val.forwarded),
+            status_ids: val.status_ids,
+            rule_ids: val.rule_ids,
+            target_account: Some(val.target_account.into()),
         }
     }
 }

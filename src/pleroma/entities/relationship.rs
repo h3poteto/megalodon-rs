@@ -20,22 +20,22 @@ pub struct Relationship {
     note: String,
 }
 
-impl Into<MegalodonEntities::Relationship> for Relationship {
-    fn into(self) -> MegalodonEntities::Relationship {
+impl From<Relationship> for MegalodonEntities::Relationship {
+    fn from(val: Relationship) -> Self {
         MegalodonEntities::Relationship {
-            id: self.id,
-            following: self.following,
-            followed_by: self.followed_by,
-            blocking: self.blocking,
-            blocked_by: self.blocked_by,
-            muting: self.muting,
-            muting_notifications: self.muting_notifications,
-            requested: self.requested,
-            domain_blocking: self.domain_blocking,
-            showing_reblogs: self.showing_reblogs,
-            endorsed: self.endorsed,
-            notifying: self.notifying,
-            note: Some(self.note),
+            id: val.id,
+            following: val.following,
+            followed_by: val.followed_by,
+            blocking: val.blocking,
+            blocked_by: val.blocked_by,
+            muting: val.muting,
+            muting_notifications: val.muting_notifications,
+            requested: val.requested,
+            domain_blocking: val.domain_blocking,
+            showing_reblogs: val.showing_reblogs,
+            endorsed: val.endorsed,
+            notifying: val.notifying,
+            note: Some(val.note),
         }
     }
 }

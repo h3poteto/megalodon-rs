@@ -21,9 +21,9 @@ pub enum CardType {
     Rich,
 }
 
-impl Into<MegalodonEntities::card::CardType> for CardType {
-    fn into(self) -> MegalodonEntities::card::CardType {
-        match self {
+impl From<CardType> for MegalodonEntities::card::CardType {
+    fn from(val: CardType) -> Self {
+        match val {
             CardType::Link => MegalodonEntities::card::CardType::Link,
             CardType::Photo => MegalodonEntities::card::CardType::Photo,
             CardType::Video => MegalodonEntities::card::CardType::Video,
@@ -32,18 +32,18 @@ impl Into<MegalodonEntities::card::CardType> for CardType {
     }
 }
 
-impl Into<MegalodonEntities::Card> for Card {
-    fn into(self) -> MegalodonEntities::Card {
+impl From<Card> for MegalodonEntities::Card {
+    fn from(val: Card) -> Self {
         MegalodonEntities::Card {
-            url: self.url,
-            title: self.title,
-            description: self.description,
-            r#type: self.r#type.into(),
-            image: self.image,
+            url: val.url,
+            title: val.title,
+            description: val.description,
+            r#type: val.r#type.into(),
+            image: val.image,
             author_name: None,
             author_url: None,
-            provider_name: self.provider_name,
-            provider_url: self.provider_url,
+            provider_name: val.provider_name,
+            provider_url: val.provider_url,
             html: None,
             width: None,
             height: None,

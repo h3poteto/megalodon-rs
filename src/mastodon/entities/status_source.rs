@@ -11,12 +11,12 @@ pub struct StatusSource {
     spoiler_text: String,
 }
 
-impl Into<MegalodonEntities::StatusSource> for StatusSource {
-    fn into(self) -> MegalodonEntities::StatusSource {
+impl From<StatusSource> for MegalodonEntities::StatusSource {
+    fn from(val: StatusSource) -> Self {
         MegalodonEntities::StatusSource {
-            id: self.id,
-            text: self.text,
-            spoiler_text: self.spoiler_text,
+            id: val.id,
+            text: val.text,
+            spoiler_text: val.spoiler_text,
         }
     }
 }
