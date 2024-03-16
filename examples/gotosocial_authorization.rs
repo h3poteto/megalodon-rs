@@ -3,11 +3,11 @@ use std::env;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let Ok(url) = env::var("GOTOSOCIAL_URL") else {
         println!("Specify GOTOSOCIAL_URL!!");
-        return
+        return;
     };
     let client = generator(megalodon::SNS::Gotosocial, url, None, None);
     let options = megalodon::megalodon::AppInputOptions {
