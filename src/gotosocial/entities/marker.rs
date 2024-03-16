@@ -15,21 +15,21 @@ struct InnerMarker {
     updated_at: DateTime<Utc>,
 }
 
-impl Into<MegalodonEntities::Marker> for Marker {
-    fn into(self) -> MegalodonEntities::Marker {
+impl From<Marker> for MegalodonEntities::Marker {
+    fn from(val: Marker) -> MegalodonEntities::Marker {
         MegalodonEntities::Marker {
-            home: Some(self.home.into()),
-            notifications: Some(self.notifications.into()),
+            home: Some(val.home.into()),
+            notifications: Some(val.notifications.into()),
         }
     }
 }
 
-impl Into<MegalodonEntities::marker::InnerMarker> for InnerMarker {
-    fn into(self) -> MegalodonEntities::marker::InnerMarker {
+impl From<InnerMarker> for MegalodonEntities::marker::InnerMarker {
+    fn from(val: InnerMarker) -> MegalodonEntities::marker::InnerMarker {
         MegalodonEntities::marker::InnerMarker {
-            last_read_id: self.last_read_id,
-            version: self.version,
-            updated_at: self.updated_at,
+            last_read_id: val.last_read_id,
+            version: val.version,
+            updated_at: val.updated_at,
             unread_count: None,
         }
     }

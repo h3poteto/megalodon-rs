@@ -54,54 +54,54 @@ pub struct Polls {
     pub max_expiration: u32,
 }
 
-impl Into<MegalodonEntities::Instance> for Instance {
-    fn into(self) -> MegalodonEntities::Instance {
+impl From<Instance> for MegalodonEntities::Instance {
+    fn from(item: Instance) -> Self {
         MegalodonEntities::Instance {
-            uri: self.uri,
-            title: self.title,
-            description: self.description,
-            email: self.email,
-            version: self.version,
-            thumbnail: self.thumbnail,
-            urls: Some(self.urls.into()),
-            stats: self.stats.into(),
-            languages: self.languages,
-            registrations: self.registrations,
-            approval_required: self.approval_required,
-            invites_enabled: Some(self.invites_enabled),
-            contact_account: Some(self.contact_account.into()),
-            configuration: self.configuration.into(),
+            uri: item.uri,
+            title: item.title,
+            description: item.description,
+            email: item.email,
+            version: item.version,
+            thumbnail: item.thumbnail,
+            urls: Some(item.urls.into()),
+            stats: item.stats.into(),
+            languages: item.languages,
+            registrations: item.registrations,
+            approval_required: item.approval_required,
+            invites_enabled: Some(item.invites_enabled),
+            contact_account: Some(item.contact_account.into()),
+            configuration: item.configuration.into(),
             rules: None,
         }
     }
 }
 
-impl Into<MegalodonEntities::instance::InstanceConfig> for InstanceConfig {
-    fn into(self) -> MegalodonEntities::instance::InstanceConfig {
+impl From<InstanceConfig> for MegalodonEntities::instance::InstanceConfig {
+    fn from(item: InstanceConfig) -> Self {
         MegalodonEntities::instance::InstanceConfig {
-            statuses: self.statuses.into(),
-            polls: Some(self.polls.into()),
+            statuses: item.statuses.into(),
+            polls: Some(item.polls.into()),
         }
     }
 }
 
-impl Into<MegalodonEntities::instance::Statuses> for Statuses {
-    fn into(self) -> MegalodonEntities::instance::Statuses {
+impl From<Statuses> for MegalodonEntities::instance::Statuses {
+    fn from(item: Statuses) -> Self {
         MegalodonEntities::instance::Statuses {
-            max_characters: self.max_characters,
-            max_media_attachments: Some(self.max_media_attachments),
-            characters_reserved_per_url: Some(self.characters_reserved_per_url),
+            max_characters: item.max_characters,
+            max_media_attachments: Some(item.max_media_attachments),
+            characters_reserved_per_url: Some(item.characters_reserved_per_url),
         }
     }
 }
 
-impl Into<MegalodonEntities::instance::Polls> for Polls {
-    fn into(self) -> MegalodonEntities::instance::Polls {
+impl From<Polls> for MegalodonEntities::instance::Polls {
+    fn from(item: Polls) -> Self {
         MegalodonEntities::instance::Polls {
-            max_options: self.max_options,
-            max_characters_per_option: self.max_characters_per_option,
-            min_expiration: self.min_expiration,
-            max_expiration: self.max_expiration,
+            max_options: item.max_options,
+            max_characters_per_option: item.max_characters_per_option,
+            min_expiration: item.min_expiration,
+            max_expiration: item.max_expiration,
         }
     }
 }

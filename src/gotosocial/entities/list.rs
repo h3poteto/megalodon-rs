@@ -16,22 +16,22 @@ pub enum RepliesPolicy {
     None,
 }
 
-impl Into<MegalodonEntities::list::RepliesPolicy> for RepliesPolicy {
-    fn into(self) -> MegalodonEntities::list::RepliesPolicy {
-        match self {
-            Self::Followed => MegalodonEntities::list::RepliesPolicy::Followed,
-            Self::List => MegalodonEntities::list::RepliesPolicy::List,
-            Self::None => MegalodonEntities::list::RepliesPolicy::None,
+impl From<RepliesPolicy> for MegalodonEntities::list::RepliesPolicy {
+    fn from(val: RepliesPolicy) -> MegalodonEntities::list::RepliesPolicy {
+        match val {
+            RepliesPolicy::Followed => MegalodonEntities::list::RepliesPolicy::Followed,
+            RepliesPolicy::List => MegalodonEntities::list::RepliesPolicy::List,
+            RepliesPolicy::None => MegalodonEntities::list::RepliesPolicy::None,
         }
     }
 }
 
-impl Into<MegalodonEntities::List> for List {
-    fn into(self) -> MegalodonEntities::List {
+impl From<List> for MegalodonEntities::List {
+    fn from(val: List) -> MegalodonEntities::List {
         MegalodonEntities::List {
-            id: self.id,
-            title: self.title,
-            replies_policy: self.replies_policy.map(|r| r.into()),
+            id: val.id,
+            title: val.title,
+            replies_policy: val.replies_policy.map(|r| r.into()),
         }
     }
 }

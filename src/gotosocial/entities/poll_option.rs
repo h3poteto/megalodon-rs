@@ -7,11 +7,11 @@ pub struct PollOption {
     votes_count: Option<u32>,
 }
 
-impl Into<MegalodonEntities::PollOption> for PollOption {
-    fn into(self) -> MegalodonEntities::PollOption {
+impl From<PollOption> for MegalodonEntities::PollOption {
+    fn from(val: PollOption) -> MegalodonEntities::PollOption {
         MegalodonEntities::PollOption {
-            title: self.title,
-            votes_count: self.votes_count,
+            title: val.title,
+            votes_count: val.votes_count,
         }
     }
 }

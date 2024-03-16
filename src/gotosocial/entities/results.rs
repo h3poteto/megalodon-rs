@@ -9,12 +9,12 @@ pub struct Results {
     hashtags: Vec<Tag>,
 }
 
-impl Into<MegalodonEntities::Results> for Results {
-    fn into(self) -> MegalodonEntities::Results {
+impl From<Results> for MegalodonEntities::Results {
+    fn from(val: Results) -> MegalodonEntities::Results {
         MegalodonEntities::Results {
-            accounts: self.accounts.into_iter().map(|i| i.into()).collect(),
-            statuses: self.statuses.into_iter().map(|i| i.into()).collect(),
-            hashtags: self.hashtags.into_iter().map(|i| i.into()).collect(),
+            accounts: val.accounts.into_iter().map(|i| i.into()).collect(),
+            statuses: val.statuses.into_iter().map(|i| i.into()).collect(),
+            hashtags: val.hashtags.into_iter().map(|i| i.into()).collect(),
         }
     }
 }

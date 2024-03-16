@@ -199,21 +199,21 @@ impl<'de> de::Deserialize<'de> for Preferences {
     }
 }
 
-impl Into<MegalodonEntities::Preferences> for Preferences {
-    fn into(self) -> MegalodonEntities::Preferences {
+impl From<Preferences> for MegalodonEntities::Preferences {
+    fn from(val: Preferences) -> MegalodonEntities::Preferences {
         MegalodonEntities::Preferences {
-            posting_default_visibility: self.posting_default_visibility.into(),
-            posting_default_sensitive: self.posting_default_sensitive.into(),
-            posting_default_language: self.posting_default_language.into(),
-            reading_expand_media: self.reading_expand_media.into(),
-            reading_expand_spoilers: self.reading_expand_spoilers.into(),
+            posting_default_visibility: val.posting_default_visibility.into(),
+            posting_default_sensitive: val.posting_default_sensitive.into(),
+            posting_default_language: val.posting_default_language.into(),
+            reading_expand_media: val.reading_expand_media.into(),
+            reading_expand_spoilers: val.reading_expand_spoilers.into(),
         }
     }
 }
 
-impl Into<MegalodonEntities::preferences::ExpandMedia> for ExpandMedia {
-    fn into(self) -> MegalodonEntities::preferences::ExpandMedia {
-        match self {
+impl From<ExpandMedia> for MegalodonEntities::preferences::ExpandMedia {
+    fn from(val: ExpandMedia) -> MegalodonEntities::preferences::ExpandMedia {
+        match val {
             ExpandMedia::Default => MegalodonEntities::preferences::ExpandMedia::Default,
             ExpandMedia::ShowAll => MegalodonEntities::preferences::ExpandMedia::ShowAll,
             ExpandMedia::HideAll => MegalodonEntities::preferences::ExpandMedia::HideAll,

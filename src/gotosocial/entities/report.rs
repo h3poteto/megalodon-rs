@@ -25,9 +25,9 @@ pub enum Category {
     Other,
 }
 
-impl Into<MegalodonEntities::report::Category> for Category {
-    fn into(self) -> MegalodonEntities::report::Category {
-        match self {
+impl From<Category> for MegalodonEntities::report::Category {
+    fn from(val: Category) -> MegalodonEntities::report::Category {
+        match val {
             Category::Spam => MegalodonEntities::report::Category::Spam,
             Category::Violation => MegalodonEntities::report::Category::Violation,
             Category::Other => MegalodonEntities::report::Category::Other,
@@ -35,18 +35,18 @@ impl Into<MegalodonEntities::report::Category> for Category {
     }
 }
 
-impl Into<MegalodonEntities::Report> for Report {
-    fn into(self) -> MegalodonEntities::Report {
+impl From<Report> for MegalodonEntities::Report {
+    fn from(val: Report) -> MegalodonEntities::Report {
         MegalodonEntities::Report {
-            id: self.id,
-            action_taken: self.action_taken,
-            action_taken_at: None,
-            status_ids: self.status_ids,
-            category: Some(self.category.into()),
-            comment: Some(self.comment),
-            forwarded: Some(self.forwarded),
-            rule_ids: self.rule_ids,
-            target_account: Some(self.target_account.into()),
+            id: val.id,
+            action_taken: val.action_taken,
+            action_taken_at: val.action_taken_at,
+            status_ids: val.status_ids,
+            category: Some(val.category.into()),
+            comment: Some(val.comment),
+            forwarded: Some(val.forwarded),
+            rule_ids: val.rule_ids,
+            target_account: Some(val.target_account.into()),
         }
     }
 }

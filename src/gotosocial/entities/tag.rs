@@ -8,13 +8,13 @@ pub struct Tag {
     following: Option<bool>,
 }
 
-impl Into<MegalodonEntities::Tag> for Tag {
-    fn into(self) -> MegalodonEntities::Tag {
+impl From<Tag> for MegalodonEntities::Tag {
+    fn from(val: Tag) -> MegalodonEntities::Tag {
         MegalodonEntities::Tag {
-            name: self.name,
-            url: self.url,
+            name: val.name,
+            url: val.url,
             history: [].to_vec(),
-            following: self.following,
+            following: val.following,
         }
     }
 }

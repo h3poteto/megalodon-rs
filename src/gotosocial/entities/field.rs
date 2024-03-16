@@ -19,12 +19,12 @@ impl From<MegalodonEntities::Field> for Field {
     }
 }
 
-impl Into<MegalodonEntities::Field> for Field {
-    fn into(self) -> MegalodonEntities::Field {
+impl From<Field> for MegalodonEntities::Field {
+    fn from(item: Field) -> MegalodonEntities::Field {
         MegalodonEntities::Field {
-            name: self.name,
-            value: self.value,
-            verified_at: self.verified_at,
+            name: item.name,
+            value: item.value,
+            verified_at: item.verified_at,
             verified: None,
         }
     }

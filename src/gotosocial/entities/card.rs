@@ -26,9 +26,9 @@ pub enum CardType {
     Rich,
 }
 
-impl Into<MegalodonEntities::card::CardType> for CardType {
-    fn into(self) -> MegalodonEntities::card::CardType {
-        match self {
+impl From<CardType> for MegalodonEntities::card::CardType {
+    fn from(val: CardType) -> MegalodonEntities::card::CardType {
+        match val {
             CardType::Link => MegalodonEntities::card::CardType::Link,
             CardType::Photo => MegalodonEntities::card::CardType::Photo,
             CardType::Video => MegalodonEntities::card::CardType::Video,
@@ -37,21 +37,21 @@ impl Into<MegalodonEntities::card::CardType> for CardType {
     }
 }
 
-impl Into<MegalodonEntities::Card> for Card {
-    fn into(self) -> MegalodonEntities::Card {
+impl From<Card> for MegalodonEntities::Card {
+    fn from(val: Card) -> MegalodonEntities::Card {
         MegalodonEntities::Card {
-            url: self.url,
-            title: self.title,
-            description: self.description,
-            r#type: self.r#type.into(),
-            image: self.image,
-            author_name: self.author_name,
-            author_url: self.author_url,
-            provider_name: self.provider_name.map_or(String::from(""), |f| f),
-            provider_url: self.provider_url.map_or(String::from(""), |f| f),
-            html: self.html,
-            width: self.width,
-            height: self.height,
+            url: val.url,
+            title: val.title,
+            description: val.description,
+            r#type: val.r#type.into(),
+            image: val.image,
+            author_name: val.author_name,
+            author_url: val.author_url,
+            provider_name: val.provider_name.map_or(String::from(""), |f| f),
+            provider_url: val.provider_url.map_or(String::from(""), |f| f),
+            html: val.html,
+            width: val.width,
+            height: val.height,
             embed_url: None,
             blurhash: None,
         }
