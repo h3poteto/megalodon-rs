@@ -102,8 +102,9 @@ impl WebSocket {
                         })?;
                     Ok(Message::StatusUpdate(res.into()))
                 }
+                "" => Ok(Message::Heartbeat()),
                 event => Err(Error::new_own(
-                    format!("Unknown event is received: {}", event),
+                    format!("Unknown event is received: {:#?}", event),
                     Kind::ParseError,
                     None,
                     None,

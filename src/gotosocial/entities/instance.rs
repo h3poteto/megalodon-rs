@@ -7,7 +7,7 @@ pub struct Instance {
     pub account_domain: String,
     pub approval_required: bool,
     pub configuration: InstanceConfig,
-    pub contact_account: Account,
+    pub contact_account: Option<Account>,
     pub description: String,
     pub email: String,
     pub invites_enabled: bool,
@@ -69,7 +69,7 @@ impl From<Instance> for MegalodonEntities::Instance {
             registrations: item.registrations,
             approval_required: item.approval_required,
             invites_enabled: Some(item.invites_enabled),
-            contact_account: Some(item.contact_account.into()),
+            contact_account: item.contact_account.map(|i| i.into()),
             configuration: item.configuration.into(),
             rules: None,
         }
