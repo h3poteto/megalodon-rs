@@ -87,6 +87,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -116,6 +117,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -145,6 +147,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "friendica" => Ok(SNS::Friendica),
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name == "mastodon" {
@@ -219,5 +222,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Firefish);
+    }
+
+    #[tokio::test]
+    async fn test_detector_gotosocial() {
+        let sns = detector("https://goblin.technology").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Gotosocial);
     }
 }
