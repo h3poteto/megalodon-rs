@@ -12,6 +12,7 @@ This library is Rust version of [megalodon](https://github.com/h3poteto/megalodo
 - [x] Pleroma
 - [x] Friendica
 - [x] Firefish
+- [x] Gotosocial
 - [x] Akkoma (Unofficial)
 
 ## Features
