@@ -47,7 +47,7 @@ tokio-util = { version = "0.7.10", features = ["codec"] }
 tracing = "0.1.40"
 url = "2.5.0"
 urlencoding = { version = "2.1" }
-uuid = { version = "1.7", features = ["v4"] }
+uuid = { version = "1.8", features = ["v4"] }
 
 [dev-dependencies]
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
