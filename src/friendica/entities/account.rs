@@ -13,7 +13,7 @@ pub struct Account {
     discoverable: Option<bool>,
     group: bool,
     created_at: DateTime<Utc>,
-    followers_count: u32,
+    followers_count: i32,
     following_count: u32,
     statuses_count: u32,
     note: String,

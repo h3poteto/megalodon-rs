@@ -41,7 +41,7 @@ pub struct UserDetail {
     // birthday: Option<String>,
     pub lang: Option<String>,
     fields: Vec<Field>,
-    followers_count: u32,
+    followers_count: i32,
     following_count: u32,
     notes_count: u32,
     // pinned_note_ids: Vec<String>,

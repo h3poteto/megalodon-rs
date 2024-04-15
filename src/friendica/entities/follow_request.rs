@@ -20,7 +20,7 @@ pub struct FollowRequest {
     avatar_static: String,
     header: String,
     header_static: String,
-    followers_count: u32,
+    followers_count: i32,
     following_count: u32,
     statuses_count: u32,
     emojis: Vec<Emoji>,

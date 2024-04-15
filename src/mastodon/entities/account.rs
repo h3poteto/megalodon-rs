@@ -17,7 +17,7 @@ pub struct Account {
     suspended: Option<bool>,
     limited: Option<bool>,
     created_at: DateTime<Utc>,
-    followers_count: u32,
+    followers_count: i32,
     following_count: u32,
     statuses_count: u32,
     note: String,

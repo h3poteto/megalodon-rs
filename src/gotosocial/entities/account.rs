@@ -12,7 +12,7 @@ pub struct Account {
     locked: bool,
     discoverable: Option<bool>,
     created_at: DateTime<Utc>,
-    followers_count: u32,
+    followers_count: i32,
     following_count: u32,
     statuses_count: u32,
     note: String,
