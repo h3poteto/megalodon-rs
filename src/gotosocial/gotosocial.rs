@@ -794,13 +794,34 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn get_mutes(
         &self,
-        _options: Option<&megalodon::GetMutesInputOptions>,
+        options: Option<&megalodon::GetMutesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(min_id) = &options.min_id {
+                params.push(format!("min_id={}", min_id));
+            }
+        }
+        let mut path = "/api/v1/mutes".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
@@ -1467,24 +1488,44 @@ impl megalodon::Megalodon for Gotosocial {
         ))
     }
 
-    async fn mute_status(&self, _id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+    async fn mute_status(&self, id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/mute", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
     async fn unmute_status(
         &self,
-        _id: String,
+        id: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let params = HashMap::new();
+        let res = self
+            .client
+            .post::<entities::Status>(
+                format!("/api/v1/statuses/{}/unmute", id).as_str(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
