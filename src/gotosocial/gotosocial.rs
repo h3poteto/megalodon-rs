@@ -1414,25 +1414,41 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn get_status_reblogged_by(
         &self,
-        _id: String,
+        id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(
+                format!("/api/v1/statuses/{}/reblogged_by", id).as_str(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
     async fn get_status_favourited_by(
         &self,
-        _id: String,
+        id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let res = self
+            .client
+            .get::<Vec<entities::Account>>(
+                format!("/api/v1/statuses/{}/favourited_by", id).as_str(),
+                None,
+            )
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
