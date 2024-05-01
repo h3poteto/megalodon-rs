@@ -889,59 +889,134 @@ impl megalodon::Megalodon for Gotosocial {
     }
 
     async fn get_filters(&self) -> Result<Response<Vec<MegalodonEntities::Filter>>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let res = self
+            .client
+            .get::<Vec<entities::Filter>>("/api/v1/filters", None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Filter>>::new(
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
-    async fn get_filter(&self, _id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+    async fn get_filter(&self, id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
+        let res = self
+            .client
+            .get::<entities::Filter>(format!("/api/v1/filters/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
     async fn create_filter(
         &self,
-        _phrase: String,
-        _context: Vec<MegalodonEntities::filter::FilterContext>,
-        _options: Option<&megalodon::FilterInputOptions>,
+        phrase: String,
+        context: Vec<MegalodonEntities::filter::FilterContext>,
+        options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let mut params = HashMap::<&str, Value>::from([
+            ("phrase", serde_json::Value::String(phrase)),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
+        ]);
+        if let Some(options) = options {
+            if let Some(irreversible) = options.irreversible {
+                params.insert(
+                    "irreversible",
+                    serde_json::Value::String(irreversible.to_string()),
+                );
+            }
+            if let Some(whole_word) = options.whole_word {
+                params.insert(
+                    "whole_word",
+                    serde_json::Value::String(whole_word.to_string()),
+                );
+            }
+            if let Some(expires_in) = options.expires_in {
+                params.insert(
+                    "expires_in",
+                    serde_json::Value::String(expires_in.to_string()),
+                );
+            }
+        }
+        let res = self
+            .client
+            .post::<entities::Filter>("/api/v1/filters", &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
     async fn update_filter(
         &self,
-        _id: String,
-        _phrase: String,
-        _context: Vec<MegalodonEntities::filter::FilterContext>,
-        _options: Option<&megalodon::FilterInputOptions>,
+        id: String,
+        phrase: String,
+        context: Vec<MegalodonEntities::filter::FilterContext>,
+        options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let mut params = HashMap::<&str, Value>::from([
+            ("phrase", serde_json::Value::String(phrase)),
+            (
+                "context",
+                serde_json::to_value(&context).ok().unwrap_or_default(),
+            ),
+        ]);
+        if let Some(options) = options {
+            if let Some(irreversible) = options.irreversible {
+                params.insert(
+                    "irreversible",
+                    serde_json::Value::String(irreversible.to_string()),
+                );
+            }
+            if let Some(whole_word) = options.whole_word {
+                params.insert(
+                    "whole_word",
+                    serde_json::Value::String(whole_word.to_string()),
+                );
+            }
+            if let Some(expires_in) = options.expires_in {
+                params.insert(
+                    "expires_in",
+                    serde_json::Value::String(expires_in.to_string()),
+                );
+            }
+        }
+        let res = self
+            .client
+            .put::<entities::Filter>(format!("/api/v1/filters/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Filter>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
-    async fn delete_filter(&self, _id: String) -> Result<Response<()>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
-        ))
+    async fn delete_filter(&self, id: String) -> Result<Response<()>, Error> {
+        let params = HashMap::<&str, Value>::new();
+        let res = self
+            .client
+            .delete::<()>(format!("/api/v1/filters/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(res)
     }
 
     async fn report(
