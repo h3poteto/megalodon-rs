@@ -1340,13 +1340,18 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn get_status_source(
         &self,
-        _id: String,
+        id: String,
     ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let res = self
+            .client
+            .get::<entities::StatusSource>(format!("/api/v1/statuses/{}/source", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::StatusSource>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
