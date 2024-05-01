@@ -702,9 +702,21 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn search_account(
         &self,
-        acct: String,
+        _acct: String,
         _options: Option<&megalodon::SearchAccountInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
+        Err(Error::new_own(
+            "Gotosocial doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
+    async fn lookup_account(
+        &self,
+        acct: String,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
         let params = Vec::<String>::from([format!("acct={}", acct)]);
         let mut path = "/api/v1/accounts/lookup".to_string();
         if params.len() > 0 {
@@ -715,8 +727,8 @@ impl megalodon::Megalodon for Gotosocial {
             .get::<entities::Account>(path.as_str(), None)
             .await?;
 
-        Ok(Response::<Vec<MegalodonEntities::Account>>::new(
-            [res.json.into()].to_vec(),
+        Ok(Response::<MegalodonEntities::Account>::new(
+            res.json.into(),
             res.status,
             res.status_text,
             res.header,

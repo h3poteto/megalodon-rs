@@ -186,6 +186,9 @@ pub trait Megalodon {
         options: Option<&SearchAccountInputOptions>,
     ) -> Result<Response<Vec<entities::Account>>, Error>;
 
+    /// Lookup account ID from Webfinger address.
+    async fn lookup_account(&self, acct: String) -> Result<Response<entities::Account>, Error>;
+
     // ======================================
     // accounts/bookmarks
     // ======================================
