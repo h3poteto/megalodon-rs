@@ -98,6 +98,13 @@ pub trait Megalodon {
         options: Option<&GetAccountStatusesInputOptions>,
     ) -> Result<Response<Vec<entities::Status>>, Error>;
 
+    /// Get favourited statuses of the account.
+    async fn get_account_favourites(
+        &self,
+        id: String,
+        options: Option<&GetAccountFavouritesInputOptions>,
+    ) -> Result<Response<Vec<entities::Status>>, Error>;
+
     /// Receive notifications when this account posts a status.
     async fn subscribe_account(
         &self,
@@ -624,6 +631,12 @@ pub trait Megalodon {
     /// Clear a notification from the server.
     async fn dismiss_notification(&self, id: String) -> Result<Response<()>, Error>;
 
+    /// Mark as read all unread notifications.
+    async fn read_notifications(
+        &self,
+        options: &ReadNotificationsInputOptions,
+    ) -> Result<Response<()>, Error>;
+
     // ======================================
     // notifications/push
     // ======================================
@@ -843,6 +856,17 @@ pub struct GetAccountStatusesInputOptions {
     pub exclude_reblogs: Option<bool>,
     /// Show only statuses with metia attached.
     pub only_media: Option<bool>,
+}
+
+/// Input options for [`Megalodon::get_account_favourites`].
+#[derive(Debug, Clone, Default)]
+pub struct GetAccountFavouritesInputOptions {
+    /// Maximum number of results to return.
+    pub limit: Option<u32>,
+    /// Return results older than this ID.
+    pub max_id: Option<String>,
+    /// Return results newer than this ID.
+    pub since_id: Option<String>,
 }
 
 /// Input options for [`Megalodon::get_account_followers`] and [`Megalodon::get_account_following`].
@@ -1122,6 +1146,15 @@ pub struct GetNotificationsInputOptions {
     pub exclude_types: Option<Vec<entities::notification::NotificationType>>,
     /// Return only notifications received from this account.
     pub account_id: Option<String>,
+}
+
+/// Input options for [`Megalodon::read_notifications`].
+#[derive(Debug, Clone, Default)]
+pub struct ReadNotificationsInputOptions {
+    /// A single notification ID to read.
+    pub id: Option<String>,
+    /// Read all notifications up to this ID.
+    pub max_id: Option<String>,
 }
 
 /// Subscription input options for [`Megalodon::subscribe_push_notification`].

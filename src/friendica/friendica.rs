@@ -309,6 +309,19 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
+    async fn get_account_favourites(
+        &self,
+        _id: String,
+        _options: Option<&megalodon::GetAccountFavouritesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn subscribe_account(
         &self,
         id: String,
@@ -2368,6 +2381,18 @@ impl megalodon::Megalodon for Friendica {
             .await?;
 
         Ok(res)
+    }
+
+    async fn read_notifications(
+        &self,
+        _options: &megalodon::ReadNotificationsInputOptions,
+    ) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
     }
 
     async fn subscribe_push_notification(
