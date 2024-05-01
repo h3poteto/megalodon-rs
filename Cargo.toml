@@ -29,7 +29,7 @@ async-trait = "0.1.80"
 chrono = { version = ">=0.4.38", features = ["serde"] }
 futures-util = ">=0.3.30"
 hex = { version = "0.4" }
-oauth2 = { version = "4.4" }
+oauth2 = { version = "4.4.2" }
 rand = "0.8"
 regex = ">=1.10.4"
 reqwest = { version = ">=0.12.3", features = [
