@@ -382,8 +382,8 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn get_account_favourites(
         &self,
-        id: String,
-        options: Option<&megalodon::GetAccountFavouritesInputOptions>,
+        _id: String,
+        _options: Option<&megalodon::GetAccountFavouritesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
@@ -2203,6 +2203,18 @@ impl megalodon::Megalodon for Gotosocial {
     }
 
     async fn dismiss_notification(&self, _id: String) -> Result<Response<()>, Error> {
+        Err(Error::new_own(
+            "Gotosocial doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
+    async fn read_notifications(
+        &self,
+        _options: &megalodon::ReadNotificationsInputOptions,
+    ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,

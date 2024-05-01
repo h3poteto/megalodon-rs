@@ -2625,6 +2625,34 @@ impl megalodon::Megalodon for Pleroma {
         Ok(res)
     }
 
+    async fn read_notifications(
+        &self,
+        options: &megalodon::ReadNotificationsInputOptions,
+    ) -> Result<Response<()>, Error> {
+        if let Some(id) = &options.id {
+            let params = HashMap::<&str, Value>::from([("id", Value::String(id.clone()))]);
+            let res = self
+                .client
+                .post::<()>("/api/v1/pleroma/notifications/read", &params, None)
+                .await?;
+            Ok(res)
+        } else if let Some(max_id) = &options.max_id {
+            let params = HashMap::<&str, Value>::from([("max_id", Value::String(max_id.clone()))]);
+            let res = self
+                .client
+                .post::<()>("/api/v1/pleroma/notifications/read", &params, None)
+                .await?;
+            Ok(res)
+        } else {
+            return Err(Error::new_own(
+                "id or max_id is required".to_string(),
+                error::Kind::UnsatisfiedError,
+                None,
+                None,
+            ));
+        }
+    }
+
     async fn subscribe_push_notification(
         &self,
         subscription: &megalodon::SubscribePushNotificationInputSubscription,

@@ -634,7 +634,7 @@ pub trait Megalodon {
     /// Mark as read all unread notifications.
     async fn read_notifications(
         &self,
-        options: Option<&ReadNotificationsInputOptions>,
+        options: &ReadNotificationsInputOptions,
     ) -> Result<Response<()>, Error>;
 
     // ======================================
