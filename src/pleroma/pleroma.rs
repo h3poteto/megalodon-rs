@@ -372,6 +372,40 @@ impl megalodon::Megalodon for Pleroma {
         ))
     }
 
+    async fn get_account_favourites(
+        &self,
+        id: String,
+        options: Option<&megalodon::GetAccountFavouritesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        let mut params = Vec::<String>::new();
+        if let Some(options) = options {
+            if let Some(limit) = options.limit {
+                params.push(format!("limit={}", limit));
+            }
+            if let Some(max_id) = &options.max_id {
+                params.push(format!("max_id={}", max_id));
+            }
+            if let Some(since_id) = &options.since_id {
+                params.push(format!("since_id={}", since_id));
+            }
+        }
+        let mut url = format!("/api/v1/pleroma/accounts/{}/favourites", id);
+        if params.len() > 0 {
+            url = url + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<Vec<entities::Status>>(url.as_str(), None)
+            .await?;
+
+        Ok(Response::<Vec<MegalodonEntities::Status>>::new(
+            res.json.into_iter().map(|s| s.into()).collect(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn subscribe_account(
         &self,
         id: String,

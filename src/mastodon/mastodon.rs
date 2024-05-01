@@ -385,6 +385,19 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn get_account_favourites(
+        &self,
+        id: String,
+        options: Option<&megalodon::GetAccountFavouritesInputOptions>,
+    ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
+        Err(Error::new_own(
+            "Mastodon doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn subscribe_account(
         &self,
         id: String,
