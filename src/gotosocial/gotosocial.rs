@@ -1621,26 +1621,40 @@ impl megalodon::Megalodon for Gotosocial {
         ))
     }
 
-    async fn get_poll(&self, _id: String) -> Result<Response<MegalodonEntities::Poll>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+    async fn get_poll(&self, id: String) -> Result<Response<MegalodonEntities::Poll>, Error> {
+        let res = self
+            .client
+            .get::<entities::Poll>(format!("/api/v1/polls/{}", id).as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Poll>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
     async fn vote_poll(
         &self,
-        _id: String,
-        _choices: Vec<u32>,
+        id: String,
+        choices: Vec<u32>,
         _status_id: Option<String>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
+        let params = HashMap::<&str, Value>::from([(
+            "choices",
+            serde_json::to_value(&choices).ok().unwrap_or_default(),
+        )]);
+        let res = self
+            .client
+            .post::<entities::Poll>(format!("/api/v1/polls/{}/vote", id).as_str(), &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Poll>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
