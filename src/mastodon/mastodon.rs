@@ -796,6 +796,28 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn lookup_account(
+        &self,
+        acct: String,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
+        let params = Vec::<String>::from([format!("acct={}", acct)]);
+        let mut path = "/api/v1/accounts/lookup".to_string();
+        if params.len() > 0 {
+            path = path + "?" + params.join("&").as_str();
+        }
+        let res = self
+            .client
+            .get::<entities::Account>(path.as_str(), None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Account>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_bookmarks(
         &self,
         options: Option<&megalodon::GetBookmarksInputOptions>,

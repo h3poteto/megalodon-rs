@@ -856,6 +856,18 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
+    async fn lookup_account(
+        &self,
+        _acct: String,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
+        Err(Error::new_own(
+            "Firefish doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn get_bookmarks(
         &self,
         _options: Option<&megalodon::GetBookmarksInputOptions>,

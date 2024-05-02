@@ -700,6 +700,18 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
+    async fn lookup_account(
+        &self,
+        _acct: String,
+    ) -> Result<Response<MegalodonEntities::Account>, Error> {
+        Err(Error::new_own(
+            "Friendica doest not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn get_bookmarks(
         &self,
         options: Option<&megalodon::GetBookmarksInputOptions>,
