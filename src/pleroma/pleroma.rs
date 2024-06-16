@@ -2551,7 +2551,7 @@ impl megalodon::Megalodon for Pleroma {
         }
         let res = self
             .client
-            .post::<entities::Marker>("/api/v1/makers", &params, None)
+            .post::<entities::Marker>("/api/v1/markers", &params, None)
             .await?;
 
         Ok(Response::<MegalodonEntities::Marker>::new(
