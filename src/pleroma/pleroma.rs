@@ -1440,6 +1440,9 @@ impl megalodon::Megalodon for Pleroma {
             if let Some(language) = &options.language {
                 params.insert("language", Value::String(language.clone()));
             }
+            if let Some(quote_id) = &options.quote_id {
+                params.insert("quote_id", Value::String(quote_id.clone()));
+            }
             if let Some(poll) = &options.poll {
                 params.insert("poll", serde_json::to_value(&poll).unwrap());
             }
