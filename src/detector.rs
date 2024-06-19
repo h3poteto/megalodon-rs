@@ -90,7 +90,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
+                        if upstream.name.to_lowercase() == "mastodon" {
                             return Ok(SNS::Mastodon);
                         }
                     }
@@ -120,7 +120,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
+                        if upstream.name.to_lowercase() == "mastodon" {
                             return Ok(SNS::Mastodon);
                         }
                     }
@@ -150,7 +150,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "gotosocial" => Ok(SNS::Gotosocial),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
-                        if upstream.name == "mastodon" {
+                        if upstream.name.to_lowercase() == "mastodon" {
                             return Ok(SNS::Mastodon);
                         }
                     }
@@ -230,5 +230,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Gotosocial);
+    }
+
+    #[tokio::test]
+    async fn test_detector_kmyblue() {
+        let sns = detector("https://kmy.blue").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 }
