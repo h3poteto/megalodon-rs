@@ -734,6 +734,32 @@ impl megalodon::Megalodon for Mastodon {
         ))
     }
 
+    async fn set_account_note(
+        &self,
+        id: String,
+        note: Option<String>,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        let params = HashMap::<&str, Value>::from([(
+            "comment",
+            serde_json::Value::String(note.unwrap_or("".to_string())),
+        )]);
+        let res = self
+            .client
+            .post::<entities::Relationship>(
+                format!("/api/v1/accounts/{}/note", id).as_ref(),
+                &params,
+                None,
+            )
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Relationship>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
+    }
+
     async fn get_relationships(
         &self,
         ids: Vec<String>,
