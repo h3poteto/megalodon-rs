@@ -173,6 +173,9 @@ pub trait Megalodon {
     /// Remove the given account from the user's featured profiles.
     async fn unpin_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
 
+    /// Set a private note on the given account.
+    async fn set_account_note(&self, id: String, note: Option<String>) -> Result<Response<entities::Relationship>, Error>;
+
     /// Find out whether a given account is followed, blocked, muted, etc.
     async fn get_relationships(
         &self,

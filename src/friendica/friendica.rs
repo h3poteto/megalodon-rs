@@ -638,6 +638,19 @@ impl megalodon::Megalodon for Friendica {
         ))
     }
 
+    async fn set_account_note(
+        &self,
+        _id: String,
+        _note: Option<String>,
+    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
+        Err(Error::new_own(
+            "Friendica does not support".to_string(),
+            error::Kind::NoImplementedError,
+            None,
+            None,
+        ))
+    }
+
     async fn get_relationships(
         &self,
         ids: Vec<String>,
