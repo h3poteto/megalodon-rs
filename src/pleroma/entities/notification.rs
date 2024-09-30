@@ -45,6 +45,7 @@ pub enum NotificationType {
     PleromaEmojiReaction,
     Update,
     Move,
+    Status,
 }
 
 impl fmt::Display for NotificationType {
@@ -59,6 +60,7 @@ impl fmt::Display for NotificationType {
             NotificationType::FollowRequest => write!(f, "follow_request"),
             NotificationType::Update => write!(f, "update"),
             NotificationType::Move => write!(f, "move"),
+            NotificationType::Status => write!(f, "status"),
         }
     }
 }
@@ -77,6 +79,7 @@ impl FromStr for NotificationType {
             "follow_request" => Ok(NotificationType::FollowRequest),
             "update" => Ok(NotificationType::Update),
             "move" => Ok(NotificationType::Move),
+            "status" => Ok(NotificationType::Status),
             _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
         }
     }
@@ -124,6 +127,7 @@ impl From<NotificationType> for MegalodonEntities::notification::NotificationTyp
             }
             NotificationType::Update => MegalodonEntities::notification::NotificationType::Update,
             NotificationType::Move => MegalodonEntities::notification::NotificationType::Move,
+            NotificationType::Status => MegalodonEntities::notification::NotificationType::Status,
         }
     }
 }
