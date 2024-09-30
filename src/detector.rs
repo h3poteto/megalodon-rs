@@ -218,7 +218,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_detector_firefish() {
-        let sns = detector("https://calckey.world").await;
+        let sns = detector("https://cybre.club").await;
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Firefish);
