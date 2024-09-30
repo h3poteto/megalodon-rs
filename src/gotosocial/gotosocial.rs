@@ -362,6 +362,9 @@ impl megalodon::Megalodon for Gotosocial {
             if let Some(only_media) = options.only_media {
                 params.push(format!("only_media={}", only_media));
             }
+            if let Some(only_public) = options.only_public {
+                params.push(format!("only_public={}", only_public));
+            }
         }
         let mut url = format!("/api/v1/accounts/{}/statuses", id);
         if params.len() > 0 {
