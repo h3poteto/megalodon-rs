@@ -174,7 +174,11 @@ pub trait Megalodon {
     async fn unpin_account(&self, id: String) -> Result<Response<entities::Relationship>, Error>;
 
     /// Set a private note on the given account.
-    async fn set_account_note(&self, id: String, note: Option<String>) -> Result<Response<entities::Relationship>, Error>;
+    async fn set_account_note(
+        &self,
+        id: String,
+        note: Option<String>,
+    ) -> Result<Response<entities::Relationship>, Error>;
 
     /// Find out whether a given account is followed, blocked, muted, etc.
     async fn get_relationships(
@@ -862,6 +866,8 @@ pub struct GetAccountStatusesInputOptions {
     pub exclude_reblogs: Option<bool>,
     /// Show only statuses with metia attached.
     pub only_media: Option<bool>,
+    /// Show only public statuses.
+    pub only_public: Option<bool>,
 }
 
 /// Input options for [`Megalodon::get_account_favourites`].
