@@ -395,6 +395,7 @@ impl megalodon::Megalodon for Mastodon {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2746,6 +2747,7 @@ impl megalodon::Megalodon for Mastodon {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -3083,6 +3085,7 @@ impl megalodon::Megalodon for Mastodon {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -3094,6 +3097,7 @@ impl megalodon::Megalodon for Mastodon {
         Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -3108,6 +3112,7 @@ impl megalodon::Megalodon for Mastodon {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -3119,6 +3124,7 @@ impl megalodon::Megalodon for Mastodon {
         Err(Error::new_own(
             "Mastodon doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))

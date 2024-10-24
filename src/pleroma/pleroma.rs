@@ -752,6 +752,7 @@ impl megalodon::Megalodon for Pleroma {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1362,6 +1363,7 @@ impl megalodon::Megalodon for Pleroma {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1396,6 +1398,7 @@ impl megalodon::Megalodon for Pleroma {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1405,6 +1408,7 @@ impl megalodon::Megalodon for Pleroma {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1412,6 +1416,7 @@ impl megalodon::Megalodon for Pleroma {
         Err(Error::new_own(
             "Pleroma doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2684,6 +2689,7 @@ impl megalodon::Megalodon for Pleroma {
                 error::Kind::UnsatisfiedError,
                 None,
                 None,
+                None,
             ));
         }
     }
@@ -2976,6 +2982,7 @@ impl megalodon::Megalodon for Pleroma {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2987,6 +2994,7 @@ impl megalodon::Megalodon for Pleroma {
         Err(Error::new_own(
             "Pleroma doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))

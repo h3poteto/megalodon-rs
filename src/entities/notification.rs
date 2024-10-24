@@ -80,7 +80,13 @@ impl FromStr for NotificationType {
             "group_invited" => Ok(NotificationType::GroupInvited),
             "app" => Ok(NotificationType::App),
             "unknown" => Ok(NotificationType::Unknown),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }

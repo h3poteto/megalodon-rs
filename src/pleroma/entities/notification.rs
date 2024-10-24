@@ -80,7 +80,13 @@ impl FromStr for NotificationType {
             "update" => Ok(NotificationType::Update),
             "move" => Ok(NotificationType::Move),
             "status" => Ok(NotificationType::Status),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }

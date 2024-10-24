@@ -69,6 +69,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
             error::Kind::NodeinfoError,
             None,
             None,
+            None,
         ));
     };
 
@@ -98,6 +99,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                         String::from("Unknown SNS"),
                         error::Kind::UnknownSNSError,
                         Some(url.to_string()),
+                        None,
                         None,
                     ))
                 }
@@ -129,6 +131,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                         error::Kind::UnknownSNSError,
                         Some(url.to_string()),
                         None,
+                        None,
                     ))
                 }
             }
@@ -159,6 +162,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                         error::Kind::UnknownSNSError,
                         Some(url.to_string()),
                         None,
+                        None,
                     ))
                 }
             }
@@ -167,6 +171,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
             String::from("Cound not find nodeinfo"),
             error::Kind::NodeinfoError,
             Some(url.to_string()),
+            None,
             None,
         )),
     }
