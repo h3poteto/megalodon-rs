@@ -122,12 +122,14 @@ impl WebSocket {
                     Kind::ParseError,
                     None,
                     None,
+                    None,
                 )),
             }
         } else {
             Err(Error::new_own(
                 String::from("Receiving message is not ping, pong or text"),
                 Kind::ParseError,
+                None,
                 None,
                 None,
             ))

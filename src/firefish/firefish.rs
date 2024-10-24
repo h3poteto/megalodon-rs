@@ -337,6 +337,7 @@ impl megalodon::Megalodon for Firefish {
                 error::Kind::UnsatisfiedError,
                 None,
                 None,
+                None,
             ))
         }
     }
@@ -370,6 +371,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -384,6 +386,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -393,6 +396,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -410,6 +414,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -547,6 +552,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -559,6 +565,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -569,6 +576,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -641,6 +649,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -651,6 +660,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -793,6 +803,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -803,6 +814,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -816,6 +828,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -878,6 +891,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -888,6 +902,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -986,6 +1001,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -993,6 +1009,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1004,6 +1021,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1013,6 +1031,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1020,6 +1039,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1034,6 +1054,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1051,6 +1072,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1058,6 +1080,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1166,6 +1189,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1175,6 +1199,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1189,6 +1214,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1198,6 +1224,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1205,6 +1232,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1231,6 +1259,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1262,6 +1291,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1271,6 +1301,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1278,6 +1309,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1486,6 +1518,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1554,6 +1587,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1566,6 +1600,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1573,6 +1608,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1585,6 +1621,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1686,6 +1723,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1699,6 +1737,7 @@ impl megalodon::Megalodon for Firefish {
             return Err(Error::new_own(
                 "status_is is required".to_string(),
                 error::Kind::UnsatisfiedError,
+                None,
                 None,
                 None,
             ));
@@ -1724,6 +1763,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1734,6 +1774,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1749,6 +1790,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1756,6 +1798,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1968,6 +2011,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1978,6 +2022,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2119,6 +2164,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2129,6 +2175,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2190,6 +2237,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2220,6 +2268,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2233,6 +2282,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2242,6 +2292,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2256,6 +2307,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2263,6 +2315,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2328,6 +2381,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2337,6 +2391,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2366,6 +2421,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2422,6 +2478,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2433,6 +2490,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2481,6 +2539,7 @@ impl megalodon::Megalodon for Firefish {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2492,6 +2551,7 @@ impl megalodon::Megalodon for Firefish {
         Err(Error::new_own(
             "Firefish does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))

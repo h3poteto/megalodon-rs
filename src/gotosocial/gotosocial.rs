@@ -204,6 +204,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -393,6 +394,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -534,6 +536,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -642,6 +645,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -652,6 +656,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -666,6 +671,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -676,6 +682,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -737,6 +744,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -908,6 +916,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -917,6 +926,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -924,6 +934,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1180,6 +1191,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1203,6 +1215,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1212,6 +1225,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1219,6 +1233,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1244,6 +1259,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1256,6 +1272,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1263,6 +1280,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1274,6 +1292,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1281,6 +1300,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1404,6 +1424,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1845,6 +1866,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1855,6 +1877,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1870,6 +1893,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1877,6 +1901,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2091,6 +2116,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2098,6 +2124,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2110,6 +2137,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2400,6 +2428,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2410,6 +2439,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2425,6 +2455,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2434,6 +2465,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2448,6 +2480,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2455,6 +2488,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2539,6 +2573,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2551,6 +2586,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2561,6 +2597,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2590,6 +2627,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2597,6 +2635,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2612,6 +2651,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2623,6 +2663,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2638,6 +2679,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2649,6 +2691,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2663,6 +2706,7 @@ impl megalodon::Megalodon for Gotosocial {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2674,6 +2718,7 @@ impl megalodon::Megalodon for Gotosocial {
         Err(Error::new_own(
             "Gotosocial doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))

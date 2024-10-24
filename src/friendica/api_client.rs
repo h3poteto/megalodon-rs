@@ -53,6 +53,7 @@ impl APIClient {
         }
 
         let res = req.send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -67,6 +68,7 @@ impl APIClient {
                 Kind::HTTPPartialContentError,
                 Some(url_str),
                 Some(status.as_u16()),
+                Some(res_headers),
             )),
             _ => match res.text().await {
                 Ok(text) => Err(MegalodonError::new_own(
@@ -74,12 +76,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }
@@ -109,6 +113,7 @@ impl APIClient {
         }
 
         let res = req.json(params).send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -124,12 +129,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }
@@ -159,6 +166,7 @@ impl APIClient {
         }
 
         let res = req.multipart(params).send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -174,12 +182,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }
@@ -209,6 +219,7 @@ impl APIClient {
         }
 
         let res = req.json(params).send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -224,12 +235,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }
@@ -259,6 +272,7 @@ impl APIClient {
         }
 
         let res = req.multipart(params).send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -274,12 +288,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }
@@ -309,6 +325,7 @@ impl APIClient {
         }
 
         let res = req.json(params).send().await?;
+        let res_headers = res.headers().clone();
         let status = res.status();
         match status {
             reqwest::StatusCode::OK
@@ -324,12 +341,14 @@ impl APIClient {
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
                 Err(_err) => Err(MegalodonError::new_own(
                     "Unknown error".to_string(),
                     Kind::HTTPStatusError,
                     Some(url_str),
                     Some(status.as_u16()),
+                    Some(res_headers),
                 )),
             },
         }

@@ -67,7 +67,13 @@ impl FromStr for StatusVisibility {
             "public" => Ok(StatusVisibility::Public),
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }

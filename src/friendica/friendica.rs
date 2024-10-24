@@ -219,6 +219,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -244,6 +245,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -317,6 +319,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -623,6 +626,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -633,6 +637,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -646,6 +651,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -720,6 +726,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -869,6 +876,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -878,6 +886,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -885,6 +894,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -910,6 +920,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -922,6 +933,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -939,6 +951,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -946,6 +959,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -959,6 +973,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1075,6 +1090,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1087,6 +1103,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1096,6 +1113,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1103,6 +1121,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1126,6 +1145,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1313,6 +1333,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -1779,6 +1800,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -1846,6 +1868,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica does not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2417,6 +2440,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2578,6 +2602,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2675,6 +2700,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2686,6 +2712,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2701,6 +2728,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2712,6 +2740,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2727,6 +2756,7 @@ impl megalodon::Megalodon for Friendica {
             error::Kind::NoImplementedError,
             None,
             None,
+            None,
         ))
     }
 
@@ -2737,6 +2767,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))
@@ -2750,6 +2781,7 @@ impl megalodon::Megalodon for Friendica {
         Err(Error::new_own(
             "Friendica doest not support".to_string(),
             error::Kind::NoImplementedError,
+            None,
             None,
             None,
         ))

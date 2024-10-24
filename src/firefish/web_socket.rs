@@ -134,6 +134,7 @@ impl WebSocket {
                 Kind::ParseError,
                 None,
                 None,
+                None,
             ))
         }
     }

@@ -1,4 +1,5 @@
 //! Own errors
+use reqwest::header::HeaderMap;
 use std::fmt;
 
 /// Possible megalodon errors.
@@ -37,6 +38,8 @@ pub struct OwnError {
     pub status: Option<u16>,
     pub message: String,
     pub kind: Kind,
+    /// Headers of the response.
+    pub header: Option<HeaderMap>,
 }
 
 /// Error kind of [`OwnError`].
@@ -68,12 +71,19 @@ pub enum Kind {
 
 impl Error {
     /// Create a new [`OwnError`] struct.
-    pub fn new_own(message: String, kind: Kind, url: Option<String>, status: Option<u16>) -> Error {
+    pub fn new_own(
+        message: String,
+        kind: Kind,
+        url: Option<String>,
+        status: Option<u16>,
+        header: Option<HeaderMap>,
+    ) -> Error {
         Error::OwnError(OwnError {
             message,
             kind,
             url,
             status,
+            header,
         })
     }
 }
@@ -90,6 +100,10 @@ impl fmt::Debug for OwnError {
         }
         if let Some(ref status) = self.status {
             builder.field("status", status);
+        }
+
+        if let Some(ref header) = self.header {
+            builder.field("header", header);
         }
 
         builder.finish()
