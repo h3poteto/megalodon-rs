@@ -68,7 +68,13 @@ impl FromStr for StatusVisibility {
             "followers" => Ok(StatusVisibility::Followers),
             "specified" => Ok(StatusVisibility::Specified),
             "hidden" => Ok(StatusVisibility::Hidden),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }

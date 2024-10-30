@@ -1238,7 +1238,13 @@ impl FromStr for SearchType {
             "accounts" => Ok(SearchType::Accounts),
             "hashtags" => Ok(SearchType::Hashtags),
             "statuses" => Ok(SearchType::Statuses),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }
@@ -1304,7 +1310,13 @@ impl FromStr for Order {
         match s {
             "active" => Ok(Order::Active),
             "new" => Ok(Order::New),
-            _ => Err(Error::new_own(s.to_owned(), Kind::ParseError, None, None)),
+            _ => Err(Error::new_own(
+                s.to_owned(),
+                Kind::ParseError,
+                None,
+                None,
+                None,
+            )),
         }
     }
 }
