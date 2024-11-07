@@ -12,7 +12,7 @@ use std::fmt::Debug;
 pub struct APIClient {
     access_token: Option<String>,
     base_url: String,
-    user_agent: String,
+    client: reqwest::Client,
 }
 
 impl APIClient {
@@ -23,10 +23,15 @@ impl APIClient {
             None => ua = DEFAULT_UA.to_string(),
         }
 
+        let client = reqwest::Client::builder()
+            .user_agent(ua)
+            .build()
+            .expect("Failed to initialise TLS backend!");
+
         Self {
             access_token,
             base_url,
-            user_agent: ua,
+            client,
         }
     }
 
@@ -40,11 +45,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.get(url);
+        let mut req = self.client.get(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -100,11 +102,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.post(url);
+        let mut req = self.client.post(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -153,11 +152,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.post(url);
+        let mut req = self.client.post(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
