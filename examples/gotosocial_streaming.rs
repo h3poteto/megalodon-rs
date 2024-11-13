@@ -18,7 +18,7 @@ async fn main() {
 }
 
 async fn streaming(url: &str, access_token: String) {
-    let client = generator(SNS::Gotosocial, url.to_string(), Some(access_token), None);
+    let client = generator(SNS::Gotosocial, url.to_string(), Some(access_token), None).unwrap();
     let streaming = client.local_streaming().await;
 
     streaming

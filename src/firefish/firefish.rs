@@ -38,14 +38,14 @@ impl Firefish {
         base_url: String,
         access_token: Option<String>,
         user_agent: Option<String>,
-    ) -> Firefish {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone());
-        Firefish {
+    ) -> Result<Firefish, Error> {
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
+        Ok(Firefish {
             client,
             base_url,
             access_token,
             user_agent,
-        }
+        })
     }
 
     async fn generate_auth_url_and_token(

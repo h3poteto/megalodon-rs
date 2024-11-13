@@ -49,7 +49,7 @@ async fn save_marker(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client
         .save_markers(Some(&megalodon::megalodon::SaveMarkersInputOptions {
             home: None,
@@ -68,7 +68,7 @@ async fn get_markers(url: &str, access_token: String) -> Result<entities::Marker
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client
         .get_markers(vec![String::from("home"), String::from("notifications")])
         .await?;

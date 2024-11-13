@@ -14,7 +14,7 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Gotosocial, url, Some(token), None);
+    let client = generator(megalodon::SNS::Gotosocial, url, Some(token), None).unwrap();
 
     let res = post_status(&client).await;
     match res {

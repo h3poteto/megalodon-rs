@@ -35,7 +35,7 @@ async fn get_relationship(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.get_relationships([id.to_string()].to_vec()).await?;
     Ok(res.json())
 }

@@ -37,14 +37,14 @@ impl Gotosocial {
         base_url: String,
         access_token: Option<String>,
         user_agent: Option<String>,
-    ) -> Gotosocial {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone());
-        Gotosocial {
+    ) -> Result<Gotosocial, Error> {
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
+        Ok(Gotosocial {
             client,
             base_url,
             access_token,
             user_agent,
-        }
+        })
     }
 
     async fn generate_auth_url(

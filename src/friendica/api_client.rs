@@ -16,23 +16,24 @@ pub struct APIClient {
 }
 
 impl APIClient {
-    pub fn new(base_url: String, access_token: Option<String>, user_agent: Option<String>) -> Self {
+    pub fn new(
+        base_url: String,
+        access_token: Option<String>,
+        user_agent: Option<String>,
+    ) -> Result<Self, MegalodonError> {
         let ua: String;
         match user_agent {
             Some(agent) => ua = agent,
             None => ua = DEFAULT_UA.to_string(),
         }
 
-        let client = reqwest::Client::builder()
-            .user_agent(ua)
-            .build()
-            .expect("Failed to initialise TLS backend!");
+        let client = reqwest::Client::builder().user_agent(ua).build()?;
 
-        Self {
+        Ok(Self {
             access_token,
             base_url,
             client,
-        }
+        })
     }
 
     pub async fn get<T>(

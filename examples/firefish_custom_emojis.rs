@@ -20,7 +20,7 @@ async fn main() {
 }
 
 async fn emojis(url: &str) -> Result<Vec<entities::Emoji>, error::Error> {
-    let client = generator(SNS::Firefish, url.to_string(), None, None);
+    let client = generator(SNS::Firefish, url.to_string(), None, None)?;
     let res = client.get_instance_custom_emojis().await?;
     Ok(res.json())
 }

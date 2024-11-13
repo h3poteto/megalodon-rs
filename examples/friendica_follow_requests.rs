@@ -39,7 +39,7 @@ async fn follow_requests(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.get_follow_requests(None).await?;
 
     Ok(res.json())

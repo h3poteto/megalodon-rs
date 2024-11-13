@@ -14,7 +14,7 @@ async fn main() {
 }
 
 async fn streaming(url: &str) {
-    let client = generator(megalodon::SNS::Mastodon, url.to_string(), None, None);
+    let client = generator(megalodon::SNS::Mastodon, url.to_string(), None, None).unwrap();
     let streaming = client.local_streaming().await;
 
     streaming

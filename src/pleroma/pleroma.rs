@@ -2,6 +2,7 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
+use crate::error::Error as MegalodonError;
 use crate::megalodon::FollowRequestOutput;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
@@ -33,14 +34,18 @@ pub struct Pleroma {
 
 impl Pleroma {
     /// Create a new [`Pleroma`].
-    pub fn new(base_url: String, access_token: Option<String>, user_agent: Option<String>) -> Self {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone());
-        Self {
+    pub fn new(
+        base_url: String,
+        access_token: Option<String>,
+        user_agent: Option<String>,
+    ) -> Result<Self, MegalodonError> {
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
+        Ok(Self {
             client,
             base_url,
             access_token,
             user_agent,
-        }
+        })
     }
 
     async fn generate_auth_url(

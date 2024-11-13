@@ -40,7 +40,7 @@ async fn favourite_status(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.favourite_status(status_id).await?;
 
     Ok(res.json())

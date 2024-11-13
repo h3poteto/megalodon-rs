@@ -24,7 +24,8 @@ async fn streaming(url: &str, access_token: String) {
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )
+    .unwrap();
     let streaming = client.local_streaming().await;
 
     streaming

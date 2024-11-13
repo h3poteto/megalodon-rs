@@ -35,7 +35,7 @@ async fn get_notifications(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.get_notifications(None).await?;
     Ok(res.json())
 }
