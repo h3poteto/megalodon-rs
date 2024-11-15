@@ -35,9 +35,9 @@ impl Friendica {
         base_url: String,
         access_token: Option<String>,
         user_agent: Option<String>,
-    ) -> Friendica {
-        let client = APIClient::new(base_url.clone(), access_token, user_agent);
-        Friendica { client, base_url }
+    ) -> Result<Friendica, Error> {
+        let client = APIClient::new(base_url.clone(), access_token, user_agent)?;
+        Ok(Friendica { client, base_url })
     }
 
     async fn generate_auth_url(

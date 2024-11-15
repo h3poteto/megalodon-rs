@@ -32,7 +32,7 @@ async fn search(url: &str, access_token: String) -> Result<entities::Results, er
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.search(String::from("h3poteto"), None).await?;
 
     Ok(res.json())

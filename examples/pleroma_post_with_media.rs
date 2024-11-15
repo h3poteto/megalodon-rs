@@ -72,7 +72,7 @@ async fn upload_media(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.upload_media(file_path, None).await?;
     Ok(res.json())
 }
@@ -88,7 +88,7 @@ async fn post_status(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client
         .post_status(
             status.to_string(),

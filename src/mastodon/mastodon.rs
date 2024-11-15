@@ -37,14 +37,14 @@ impl Mastodon {
         base_url: String,
         access_token: Option<String>,
         user_agent: Option<String>,
-    ) -> Mastodon {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone());
-        Mastodon {
+    ) -> Result<Mastodon, Error> {
+        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
+        Ok(Mastodon {
             client,
             base_url,
             access_token,
             user_agent,
-        }
+        })
     }
 
     async fn generate_auth_url(

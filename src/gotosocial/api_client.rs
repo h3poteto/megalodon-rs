@@ -12,22 +12,28 @@ use std::fmt::Debug;
 pub struct APIClient {
     access_token: Option<String>,
     base_url: String,
-    user_agent: String,
+    client: reqwest::Client,
 }
 
 impl APIClient {
-    pub fn new(base_url: String, access_token: Option<String>, user_agent: Option<String>) -> Self {
+    pub fn new(
+        base_url: String,
+        access_token: Option<String>,
+        user_agent: Option<String>,
+    ) -> Result<Self, MegalodonError> {
         let ua: String;
         match user_agent {
             Some(agent) => ua = agent,
             None => ua = DEFAULT_UA.to_string(),
         }
 
-        Self {
+        let client = reqwest::Client::builder().user_agent(ua).build()?;
+
+        Ok(Self {
             access_token,
             base_url,
-            user_agent: ua,
-        }
+            client,
+        })
     }
 
     pub async fn get<T>(
@@ -40,11 +46,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.get(url);
+        let mut req = self.client.get(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -100,11 +103,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.post(url);
+        let mut req = self.client.post(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -153,11 +153,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.post(url);
+        let mut req = self.client.post(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -206,11 +203,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.put(url);
+        let mut req = self.client.put(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -259,11 +253,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.put(url);
+        let mut req = self.client.put(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -312,11 +303,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.patch(url);
+        let mut req = self.client.patch(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }
@@ -365,11 +353,8 @@ impl APIClient {
     {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
-        let client = reqwest::Client::builder()
-            .user_agent(&self.user_agent)
-            .build()?;
 
-        let mut req = client.delete(url);
+        let mut req = self.client.delete(url);
         if let Some(token) = &self.access_token {
             req = req.bearer_auth(token);
         }

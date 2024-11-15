@@ -16,7 +16,7 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Pleroma, url, Some(token), None);
+    let client = generator(megalodon::SNS::Pleroma, url, Some(token), None).unwrap();
 
     let scheduled_at = Utc::now() + Duration::try_minutes(6).unwrap();
     println!("scheduled at {:#?}", scheduled_at);

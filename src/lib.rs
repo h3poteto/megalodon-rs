@@ -16,7 +16,7 @@
 //!   String::from("https://fedibird.com"),
 //!   None,
 //!   None,
-//! );
+//! )?;
 //! let res = client.get_instance().await?;
 //! println!("{:#?}", res.json());
 //! # Ok(())
@@ -36,7 +36,7 @@
 //!   String::from("https://fedibird.com"),
 //!   Some(String::from("your access token")),
 //!   None,
-//! );
+//! )?;
 //! let res = client.verify_account_credentials().await?;
 //! println!("{:#?}", res.json());
 //! # Ok(())
@@ -60,6 +60,7 @@ pub mod response;
 pub mod streaming;
 
 pub use self::megalodon::Megalodon;
+use crate::error::Error;
 pub use detector::detector;
 use serde::{Deserialize, Serialize};
 pub use streaming::Streaming;
@@ -112,27 +113,27 @@ pub fn generator(
     base_url: String,
     access_token: Option<String>,
     user_agent: Option<String>,
-) -> Box<dyn Megalodon + Send + Sync> {
+) -> Result<Box<dyn Megalodon + Send + Sync>, Error> {
     match sns {
         SNS::Pleroma => {
-            let pleroma = pleroma::Pleroma::new(base_url, access_token, user_agent);
-            Box::new(pleroma)
+            let pleroma = pleroma::Pleroma::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(pleroma))
         }
         SNS::Friendica => {
-            let friendica = friendica::Friendica::new(base_url, access_token, user_agent);
-            Box::new(friendica)
+            let friendica = friendica::Friendica::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(friendica))
         }
         SNS::Mastodon => {
-            let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent);
-            Box::new(mastodon)
+            let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(mastodon))
         }
         SNS::Firefish => {
-            let firefish = firefish::Firefish::new(base_url, access_token, user_agent);
-            Box::new(firefish)
+            let firefish = firefish::Firefish::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(firefish))
         }
         SNS::Gotosocial => {
-            let gotosocial = gotosocial::Gotosocial::new(base_url, access_token, user_agent);
-            Box::new(gotosocial)
+            let gotosocial = gotosocial::Gotosocial::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(gotosocial))
         }
     }
 }

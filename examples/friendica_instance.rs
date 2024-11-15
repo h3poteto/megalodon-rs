@@ -20,7 +20,7 @@ async fn main() {
 }
 
 async fn instance(url: &str) -> Result<entities::Instance, error::Error> {
-    let client = generator(SNS::Friendica, url.to_string(), None, None);
+    let client = generator(SNS::Friendica, url.to_string(), None, None)?;
     let res = client.get_instance().await?;
     Ok(res.json())
 }

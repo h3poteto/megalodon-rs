@@ -14,7 +14,7 @@ async fn main() {
         return;
     };
 
-    let client = generator(SNS::Mastodon, url, Some(token), None);
+    let client = generator(SNS::Mastodon, url, Some(token), None).unwrap();
 
     let update_creds = megalodon::megalodon::UpdateCredentialsInputOptions {
         fields_attributes: Some(vec![megalodon::megalodon::CredentialsFieldAttribute {

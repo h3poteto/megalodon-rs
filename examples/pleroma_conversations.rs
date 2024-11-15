@@ -34,7 +34,7 @@ async fn get_conversations(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let res = client.get_conversation_timeline(None).await?;
     Ok(res.json())
 }

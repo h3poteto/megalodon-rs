@@ -39,7 +39,7 @@ async fn search(
         url.to_string(),
         Some(access_token),
         None,
-    );
+    )?;
     let options = SearchInputOptions {
         r#type: Some(SearchType::Accounts),
         limit: None,

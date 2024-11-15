@@ -10,7 +10,7 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Pleroma, url, None, None);
+    let client = generator(megalodon::SNS::Pleroma, url, None, None).unwrap();
     let options = megalodon::megalodon::AppInputOptions {
         scopes: Some(
             [
