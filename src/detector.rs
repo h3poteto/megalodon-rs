@@ -89,6 +89,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -120,6 +121,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -151,6 +153,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -240,6 +243,14 @@ mod tests {
     #[tokio::test]
     async fn test_detector_kmyblue() {
         let sns = detector("https://kmy.blue").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Mastodon);
+    }
+
+    #[tokio::test]
+    async fn test_detector_sharkey() {
+        let sns = detector("https://transfem.social").await;
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Mastodon);
