@@ -2719,23 +2719,32 @@ impl megalodon::Megalodon for Mastodon {
         let params = HashMap::new();
         let res = self
             .client
-            .post::<()>("/api/v1/notifications/clear", &params, None)
+            .post::<Value>("/api/v1/notifications/clear", &params, None)
             .await?;
-        Ok(res)
+        Ok(Response::<()>::new(
+            (),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
     }
 
     async fn dismiss_notification(&self, id: String) -> Result<Response<()>, Error> {
         let params = HashMap::new();
         let res = self
             .client
-            .post::<()>(
+            .post::<Value>(
                 format!("/api/v1/notifications/{}/dismiss", id).as_str(),
                 &params,
                 None,
             )
             .await?;
-
-        Ok(res)
+        Ok(Response::<()>::new(
+            (),
+            res.status,
+            res.status_text,
+            res.header,
+        ))
     }
 
     async fn read_notifications(
