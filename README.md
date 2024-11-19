@@ -14,6 +14,7 @@ This library is Rust version of [megalodon](https://github.com/h3poteto/megalodo
 - [x] Firefish
 - [x] Gotosocial
 - [x] Akkoma (Unofficial)
+- [x] Sharkey (Unofficial)
 
 ## Features
 - [x] REST API
