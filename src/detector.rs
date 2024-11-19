@@ -82,13 +82,14 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .json::<Nodeinfo10>()
                 .await?;
             match nodeinfo.software.name.as_str() {
-                "pleroma" => Ok(SNS::Pleroma),
                 "akkoma" => Ok(SNS::Pleroma),
-                "mastodon" => Ok(SNS::Mastodon),
-                "friendica" => Ok(SNS::Friendica),
-                "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "friendica" => Ok(SNS::Friendica),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "hometown" => Ok(SNS::Mastodon),
+                "iceshrimp" => Ok(SNS::Firefish),
+                "mastodon" => Ok(SNS::Mastodon),
+                "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
@@ -114,13 +115,14 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .json::<Nodeinfo20>()
                 .await?;
             match nodeinfo.software.name.as_str() {
-                "pleroma" => Ok(SNS::Pleroma),
                 "akkoma" => Ok(SNS::Pleroma),
-                "mastodon" => Ok(SNS::Mastodon),
-                "friendica" => Ok(SNS::Friendica),
-                "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "friendica" => Ok(SNS::Friendica),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "hometown" => Ok(SNS::Mastodon),
+                "iceshrimp" => Ok(SNS::Firefish),
+                "mastodon" => Ok(SNS::Mastodon),
+                "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
@@ -146,13 +148,14 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 .json::<Nodeinfo21>()
                 .await?;
             match nodeinfo.software.name.as_str() {
-                "pleroma" => Ok(SNS::Pleroma),
                 "akkoma" => Ok(SNS::Pleroma),
-                "mastodon" => Ok(SNS::Mastodon),
-                "friendica" => Ok(SNS::Friendica),
-                "hometown" => Ok(SNS::Mastodon),
                 "firefish" => Ok(SNS::Firefish),
+                "friendica" => Ok(SNS::Friendica),
                 "gotosocial" => Ok(SNS::Gotosocial),
+                "hometown" => Ok(SNS::Mastodon),
+                "iceshrimp" => Ok(SNS::Firefish),
+                "mastodon" => Ok(SNS::Mastodon),
+                "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
