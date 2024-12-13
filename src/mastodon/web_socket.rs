@@ -1,4 +1,6 @@
 use std::fmt;
+use std::future::Future;
+use std::pin::Pin;
 use std::thread;
 use std::time::Duration;
 
@@ -136,7 +138,11 @@ impl WebSocket {
         }
     }
 
-    async fn connect(&self, url: &str, callback: Box<dyn Fn(Message) + Send + Sync>) {
+    async fn connect(
+        &self,
+        url: &str,
+        callback: Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+    ) {
         loop {
             match self.do_connect(url, &callback).await {
                 Ok(()) => {
@@ -164,7 +170,7 @@ impl WebSocket {
     async fn do_connect(
         &self,
         url: &str,
-        callback: &Box<dyn Fn(Message) + Send + Sync>,
+        callback: &Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
     ) -> Result<(), InnerError> {
         let mut req = Url::parse(url)
             .unwrap()
@@ -235,7 +241,7 @@ impl WebSocket {
             }
             match self.parse(msg) {
                 Ok(message) => {
-                    callback(message);
+                    callback(message).await;
                 }
                 Err(err) => {
                     warn!("{}", err);
@@ -247,7 +253,10 @@ impl WebSocket {
 
 #[async_trait]
 impl Streaming for WebSocket {
-    async fn listen(&self, callback: Box<dyn Fn(Message) + Send + Sync>) {
+    async fn listen(
+        &self,
+        callback: Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+    ) {
         let mut parameter = Vec::<String>::from([format!("stream={}", self.stream)]);
         if let Some(access_token) = &self.access_token {
             parameter.push(format!("access_token={}", access_token));
