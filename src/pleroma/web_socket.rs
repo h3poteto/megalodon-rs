@@ -141,7 +141,9 @@ impl WebSocket {
     async fn connect(
         &self,
         url: &str,
-        callback: Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+        callback: Box<
+            dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync + '_,
+        >,
     ) {
         loop {
             match self.do_connect(url, &callback).await {
@@ -170,7 +172,9 @@ impl WebSocket {
     async fn do_connect(
         &self,
         url: &str,
-        callback: &Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+        callback: &Box<
+            dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync + '_,
+        >,
     ) -> Result<(), InnerError> {
         let mut req = Url::parse(url)
             .unwrap()
@@ -255,7 +259,12 @@ impl WebSocket {
 impl Streaming for WebSocket {
     async fn listen(
         &self,
-        callback: Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+        callback: Box<
+            dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>>
+                + Send
+                + Sync
+                + 'async_trait,
+        >,
     ) {
         let mut parameter = Vec::<String>::from([format!("stream={}", self.stream)]);
         if let Some(access_token) = &self.access_token {

@@ -10,7 +10,12 @@ pub trait Streaming {
     /// Start listening stream messages. When receive a message, the callback function will be called.
     async fn listen(
         &self,
-        callback: Box<dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync>,
+        callback: Box<
+            dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>>
+                + Send
+                + Sync
+                + 'async_trait,
+        >,
     );
 }
 
