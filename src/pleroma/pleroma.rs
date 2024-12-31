@@ -415,11 +415,11 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, Value>::new();
+        let params = HashMap::<&str, Value>::from([("notify", serde_json::Value::Bool(true))]);
         let res = self
             .client
             .post::<entities::Relationship>(
-                format!("/api/v1/pleroma/accounts/{}/subscribe", id).as_str(),
+                format!("/api/v1/accounts/{}/follow", id).as_str(),
                 &params,
                 None,
             )
@@ -437,11 +437,11 @@ impl megalodon::Megalodon for Pleroma {
         &self,
         id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, Value>::new();
+        let params = HashMap::<&str, Value>::from([("notify", serde_json::Value::Bool(false))]);
         let res = self
             .client
             .post::<entities::Relationship>(
-                format!("/api/v1/pleroma/accounts/{}/unsubscribe", id).as_str(),
+                format!("/api/v1/accounts/{}/follow", id).as_str(),
                 &params,
                 None,
             )
