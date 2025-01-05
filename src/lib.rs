@@ -55,6 +55,7 @@ pub mod gotosocial;
 pub mod mastodon;
 pub mod megalodon;
 pub mod oauth;
+pub mod pixelfed;
 pub mod pleroma;
 pub mod response;
 pub mod streaming;
@@ -78,6 +79,8 @@ pub enum SNS {
     Firefish,
     /// SNS is Gotosocial.
     Gotosocial,
+    /// SNS is Pixelfed.
+    Pixelfed,
 }
 
 impl fmt::Display for SNS {
@@ -88,6 +91,7 @@ impl fmt::Display for SNS {
             SNS::Friendica => write!(f, "friendica"),
             SNS::Firefish => write!(f, "firefish"),
             SNS::Gotosocial => write!(f, "gotosocial"),
+            SNS::Pixelfed => write!(f, "pixelfed"),
         }
     }
 }
@@ -102,6 +106,7 @@ impl FromStr for SNS {
             "friendica" => Ok(SNS::Friendica),
             "firefish" => Ok(SNS::Firefish),
             "gotosocial" => Ok(SNS::Gotosocial),
+            "pixelfed" => Ok(SNS::Pixelfed),
             &_ => Err(format!("Unknown sns: {}", s)),
         }
     }
@@ -134,6 +139,10 @@ pub fn generator(
         SNS::Gotosocial => {
             let gotosocial = gotosocial::Gotosocial::new(base_url, access_token, user_agent)?;
             Ok(Box::new(gotosocial))
+        }
+        SNS::Pixelfed => {
+            let pixelfed = pixelfed::Pixelfed::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(pixelfed))
         }
     }
 }
