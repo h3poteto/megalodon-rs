@@ -2056,7 +2056,8 @@ impl megalodon::Megalodon for Pixelfed {
         &self,
         options: Option<&megalodon::GetPublicTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = Vec::<String>::from([format!("local={}", false)]);
+        let mut params =
+            Vec::<String>::from([format!("local={}", false), format!("remote={}", true)]);
         if let Some(options) = options {
             if let Some(only_media) = options.only_media {
                 params.push(format!("only_media={}", only_media));
