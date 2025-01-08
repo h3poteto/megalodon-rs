@@ -91,6 +91,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
+                "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -124,6 +125,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
+                "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -157,6 +159,7 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
                 "sharkey" => Ok(SNS::Mastodon),
+                "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
                         if upstream.name.to_lowercase() == "mastodon" {
@@ -257,5 +260,13 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Mastodon);
+    }
+
+    #[tokio::test]
+    async fn test_detector_pixelfed() {
+        let sns = detector("https://pixelfed.social").await;
+
+        assert!(sns.is_ok());
+        assert_eq!(sns.unwrap(), SNS::Pixelfed);
     }
 }
