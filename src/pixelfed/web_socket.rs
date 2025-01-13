@@ -17,7 +17,7 @@ impl WebSocket {
 impl Streaming for WebSocket {
     async fn listen(
         &self,
-        callback: Box<
+        _callback: Box<
             dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>>
                 + Send
                 + Sync
