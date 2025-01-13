@@ -1,12 +1,22 @@
 //! Streaming modules
 use crate::entities as MegalodonEntities;
 use async_trait::async_trait;
+use std::future::Future;
+use std::pin::Pin;
 
 /// Streaming interface to listen message.
 #[async_trait]
 pub trait Streaming {
     /// Start listening stream messages. When receive a message, the callback function will be called.
-    async fn listen(&self, callback: Box<dyn Fn(Message) + Send + Sync>);
+    async fn listen(
+        &self,
+        callback: Box<
+            dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>>
+                + Send
+                + Sync
+                + 'async_trait,
+        >,
+    );
 }
 
 /// Stream message definitions.
