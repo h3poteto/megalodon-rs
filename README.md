@@ -56,7 +56,7 @@ let client = megalodon::generator(
   String::from("https://fedibird.com"),
   Some(String::from("your access token")),
   None,
-);
+)?;
 let res = client.verify_account_credentials().await?;
 println!("{:#?}", res.json());
 ```
