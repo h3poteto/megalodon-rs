@@ -1684,14 +1684,37 @@ impl megalodon::Megalodon for Friendica {
         &self,
         reader: Box<dyn AsyncRead + Sync + Send + Unpin>,
         options: Option<&megalodon::UploadMediaInputOptions>,
+        file_name: Option<String>,
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
+        // Generate a random filename if not provided
         let mut file_name_unhash = [0; 32];
         rand::thread_rng().fill_bytes(&mut file_name_unhash);
-        let file_name = hex::encode(Sha1::digest(file_name_unhash));
+        let random_file_name = hex::encode(Sha1::digest(file_name_unhash));
 
         let stream = FramedRead::new(reader, BytesCodec::new());
         let file_body = reqwest::Body::wrap_stream(stream);
-        let part = reqwest::multipart::Part::stream(file_body).file_name(file_name);
+
+        // Determine MIME type from original filename if available
+        let mime_type = if let Some(ref original_name) = file_name {
+            mime_guess::from_path(original_name)
+                .first_or_octet_stream()
+                .to_string()
+        } else {
+            "application/octet-stream".to_string()
+        };
+
+        let part = reqwest::multipart::Part::stream(file_body)
+            .file_name(random_file_name)
+            .mime_str(&mime_type)
+            .map_err(|e| {
+                Error::new_own(
+                    e.to_string(),
+                    crate::error::Kind::ParseError,
+                    None,
+                    None,
+                    None,
+                )
+            })?;
 
         let mut form = reqwest::multipart::Form::new().part("file", part);
         if let Some(options) = options {
