@@ -455,13 +455,14 @@ pub trait Megalodon {
         options: Option<&UploadMediaInputOptions>,
     ) -> Result<Response<entities::UploadMedia>, Error> {
         let file = File::open(file_path.clone()).await?;
-        self.upload_media_reader(Box::new(file), options).await
+        self.upload_media_reader(Box::new(file), options, Some(file_path)).await
     }
 
     async fn upload_media_reader(
         &self,
         reader: Box<dyn AsyncRead + Sync + Send + Unpin>,
         options: Option<&UploadMediaInputOptions>,
+        file_name: Option<String>,
     ) -> Result<Response<entities::UploadMedia>, Error>;
 
     /// Get an Attachment.
