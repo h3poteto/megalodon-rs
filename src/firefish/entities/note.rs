@@ -86,6 +86,7 @@ impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
             MegalodonEntities::StatusVisibility::Unlisted => StatusVisibility::Home,
             MegalodonEntities::StatusVisibility::Private => StatusVisibility::Followers,
             MegalodonEntities::StatusVisibility::Direct => StatusVisibility::Specified,
+            MegalodonEntities::StatusVisibility::Local => StatusVisibility::Hidden,
         }
     }
 }
@@ -97,7 +98,7 @@ impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
             StatusVisibility::Home => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Followers => MegalodonEntities::status::StatusVisibility::Private,
             StatusVisibility::Specified => MegalodonEntities::status::StatusVisibility::Direct,
-            StatusVisibility::Hidden => MegalodonEntities::status::StatusVisibility::Direct,
+            StatusVisibility::Hidden => MegalodonEntities::status::StatusVisibility::Local,
         }
     }
 }

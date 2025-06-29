@@ -1449,6 +1449,7 @@ impl megalodon::Megalodon for Pleroma {
                 params.insert("spoiler_text", Value::String(spoiler_text.clone()));
             }
             if let Some(visibility) = &options.visibility {
+                let visibility: entities::StatusVisibility = visibility.clone().into();
                 params.insert(
                     "visibility",
                     serde_json::to_value(visibility.to_string()).unwrap(),

@@ -46,6 +46,7 @@ pub enum StatusVisibility {
     Unlisted,
     Private,
     Direct,
+    Local,
 }
 
 impl fmt::Display for StatusVisibility {
@@ -55,6 +56,7 @@ impl fmt::Display for StatusVisibility {
             StatusVisibility::Unlisted => write!(f, "unlisted"),
             StatusVisibility::Private => write!(f, "private"),
             StatusVisibility::Direct => write!(f, "direct"),
+            StatusVisibility::Local => write!(f, "local"),
         }
     }
 }
@@ -68,6 +70,7 @@ impl FromStr for StatusVisibility {
             "unlisted" => Ok(StatusVisibility::Unlisted),
             "private" => Ok(StatusVisibility::Private),
             "direct" => Ok(StatusVisibility::Direct),
+            "local" => Ok(StatusVisibility::Local),
             _ => Err(Error::new_own(
                 s.to_owned(),
                 Kind::ParseError,
@@ -101,6 +104,19 @@ impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
             StatusVisibility::Unlisted => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Private => MegalodonEntities::status::StatusVisibility::Private,
             StatusVisibility::Direct => MegalodonEntities::status::StatusVisibility::Direct,
+            StatusVisibility::Local => MegalodonEntities::status::StatusVisibility::Local,
+        }
+    }
+}
+
+impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
+    fn from(val: MegalodonEntities::status::StatusVisibility) -> StatusVisibility {
+        match val {
+            MegalodonEntities::status::StatusVisibility::Public => StatusVisibility::Public,
+            MegalodonEntities::status::StatusVisibility::Unlisted => StatusVisibility::Unlisted,
+            MegalodonEntities::status::StatusVisibility::Private => StatusVisibility::Private,
+            MegalodonEntities::status::StatusVisibility::Direct => StatusVisibility::Direct,
+            MegalodonEntities::status::StatusVisibility::Local => StatusVisibility::Local,
         }
     }
 }
