@@ -1260,6 +1260,7 @@ impl megalodon::Megalodon for Friendica {
                 );
             }
             if let Some(visibility) = &options.visibility {
+                let visibility: entities::StatusVisibility = visibility.clone().into();
                 params.insert(
                     "visibility",
                     serde_json::to_value(visibility.to_string()).unwrap(),

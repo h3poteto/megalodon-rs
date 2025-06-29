@@ -1,3 +1,5 @@
+use core::fmt;
+
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction};
 use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
@@ -44,6 +46,19 @@ pub enum StatusVisibility {
     Unlisted,
     Private,
     Direct,
+    Local,
+}
+
+impl fmt::Display for StatusVisibility {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            StatusVisibility::Public => write!(f, "public"),
+            StatusVisibility::Unlisted => write!(f, "unlisted"),
+            StatusVisibility::Private => write!(f, "private"),
+            StatusVisibility::Direct => write!(f, "direct"),
+            StatusVisibility::Local => write!(f, "local"),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -73,6 +88,19 @@ impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
             StatusVisibility::Unlisted => MegalodonEntities::status::StatusVisibility::Unlisted,
             StatusVisibility::Private => MegalodonEntities::status::StatusVisibility::Private,
             StatusVisibility::Direct => MegalodonEntities::status::StatusVisibility::Direct,
+            StatusVisibility::Local => MegalodonEntities::status::StatusVisibility::Local,
+        }
+    }
+}
+
+impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
+    fn from(value: MegalodonEntities::status::StatusVisibility) -> Self {
+        match value {
+            MegalodonEntities::status::StatusVisibility::Public => StatusVisibility::Public,
+            MegalodonEntities::status::StatusVisibility::Unlisted => StatusVisibility::Unlisted,
+            MegalodonEntities::status::StatusVisibility::Private => StatusVisibility::Private,
+            MegalodonEntities::status::StatusVisibility::Direct => StatusVisibility::Direct,
+            MegalodonEntities::status::StatusVisibility::Local => StatusVisibility::Local,
         }
     }
 }

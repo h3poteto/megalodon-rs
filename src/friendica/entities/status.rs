@@ -102,6 +102,17 @@ impl From<StatusVisibility> for MegalodonEntities::status::StatusVisibility {
     }
 }
 
+impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
+    fn from(val: MegalodonEntities::status::StatusVisibility) -> Self {
+        match val {
+            MegalodonEntities::status::StatusVisibility::Public => StatusVisibility::Public,
+            MegalodonEntities::status::StatusVisibility::Unlisted => StatusVisibility::Unlisted,
+            MegalodonEntities::status::StatusVisibility::Private => StatusVisibility::Private,
+            _ => StatusVisibility::Public, // Default to Public if unknown
+        }
+    }
+}
+
 impl From<Status> for MegalodonEntities::Status {
     fn from(val: Status) -> Self {
         let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
