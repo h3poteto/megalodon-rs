@@ -43,7 +43,7 @@ serde_json = "1.0.115"
 sha1 = { version = "0.10" }
 thiserror = ">=1.0.58"
 tokio = { version = ">=1.37.0", features = ["full"] }
-tokio-tungstenite = { version = "0.24", features = ["url"] }
+tokio-tungstenite = { version = "0.27", features = ["url"] }
 tokio-util = { version = "0.7.10", features = ["codec"] }
 tracing = "0.1.40"
 url = "2.5.0"
