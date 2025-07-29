@@ -22,6 +22,7 @@ pub struct ShallowQuote {
 #[derive(Debug, Deserialize, Clone)]
 #[serde(untagged)]
 enum QuotedStatus {
+    Status(Box<Status>),
     Quote(Quote),
     ShallowQuote(ShallowQuote),
 }
@@ -149,17 +150,21 @@ impl From<Status> for MegalodonEntities::Status {
             let rs: Status = *reblog;
             reblog_status = Some(Box::new(rs.into()));
         } else if let Some(quote) = val.quote {
-            let state = match quote {
+            quoted = match quote {
+                QuotedStatus::Status(s) => {
+                    let rs: Status = *s;
+                    reblog_status = Some(Box::new(rs.into()));
+                    true
+                }
                 QuotedStatus::Quote(q) => {
                     if let Some(quoted_status) = q.quoted_status {
                         let rs = *quoted_status;
                         reblog_status = Some(Box::new(rs.into()));
                     };
-                    q.state
+                    q.state == "accepted"
                 }
-                QuotedStatus::ShallowQuote(q) => q.state,
+                QuotedStatus::ShallowQuote(q) => q.state == "accepted",
             };
-            quoted = state == "accepted";
         }
 
         MegalodonEntities::Status {
