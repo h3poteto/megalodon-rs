@@ -1,7 +1,7 @@
 # Megalodon
 [![Crates.io](https://img.shields.io/crates/v/megalodon)](https://crates.io/crates/megalodon)
 [![docs.rs](https://img.shields.io/docsrs/megalodon/latest)](https://docs.rs/megalodon/latest/megalodon/)
-[![Build](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml/badge.svg)](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml)
+[![Build](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/h3poteto/megalodon-rs/actions/workflows/build.yml)
 [![GitHub](https://img.shields.io/github/license/h3poteto/megalodon-rs)](LICENSE.txt)
 
 The `megalodon` is a client library for Fediverse. It provides REST API and streaming method which uses WebSocket. By using this library, you can take Mastodon, Pleroma, and Friendica with the same interface.
