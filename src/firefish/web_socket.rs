@@ -14,14 +14,13 @@ use serde::Deserialize;
 use serde_json::json;
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
-    connect_async,
+    MaybeTlsStream, WebSocketStream, connect_async,
     tungstenite::{
+        Error as WebSocketError,
         client::IntoClientRequest,
         http::StatusCode,
-        protocol::{frame::coding::CloseCode, Message as WebSocketMessage},
-        Error as WebSocketError,
+        protocol::{Message as WebSocketMessage, frame::coding::CloseCode},
     },
-    MaybeTlsStream, WebSocketStream,
 };
 use tracing::{debug, error, info, warn};
 use url::Url;
@@ -228,7 +227,7 @@ impl WebSocket {
             })?;
             if msg.is_ping() {
                 let _ = socket
-                    .send(WebSocketMessage::Pong(Vec::<u8>::new()))
+                    .send(WebSocketMessage::Pong(Vec::<u8>::new().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
@@ -273,7 +272,7 @@ impl WebSocket {
                     },
                 });
                 let _ = socket
-                    .send(WebSocketMessage::Text(data.to_string()))
+                    .send(WebSocketMessage::Text(data.to_string().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
@@ -289,7 +288,7 @@ impl WebSocket {
                     },
                 });
                 let _ = socket
-                    .send(WebSocketMessage::Text(data.to_string()))
+                    .send(WebSocketMessage::Text(data.to_string().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
@@ -307,7 +306,7 @@ impl WebSocket {
                 });
                 debug!("Sending {:?}", &home);
                 let _ = socket
-                    .send(WebSocketMessage::Text(home.to_string()))
+                    .send(WebSocketMessage::Text(home.to_string().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
@@ -328,7 +327,7 @@ impl WebSocket {
                 });
                 debug!("Sending {:?}", &data);
                 let _ = socket
-                    .send(WebSocketMessage::Text(data.to_string()))
+                    .send(WebSocketMessage::Text(data.to_string().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
@@ -348,7 +347,7 @@ impl WebSocket {
                 });
                 debug!("Sending {:?}", &data);
                 let _ = socket
-                    .send(WebSocketMessage::Text(data.to_string()))
+                    .send(WebSocketMessage::Text(data.to_string().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);

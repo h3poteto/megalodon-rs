@@ -14,8 +14,8 @@ use serde::Deserialize;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::tungstenite::http::StatusCode;
 use tokio_tungstenite::{
-    connect_async, tungstenite::error, tungstenite::protocol::frame::coding::CloseCode,
-    tungstenite::protocol::Message as WebSocketMessage,
+    connect_async, tungstenite::error, tungstenite::protocol::Message as WebSocketMessage,
+    tungstenite::protocol::frame::coding::CloseCode,
 };
 use tracing::{debug, error, info, warn};
 use url::Url;
@@ -209,7 +209,7 @@ impl WebSocket {
             })?;
             if msg.is_ping() {
                 let _ = socket
-                    .send(WebSocketMessage::Pong(Vec::<u8>::new()))
+                    .send(WebSocketMessage::Pong(Vec::<u8>::new().into()))
                     .await
                     .map_err(|e| {
                         error!("{:#?}", e);
