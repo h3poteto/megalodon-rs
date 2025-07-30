@@ -884,7 +884,7 @@ dependencies = [
 
 [[package]]
 name = "megalodon"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "async-trait",
  "chrono",
@@ -898,7 +898,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha1",
- "thiserror 2.0.12",
+ "thiserror 1.0.69",
  "tokio",
  "tokio-tungstenite",
  "tokio-util",
