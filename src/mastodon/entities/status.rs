@@ -8,6 +8,26 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Clone)]
+pub struct Quote {
+    state: String,
+    quoted_status: Option<Box<Status>>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct ShallowQuote {
+    state: String,
+    quoted_status_id: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(untagged)]
+enum QuotedStatus {
+    Status(Box<Status>),
+    Quote(Quote),
+    ShallowQuote(ShallowQuote),
+}
+
+#[derive(Debug, Deserialize, Clone)]
 pub struct Status {
     id: String,
     uri: String,
@@ -37,7 +57,7 @@ pub struct Status {
     application: Option<Application>,
     language: Option<String>,
     pinned: Option<bool>,
-    quote: Option<Box<Status>>,
+    quote: Option<QuotedStatus>,
     bookmarked: Option<bool>,
 }
 
@@ -130,9 +150,21 @@ impl From<Status> for MegalodonEntities::Status {
             let rs: Status = *reblog;
             reblog_status = Some(Box::new(rs.into()));
         } else if let Some(quote) = val.quote {
-            let rs: Status = *quote;
-            reblog_status = Some(Box::new(rs.into()));
-            quoted = true;
+            quoted = match quote {
+                QuotedStatus::Status(s) => {
+                    let rs: Status = *s;
+                    reblog_status = Some(Box::new(rs.into()));
+                    true
+                }
+                QuotedStatus::Quote(q) => {
+                    if let Some(quoted_status) = q.quoted_status {
+                        let rs = *quoted_status;
+                        reblog_status = Some(Box::new(rs.into()));
+                    };
+                    q.state == "accepted"
+                }
+                QuotedStatus::ShallowQuote(q) => q.state == "accepted",
+            };
         }
 
         MegalodonEntities::Status {
