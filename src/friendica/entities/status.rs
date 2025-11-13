@@ -115,15 +115,16 @@ impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
 
 impl From<Status> for MegalodonEntities::Status {
     fn from(val: Status) -> Self {
-        let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
-        let mut quoted = false;
-        if let Some(reblog) = val.reblog {
-            let rs: Status = *reblog;
-            reblog_status = Some(Box::new(rs.into()));
-        } else if let Some(quote) = val.quote {
-            let rs: Status = *quote;
-            reblog_status = Some(Box::new(rs.into()));
-            quoted = true;
+        let mut quote: Option<MegalodonEntities::QuotedStatus> = None;
+
+        if let Some(q) = val.quote {
+            let qs: Status = *q;
+            quote = Some(MegalodonEntities::QuotedStatus::Quote(
+                MegalodonEntities::quote::Quote {
+                    state: MegalodonEntities::quote::QuoteState::Accepted,
+                    quoted_status: Some(Box::new(qs.into())),
+                },
+            ));
         }
 
         MegalodonEntities::Status {
@@ -133,7 +134,10 @@ impl From<Status> for MegalodonEntities::Status {
             account: val.account.into(),
             in_reply_to_id: val.in_reply_to_id,
             in_reply_to_account_id: val.in_reply_to_account_id,
-            reblog: reblog_status,
+            reblog: val.reblog.map(|r| {
+                let rs: Status = *r;
+                Box::new(rs.into())
+            }),
             content: val.content,
             plain_content: None,
             created_at: val.created_at,
@@ -161,7 +165,8 @@ impl From<Status> for MegalodonEntities::Status {
             language: val.language,
             pinned: val.pinned,
             emoji_reactions: None,
-            quote: quoted,
+            quote,
+            quote_approval: MegalodonEntities::QuoteApproval::default(),
             bookmarked: val.bookmarked,
         }
     }
