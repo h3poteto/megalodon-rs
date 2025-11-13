@@ -124,12 +124,19 @@ impl From<Note> for MegalodonEntities::Status {
             uri = u;
         }
         let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
-        let mut quoted = false;
+        let mut quote: Option<MegalodonEntities::QuotedStatus> = None;
+
         if let Some(renote) = val.renote {
             let rs: Note = *renote;
-            reblog_status = Some(Box::new(rs.into()));
             if let Some(_) = val.text.clone() {
-                quoted = true;
+                quote = Some(MegalodonEntities::QuotedStatus::Quote(
+                    MegalodonEntities::quote::Quote {
+                        state: MegalodonEntities::quote::QuoteState::Accepted,
+                        quoted_status: Some(Box::new(rs.into())),
+                    },
+                ));
+            } else {
+                reblog_status = Some(Box::new(rs.into()));
             }
         }
         let mut content = "".to_string();
@@ -199,7 +206,8 @@ impl From<Note> for MegalodonEntities::Status {
             language: None,
             pinned: None,
             emoji_reactions,
-            quote: quoted,
+            quote,
+            quote_approval: MegalodonEntities::QuoteApproval::default(),
             bookmarked: None,
         }
     }
