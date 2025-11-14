@@ -123,12 +123,6 @@ impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
 
 impl From<Status> for MegalodonEntities::Status {
     fn from(val: Status) -> MegalodonEntities::Status {
-        let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
-        if let Some(reblog) = val.reblog {
-            let rs: Status = *reblog;
-            reblog_status = Some(Box::new(rs.into()));
-        }
-
         MegalodonEntities::Status {
             id: val.id,
             uri: val.uri,
@@ -136,7 +130,10 @@ impl From<Status> for MegalodonEntities::Status {
             account: val.account.into(),
             in_reply_to_id: val.in_reply_to_id,
             in_reply_to_account_id: val.in_reply_to_account_id,
-            reblog: reblog_status,
+            reblog: val.reblog.map(|r| {
+                let rs: Status = *r;
+                Box::new(rs.into())
+            }),
             content: val.content,
             plain_content: None,
             created_at: val.created_at,
@@ -164,7 +161,8 @@ impl From<Status> for MegalodonEntities::Status {
             language: val.language,
             pinned: val.pinned,
             emoji_reactions: None,
-            quote: false,
+            quote: None,
+            quote_approval: MegalodonEntities::quote_approval::QuoteApproval::default(),
             bookmarked: val.bookmarked,
         }
     }
