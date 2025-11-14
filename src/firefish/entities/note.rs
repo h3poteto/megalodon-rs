@@ -207,7 +207,7 @@ impl From<Note> for MegalodonEntities::Status {
             pinned: None,
             emoji_reactions,
             quote,
-            quote_approval: MegalodonEntities::QuoteApproval::default(),
+            quote_approval: MegalodonEntities::QuoteApproval::automatic_unsupported(),
             bookmarked: None,
         }
     }

@@ -189,7 +189,7 @@ impl From<Status> for MegalodonEntities::Status {
                 .emoji_reactions
                 .map(|v| v.into_iter().map(|e| e.into()).collect()),
             quote,
-            quote_approval: MegalodonEntities::QuoteApproval::default(),
+            quote_approval: MegalodonEntities::QuoteApproval::automatic_unsupported(),
             bookmarked: val.bookmarked,
         }
     }

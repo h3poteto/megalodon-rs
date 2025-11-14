@@ -162,7 +162,7 @@ impl From<Status> for MegalodonEntities::Status {
             pinned: val.pinned,
             emoji_reactions: None,
             quote: None,
-            quote_approval: MegalodonEntities::quote_approval::QuoteApproval::default(),
+            quote_approval: MegalodonEntities::QuoteApproval::default(),
             bookmarked: val.bookmarked,
         }
     }
