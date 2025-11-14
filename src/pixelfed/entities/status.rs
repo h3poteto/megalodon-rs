@@ -159,7 +159,8 @@ impl From<Status> for MegalodonEntities::Status {
             language: val.language,
             pinned: None,
             emoji_reactions: None,
-            quote: false,
+            quote: None,
+            quote_approval: MegalodonEntities::QuoteApproval::default(),
             bookmarked: val.bookmarked,
         }
     }

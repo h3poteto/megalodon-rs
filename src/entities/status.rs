@@ -1,4 +1,7 @@
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction};
+use super::{
+    Account, Application, Attachment, Card, Emoji, Mention, Poll, QuoteApproval, QuotedStatus,
+    Reaction,
+};
 use crate::error::{Error, Kind};
 use chrono::{DateTime, Utc};
 use core::fmt;
@@ -37,7 +40,8 @@ pub struct Status {
     pub language: Option<String>,
     pub pinned: Option<bool>,
     pub emoji_reactions: Option<Vec<Reaction>>,
-    pub quote: bool,
+    pub quote: Option<QuotedStatus>,
+    pub quote_approval: QuoteApproval,
     pub bookmarked: Option<bool>,
 }
 

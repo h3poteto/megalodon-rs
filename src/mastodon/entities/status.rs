@@ -1,31 +1,13 @@
 use core::fmt;
 use std::str::FromStr;
 
-use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll};
+use super::{
+    Account, Application, Attachment, Card, Emoji, Mention, Poll, QuoteApproval, QuotedStatus,
+};
 use crate::error::{Error, Kind};
 use crate::{entities as MegalodonEntities, megalodon};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct Quote {
-    state: String,
-    quoted_status: Option<Box<Status>>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct ShallowQuote {
-    state: String,
-    quoted_status_id: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-#[serde(untagged)]
-enum QuotedStatus {
-    Status(Box<Status>),
-    Quote(Quote),
-    ShallowQuote(ShallowQuote),
-}
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Status {
@@ -58,6 +40,7 @@ pub struct Status {
     language: Option<String>,
     pinned: Option<bool>,
     quote: Option<QuotedStatus>,
+    quote_approval: QuoteApproval,
     bookmarked: Option<bool>,
 }
 
@@ -144,29 +127,6 @@ impl From<MegalodonEntities::status::StatusVisibility> for StatusVisibility {
 
 impl From<Status> for MegalodonEntities::Status {
     fn from(val: Status) -> Self {
-        let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
-        let mut quoted = false;
-        if let Some(reblog) = val.reblog {
-            let rs: Status = *reblog;
-            reblog_status = Some(Box::new(rs.into()));
-        } else if let Some(quote) = val.quote {
-            quoted = match quote {
-                QuotedStatus::Status(s) => {
-                    let rs: Status = *s;
-                    reblog_status = Some(Box::new(rs.into()));
-                    true
-                }
-                QuotedStatus::Quote(q) => {
-                    if let Some(quoted_status) = q.quoted_status {
-                        let rs = *quoted_status;
-                        reblog_status = Some(Box::new(rs.into()));
-                    };
-                    q.state == "accepted"
-                }
-                QuotedStatus::ShallowQuote(q) => q.state == "accepted",
-            };
-        }
-
         MegalodonEntities::Status {
             id: val.id,
             uri: val.uri,
@@ -174,7 +134,10 @@ impl From<Status> for MegalodonEntities::Status {
             account: val.account.into(),
             in_reply_to_id: val.in_reply_to_id,
             in_reply_to_account_id: val.in_reply_to_account_id,
-            reblog: reblog_status,
+            reblog: val.reblog.map(|r| {
+                let rs: Status = *r;
+                Box::new(rs.into())
+            }),
             content: val.content,
             plain_content: None,
             created_at: val.created_at,
@@ -202,7 +165,8 @@ impl From<Status> for MegalodonEntities::Status {
             language: val.language,
             pinned: val.pinned,
             emoji_reactions: None,
-            quote: quoted,
+            quote: val.quote.map(|i| i.into()),
+            quote_approval: val.quote_approval.into(),
             bookmarked: val.bookmarked,
         }
     }

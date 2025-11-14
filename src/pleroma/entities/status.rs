@@ -1,9 +1,12 @@
 use core::fmt;
 
 use super::{Account, Application, Attachment, Card, Emoji, Mention, Poll, Reaction};
-use crate::{entities as MegalodonEntities, megalodon};
+use crate::{
+    entities::{self as MegalodonEntities},
+    megalodon,
+};
 use chrono::{DateTime, Utc};
-use serde::{de, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Status {
@@ -74,6 +77,9 @@ pub struct PleromaOptions {
     pub parent_visible: Option<bool>,
     pub pinned_at: Option<DateTime<Utc>>,
     pub thread_muted: Option<bool>,
+    pub quote: Option<Box<Status>>,
+    pub quote_url: Option<String>,
+    pub quote_id: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -122,14 +128,23 @@ impl From<Tag> for MegalodonEntities::status::Tag {
 
 impl From<Status> for MegalodonEntities::Status {
     fn from(val: Status) -> Self {
-        let mut reblog_status: Option<Box<MegalodonEntities::Status>> = None;
-        let mut quoted = false;
-        if let Some(reblog) = val.reblog {
-            let rs: Status = *reblog;
-            if rs.content != val.content {
-                quoted = true;
-            }
-            reblog_status = Some(Box::new(rs.into()));
+        let mut quote: Option<MegalodonEntities::QuotedStatus> = None;
+
+        if let Some(q) = val.pleroma.quote {
+            let qs: Status = *q;
+            quote = Some(MegalodonEntities::QuotedStatus::Quote(
+                MegalodonEntities::quote::Quote {
+                    state: MegalodonEntities::quote::QuoteState::Accepted,
+                    quoted_status: Some(Box::new((qs).into())),
+                },
+            ));
+        } else if let Some(quote_id) = val.pleroma.quote_id {
+            quote = Some(MegalodonEntities::QuotedStatus::ShallowQuote(
+                MegalodonEntities::quote::ShallowQuote {
+                    state: MegalodonEntities::quote::QuoteState::Accepted,
+                    quoted_status_id: Some(quote_id),
+                },
+            ));
         }
 
         MegalodonEntities::Status {
@@ -139,7 +154,10 @@ impl From<Status> for MegalodonEntities::Status {
             account: val.account.into(),
             in_reply_to_id: val.in_reply_to_id,
             in_reply_to_account_id: val.in_reply_to_account_id,
-            reblog: reblog_status,
+            reblog: val.reblog.map(|r| {
+                let rs: Status = *r;
+                Box::new((rs).into())
+            }),
             content: val.content,
             plain_content: val.pleroma.content.map(|c| c.text_plain),
             created_at: val.created_at,
@@ -170,7 +188,8 @@ impl From<Status> for MegalodonEntities::Status {
                 .pleroma
                 .emoji_reactions
                 .map(|v| v.into_iter().map(|e| e.into()).collect()),
-            quote: quoted,
+            quote,
+            quote_approval: MegalodonEntities::QuoteApproval::automatic_unsupported(),
             bookmarked: val.bookmarked,
         }
     }
