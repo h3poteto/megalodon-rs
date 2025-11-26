@@ -30,9 +30,10 @@ pub struct Quote {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
 pub enum QuotedStatus {
-    ShallowQuote(ShallowQuote),
     Quote(Quote),
+    ShallowQuote(ShallowQuote),
 }
 
 impl From<QuoteState> for MegalodonEntities::QuoteState {

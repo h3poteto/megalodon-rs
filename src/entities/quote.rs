@@ -29,7 +29,8 @@ pub struct Quote {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(untagged)]
 pub enum QuotedStatus {
-    ShallowQuote(ShallowQuote),
     Quote(Quote),
+    ShallowQuote(ShallowQuote),
 }
