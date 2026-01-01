@@ -1415,15 +1415,47 @@ impl megalodon::Megalodon for Gotosocial {
 
     async fn edit_status(
         &self,
-        _id: String,
-        _options: &megalodon::EditStatusInputOptions,
+        id: String,
+        options: &megalodon::EditStatusInputOptions,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
-        Err(Error::new_own(
-            "Gotosocial doest not support".to_string(),
-            error::Kind::NoImplementedError,
-            None,
-            None,
-            None,
+        let mut params = HashMap::<&str, Value>::default();
+        if let Some(status) = &options.status {
+            params.insert("status", serde_json::Value::String(status.clone()));
+        }
+        if let Some(spoiler_text) = &options.spoiler_text {
+            params.insert(
+                "spoiler_text",
+                serde_json::Value::String(spoiler_text.clone()),
+            );
+        }
+        if let Some(sensitive) = options.sensitive {
+            params.insert(
+                "sensitive",
+                serde_json::Value::String(sensitive.to_string()),
+            );
+        }
+        if let Some(language) = &options.language {
+            params.insert("language", serde_json::Value::String(language.clone()));
+        }
+        if let Some(media_ids) = &options.media_ids {
+            if let Some(json_media_ids) = serde_json::to_value(media_ids).ok() {
+                params.insert("media_ids", json_media_ids);
+            }
+        }
+        if let Some(poll) = &options.poll {
+            params.insert("poll", serde_json::to_value(&poll).unwrap());
+        }
+
+        let res = self
+            .client
+            .put::<entities::Status>(format!("/api/v1/statuses/{}", id).as_str(), &params, None)
+            .await?;
+
+        Ok(Response::<MegalodonEntities::Status>::new(
+            res.json.into(),
+            res.status,
+            res.status_text,
+            res.header,
         ))
     }
 
