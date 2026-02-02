@@ -4,11 +4,11 @@ use super::oauth;
 use super::web_socket::WebSocket;
 use crate::error::Error as MegalodonError;
 use crate::megalodon::FollowRequestOutput;
+use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -1459,6 +1459,12 @@ impl megalodon::Megalodon for Pleroma {
             }
             if let Some(language) = &options.language {
                 params.insert("language", Value::String(language.clone()));
+            }
+            if let Some(quote_id) = &options.quote_id {
+                params.insert(
+                    "quoted_status_id",
+                    serde_json::Value::String(quote_id.clone()),
+                );
             }
             if let Some(poll) = &options.poll {
                 params.insert("poll", serde_json::to_value(&poll).unwrap());

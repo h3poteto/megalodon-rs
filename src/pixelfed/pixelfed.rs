@@ -5,11 +5,11 @@ use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
 use crate::megalodon::FollowRequestOutput;
+use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use crate::{error, Streaming};
 use rand::RngCore;
 
 use async_trait::async_trait;
@@ -1438,9 +1438,6 @@ impl megalodon::Megalodon for Pixelfed {
             }
             if let Some(language) = &options.language {
                 params.insert("language", serde_json::Value::String(language.clone()));
-            }
-            if let Some(quote_id) = &options.quote_id {
-                params.insert("quote_id", serde_json::Value::String(quote_id.clone()));
             }
             if let Some(poll) = &options.poll {
                 params.insert("poll", serde_json::to_value(&poll).unwrap());
