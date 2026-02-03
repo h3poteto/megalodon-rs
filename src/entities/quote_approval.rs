@@ -12,7 +12,7 @@ impl Default for QuoteApproval {
         QuoteApproval {
             automatic: Vec::new(),
             manual: Vec::new(),
-            current_user: "denied".to_string(),
+            current_user: "unknown".to_string(),
         }
     }
 }
