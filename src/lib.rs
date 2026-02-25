@@ -59,6 +59,7 @@ pub mod pixelfed;
 pub mod pleroma;
 pub mod response;
 pub mod streaming;
+pub(crate) mod tls;
 
 pub use self::megalodon::Megalodon;
 use crate::error::Error;

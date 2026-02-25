@@ -14,7 +14,8 @@ use serde::Deserialize;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::tungstenite::http::StatusCode;
 use tokio_tungstenite::{
-    connect_async, tungstenite::error, tungstenite::protocol::Message as WebSocketMessage,
+    connect_async_tls_with_config, tungstenite::error,
+    tungstenite::protocol::Message as WebSocketMessage,
     tungstenite::protocol::frame::coding::CloseCode,
 };
 use tracing::{debug, error, info, warn};
@@ -172,7 +173,9 @@ impl WebSocket {
             })?;
         req.headers_mut()
             .insert("User-Agent", self.user_agent.parse().unwrap());
-        let (mut socket, response) = connect_async(req).await.map_err(|e| {
+        let connector = crate::tls::build_connector();
+        let (mut socket, response) =
+            connect_async_tls_with_config(req, None, false, connector).await.map_err(|e| {
             error!("Failed to connect: {}", e);
             match e {
                 error::Error::Http(response) => match response.status() {
