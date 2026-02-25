@@ -12,7 +12,7 @@ use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
 use tokio_tungstenite::{
-    connect_async,
+    connect_async_tls_with_config,
     tungstenite::{
         Error as WebSocketError,
         client::IntoClientRequest,
@@ -186,7 +186,9 @@ impl WebSocket {
             })?;
         req.headers_mut()
             .insert("User-Agent", self.user_agent.parse().unwrap());
-        let (mut socket, response) = connect_async(req).await.map_err(|e| {
+        let connector = crate::tls::build_connector();
+        let (mut socket, response) =
+            connect_async_tls_with_config(req, None, false, connector).await.map_err(|e| {
             error!("Failed to connect: {}", e);
             match e {
                 WebSocketError::Http(response) => match response.status() {

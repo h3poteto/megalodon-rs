@@ -22,6 +22,9 @@ rustls-tls = [
     "tokio-tungstenite/rustls-tls-native-roots",
     "reqwest/rustls-tls",
     "oauth2/rustls-tls",
+    "dep:rustls",
+    "dep:rustls-native-certs",
+    "dep:rustls-pki-types",
 ]
 
 [dependencies]
@@ -47,6 +50,9 @@ tokio-tungstenite = { version = "0.27", features = ["url"] }
 tokio-util = { version = "0.7.10", features = ["codec"] }
 tracing = "0.1.40"
 url = "2.5.0"
+rustls = { version = "0.23", features = ["ring"], default-features = false, optional = true }
+rustls-native-certs = { version = "0.8", optional = true }
+rustls-pki-types = { version = "1", optional = true }
 urlencoding = "2.1"
 uuid = { version = "1.8", features = ["v4"] }
 
