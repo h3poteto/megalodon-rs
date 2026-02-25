@@ -11,7 +11,7 @@ pub struct Account {
     display_name: String,
     locked: bool,
     discoverable: Option<bool>,
-    group: bool,
+    group: Option<bool>,
     created_at: DateTime<Utc>,
     followers_count: i32,
     following_count: u32,
@@ -36,11 +36,6 @@ impl From<MegalodonEntities::Account> for Account {
             let ma: MegalodonEntities::Account = *moved;
             moved_account = Some(Box::new(ma.into()));
         }
-        let mut group = false;
-        if let Some(g) = item.group {
-            group = g;
-        }
-
         Self {
             id: item.id,
             username: item.username,
@@ -48,7 +43,7 @@ impl From<MegalodonEntities::Account> for Account {
             display_name: item.display_name,
             locked: item.locked,
             discoverable: item.discoverable,
-            group,
+            group: item.group,
             created_at: item.created_at,
             followers_count: item.followers_count,
             following_count: item.following_count,
@@ -82,7 +77,7 @@ impl From<Account> for MegalodonEntities::Account {
             display_name: val.display_name,
             locked: val.locked,
             discoverable: val.discoverable,
-            group: Some(val.group),
+            group: val.group,
             noindex: None,
             suspended: None,
             limited: None,
