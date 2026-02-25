@@ -16,6 +16,10 @@ impl WebSocket {
 
 #[async_trait]
 impl Streaming for WebSocket {
+    fn is_supported(&self) -> bool {
+        false
+    }
+
     async fn listen(
         &self,
         _callback: Box<
