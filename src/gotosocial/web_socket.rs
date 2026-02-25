@@ -134,8 +134,9 @@ impl WebSocket {
         loop {
             match self.do_connect(url, &callback).await {
                 Ok(()) => {
-                    info!("connection for {} is  closed", url);
-                    return;
+                    warn!("connection for {} is closed, reconnecting...", url);
+                    thread::sleep(Duration::from_millis(RECONNECT_INTERVAL));
+                    continue;
                 }
                 Err(err) => match err.kind {
                     InnerKind::ConnectionError
@@ -200,8 +201,8 @@ impl WebSocket {
                 InnerError::new(InnerKind::TimeoutError)
             })?;
             let Some(r) = res else {
-                warn!("Response is empty");
-                continue;
+                warn!("WebSocket stream has ended");
+                return Err(InnerError::new(InnerKind::SocketReadError));
             };
             let msg = r.map_err(|e| {
                 error!("Failed to read message: {}", e);
@@ -243,6 +244,10 @@ impl WebSocket {
 
 #[async_trait]
 impl Streaming for WebSocket {
+    fn is_supported(&self) -> bool {
+        true
+    }
+
     async fn listen(
         &self,
         callback: Box<

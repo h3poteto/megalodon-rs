@@ -7,6 +7,8 @@ use std::pin::Pin;
 /// Streaming interface to listen message.
 #[async_trait]
 pub trait Streaming {
+    /// Whether WebSocket streaming is supported or not.
+    fn is_supported(&self) -> bool;
     /// Start listening stream messages. When receive a message, the callback function will be called.
     async fn listen(
         &self,

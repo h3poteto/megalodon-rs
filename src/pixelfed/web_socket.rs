@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use std::future::Future;
 use std::pin::Pin;
 
-use crate::{streaming::Message, Streaming};
+use crate::{Streaming, streaming::Message};
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {}
@@ -15,6 +15,10 @@ impl WebSocket {
 
 #[async_trait]
 impl Streaming for WebSocket {
+    fn is_supported(&self) -> bool {
+        false
+    }
+
     async fn listen(
         &self,
         _callback: Box<
