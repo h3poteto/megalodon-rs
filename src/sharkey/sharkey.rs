@@ -59,23 +59,6 @@ impl Sharkey {
         Ok(res.json)
     }
 
-    async fn get_relationship(
-        &self,
-        id: String,
-    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, Value>::from([("userId", Value::String(id))]);
-        let res = self
-            .client
-            .post::<entities::Relation>("/api/users/relation", &params, None)
-            .await?;
-        Ok(Response::<MegalodonEntities::Relationship>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
-        ))
-    }
-
     async fn vote_single_poll(&self, id: String, choice: u32) -> Result<Response<()>, Error> {
         let params = HashMap::<&str, Value>::from([
             ("noteId", Value::String(id)),
@@ -837,15 +820,18 @@ impl megalodon::Megalodon for Sharkey {
         &self,
         ids: Vec<String>,
     ) -> Result<Response<Vec<MegalodonEntities::Relationship>>, Error> {
-        let mut relations = [].to_vec();
-        for id in ids.into_iter() {
-            let rel = self.get_relationship(id).await?;
-            relations.extend([rel.json]);
-        }
+        let params = HashMap::<&str, Value>::from([(
+            "userId",
+            Value::Array(ids.into_iter().map(|id| Value::String(id)).collect()),
+        )]);
+        let res = self
+            .client
+            .post::<Vec<entities::Relation>>("/api/users/relation", &params, None)
+            .await?;
         Ok(Response::<Vec<MegalodonEntities::Relationship>>::new(
-            relations,
-            200,
-            "200".to_string(),
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
             reqwest::header::HeaderMap::default(),
         ))
     }
