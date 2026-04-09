@@ -58,6 +58,7 @@ pub mod oauth;
 pub mod pixelfed;
 pub mod pleroma;
 pub mod response;
+pub mod sharkey;
 pub mod streaming;
 pub(crate) mod tls;
 
@@ -82,6 +83,8 @@ pub enum SNS {
     Gotosocial,
     /// SNS is Pixelfed.
     Pixelfed,
+    /// SNS is Sharkey.
+    Sharkey,
 }
 
 impl fmt::Display for SNS {
@@ -93,6 +96,7 @@ impl fmt::Display for SNS {
             SNS::Firefish => write!(f, "firefish"),
             SNS::Gotosocial => write!(f, "gotosocial"),
             SNS::Pixelfed => write!(f, "pixelfed"),
+            SNS::Sharkey => write!(f, "sharkey"),
         }
     }
 }
@@ -108,6 +112,7 @@ impl FromStr for SNS {
             "firefish" => Ok(SNS::Firefish),
             "gotosocial" => Ok(SNS::Gotosocial),
             "pixelfed" => Ok(SNS::Pixelfed),
+            "sharkey" => Ok(SNS::Sharkey),
             &_ => Err(format!("Unknown sns: {}", s)),
         }
     }
@@ -144,6 +149,10 @@ pub fn generator(
         SNS::Pixelfed => {
             let pixelfed = pixelfed::Pixelfed::new(base_url, access_token, user_agent)?;
             Ok(Box::new(pixelfed))
+        }
+        SNS::Sharkey => {
+            let sharkey = sharkey::Sharkey::new(base_url, access_token, user_agent)?;
+            Ok(Box::new(sharkey))
         }
     }
 }
