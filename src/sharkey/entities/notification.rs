@@ -20,21 +20,35 @@ pub struct Notification {
     reaction: Option<String>,
 }
 
+// https://activitypub.software/TransFem-org/Sharkey/-/blob/develop/packages/backend/src/models/Notification.ts
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub enum NotificationType {
+    Note,
     Follow,
     Mention,
     Reply,
     Renote,
     Quote,
     Reaction,
-    PollVote,
     PollEnded,
     ReceiveFollowRequest,
     FollowRequestAccepted,
-    GroupInvited,
+    RoleAssigned,
+    ChatRoomInvitationReceived,
+    AchievementEarned,
+    ExportCompleted,
+    ImportCompleted,
+    Login,
+    CreateToken,
     App,
+    Test,
+    Edited,
+    ScheduledNoteFailed,
+    ScheduledNotePosted,
+    SharedAccessGranted,
+    SharedAccessRevoked,
+    SharedAccessLogin,
     Unknown,
 }
 
@@ -47,12 +61,27 @@ impl fmt::Display for NotificationType {
             NotificationType::Renote => write!(f, "renote"),
             NotificationType::Quote => write!(f, "quote"),
             NotificationType::Reaction => write!(f, "reaction"),
-            NotificationType::PollVote => write!(f, "pollVote"),
             NotificationType::PollEnded => write!(f, "pollEnded"),
             NotificationType::ReceiveFollowRequest => write!(f, "receiveFollowRequest"),
             NotificationType::FollowRequestAccepted => write!(f, "followRequestAccepted"),
-            NotificationType::GroupInvited => write!(f, "groupInvited"),
+            NotificationType::Note => write!(f, "note"),
+            NotificationType::RoleAssigned => write!(f, "roleAssigned"),
+            NotificationType::ChatRoomInvitationReceived => {
+                write!(f, "chatRoomInvitationReceived")
+            }
+            NotificationType::AchievementEarned => write!(f, "achievementEarned"),
+            NotificationType::ExportCompleted => write!(f, "exportCompleted"),
+            NotificationType::ImportCompleted => write!(f, "importCompleted"),
+            NotificationType::Login => write!(f, "login"),
+            NotificationType::CreateToken => write!(f, "createToken"),
             NotificationType::App => write!(f, "app"),
+            NotificationType::Test => write!(f, "test"),
+            NotificationType::Edited => write!(f, "edited"),
+            NotificationType::ScheduledNoteFailed => write!(f, "scheduledNoteFailed"),
+            NotificationType::ScheduledNotePosted => write!(f, "scheduledNotePosted"),
+            NotificationType::SharedAccessGranted => write!(f, "sharedAccessGranted"),
+            NotificationType::SharedAccessRevoked => write!(f, "sharedAccessRevoked"),
+            NotificationType::SharedAccessLogin => write!(f, "sharedAccessLogin"),
             NotificationType::Unknown => write!(f, "unknown"),
         }
     }
@@ -68,7 +97,7 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 NotificationType::Reaction
             }
             MegalodonEntities::notification::NotificationType::PollVote => {
-                NotificationType::PollVote
+                NotificationType::Unknown
             }
             MegalodonEntities::notification::NotificationType::PollExpired => {
                 NotificationType::PollEnded
@@ -77,7 +106,7 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 NotificationType::ReceiveFollowRequest
             }
             MegalodonEntities::notification::NotificationType::GroupInvited => {
-                NotificationType::GroupInvited
+                NotificationType::Unknown
             }
             MegalodonEntities::notification::NotificationType::App => NotificationType::App,
             MegalodonEntities::notification::NotificationType::AdminReport => {
@@ -90,9 +119,13 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
                 NotificationType::Unknown
             }
             MegalodonEntities::notification::NotificationType::Move => NotificationType::Unknown,
-            MegalodonEntities::notification::NotificationType::Status => NotificationType::Unknown,
+            MegalodonEntities::notification::NotificationType::Status => NotificationType::Note,
             MegalodonEntities::notification::NotificationType::Unknown => NotificationType::Unknown,
-            MegalodonEntities::notification::NotificationType::Update => NotificationType::Unknown,
+            MegalodonEntities::notification::NotificationType::Update => NotificationType::Edited,
+            MegalodonEntities::notification::NotificationType::Quote => NotificationType::Quote,
+            MegalodonEntities::notification::NotificationType::QuotedUpdate => {
+                NotificationType::Edited
+            }
         }
     }
 }
@@ -104,12 +137,9 @@ impl From<NotificationType> for MegalodonEntities::notification::NotificationTyp
             NotificationType::Mention => MegalodonEntities::notification::NotificationType::Mention,
             NotificationType::Reply => MegalodonEntities::notification::NotificationType::Mention,
             NotificationType::Renote => MegalodonEntities::notification::NotificationType::Reblog,
-            NotificationType::Quote => MegalodonEntities::notification::NotificationType::Reblog,
+            NotificationType::Quote => MegalodonEntities::notification::NotificationType::Quote,
             NotificationType::Reaction => {
                 MegalodonEntities::notification::NotificationType::Reaction
-            }
-            NotificationType::PollVote => {
-                MegalodonEntities::notification::NotificationType::PollVote
             }
             NotificationType::PollEnded => {
                 MegalodonEntities::notification::NotificationType::PollExpired
@@ -120,10 +150,44 @@ impl From<NotificationType> for MegalodonEntities::notification::NotificationTyp
             NotificationType::FollowRequestAccepted => {
                 MegalodonEntities::notification::NotificationType::Follow
             }
-            NotificationType::GroupInvited => {
-                MegalodonEntities::notification::NotificationType::GroupInvited
+            NotificationType::Note => MegalodonEntities::notification::NotificationType::Status,
+            NotificationType::RoleAssigned => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::ChatRoomInvitationReceived => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::AchievementEarned => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::ExportCompleted => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::ImportCompleted => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::Login => MegalodonEntities::notification::NotificationType::Unknown,
+            NotificationType::CreateToken => {
+                MegalodonEntities::notification::NotificationType::Unknown
             }
             NotificationType::App => MegalodonEntities::notification::NotificationType::App,
+            NotificationType::Test => MegalodonEntities::notification::NotificationType::Unknown,
+            NotificationType::Edited => MegalodonEntities::notification::NotificationType::Update,
+            NotificationType::ScheduledNoteFailed => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::ScheduledNotePosted => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::SharedAccessGranted => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::SharedAccessRevoked => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
+            NotificationType::SharedAccessLogin => {
+                MegalodonEntities::notification::NotificationType::Unknown
+            }
             NotificationType::Unknown => MegalodonEntities::notification::NotificationType::Unknown,
         }
     }

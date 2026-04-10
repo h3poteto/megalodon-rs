@@ -12,6 +12,7 @@ pub struct Notification {
     r#type: NotificationType,
 }
 
+// https://docs.joinmastodon.org/entities/Notification/#type
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationType {
@@ -27,6 +28,8 @@ pub enum NotificationType {
     AdminSignup,
     #[serde(rename = "admin.report")]
     AdminReport,
+    Quote,
+    QuotedUpdate,
 }
 
 impl From<NotificationType> for MegalodonEntities::notification::NotificationType {
@@ -51,6 +54,10 @@ impl From<NotificationType> for MegalodonEntities::notification::NotificationTyp
             }
             NotificationType::AdminReport => {
                 MegalodonEntities::notification::NotificationType::AdminReport
+            }
+            NotificationType::Quote => MegalodonEntities::notification::NotificationType::Quote,
+            NotificationType::QuotedUpdate => {
+                MegalodonEntities::notification::NotificationType::QuotedUpdate
             }
         }
     }

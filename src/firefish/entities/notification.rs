@@ -93,6 +93,10 @@ impl From<MegalodonEntities::notification::NotificationType> for NotificationTyp
             MegalodonEntities::notification::NotificationType::Status => NotificationType::Unknown,
             MegalodonEntities::notification::NotificationType::Unknown => NotificationType::Unknown,
             MegalodonEntities::notification::NotificationType::Update => NotificationType::Unknown,
+            MegalodonEntities::notification::NotificationType::Quote => NotificationType::Quote,
+            MegalodonEntities::notification::NotificationType::QuotedUpdate => {
+                NotificationType::Unknown
+            }
         }
     }
 }
@@ -104,7 +108,7 @@ impl From<NotificationType> for MegalodonEntities::notification::NotificationTyp
             NotificationType::Mention => MegalodonEntities::notification::NotificationType::Mention,
             NotificationType::Reply => MegalodonEntities::notification::NotificationType::Mention,
             NotificationType::Renote => MegalodonEntities::notification::NotificationType::Reblog,
-            NotificationType::Quote => MegalodonEntities::notification::NotificationType::Reblog,
+            NotificationType::Quote => MegalodonEntities::notification::NotificationType::Quote,
             NotificationType::Reaction => {
                 MegalodonEntities::notification::NotificationType::Reaction
             }
