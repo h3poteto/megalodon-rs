@@ -22,24 +22,24 @@ use crate::{
     response::Response,
 };
 
-/// Firefish API Client which satisfies megalodon trait.
+/// Sharkey API Client which satisfies megalodon trait.
 #[derive(Debug, Clone)]
-pub struct Firefish {
+pub struct Sharkey {
     client: APIClient,
     base_url: String,
     access_token: Option<String>,
     user_agent: Option<String>,
 }
 
-impl Firefish {
-    /// Create a new [`Firefish`].
+impl Sharkey {
+    /// Create a new [`Sharkey`].
     pub fn new(
         base_url: String,
         access_token: Option<String>,
         user_agent: Option<String>,
-    ) -> Result<Firefish, Error> {
+    ) -> Result<Sharkey, Error> {
         let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
-        Ok(Firefish {
+        Ok(Sharkey {
             client,
             base_url,
             access_token,
@@ -57,23 +57,6 @@ impl Firefish {
             .post::<entities::Session>("/api/auth/session/generate", &params, None)
             .await?;
         Ok(res.json)
-    }
-
-    async fn get_relationship(
-        &self,
-        id: String,
-    ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
-        let params = HashMap::<&str, Value>::from([("userId", Value::String(id))]);
-        let res = self
-            .client
-            .post::<entities::Relation>("/api/users/relation", &params, None)
-            .await?;
-        Ok(Response::<MegalodonEntities::Relationship>::new(
-            res.json.into(),
-            res.status,
-            res.status_text,
-            res.header,
-        ))
     }
 
     async fn vote_single_poll(&self, id: String, choice: u32) -> Result<Response<()>, Error> {
@@ -287,7 +270,7 @@ impl Firefish {
 }
 
 #[async_trait]
-impl megalodon::Megalodon for Firefish {
+impl megalodon::Megalodon for Sharkey {
     async fn register_app(
         &self,
         client_name: String,
@@ -366,7 +349,7 @@ impl megalodon::Megalodon for Firefish {
         _refresh_token: String,
     ) -> Result<MegalodonOAuth::TokenData, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -381,7 +364,7 @@ impl megalodon::Megalodon for Firefish {
         _access_token: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -393,7 +376,7 @@ impl megalodon::Megalodon for Firefish {
         &self,
     ) -> Result<Response<MegalodonEntities::Application>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -411,7 +394,7 @@ impl megalodon::Megalodon for Firefish {
         _reason: Option<String>,
     ) -> Result<Response<MegalodonEntities::Token>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -547,7 +530,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetAccountFavouritesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -560,7 +543,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -573,7 +556,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -644,7 +627,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::List>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -657,7 +640,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::IdentityProof>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -798,7 +781,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -811,7 +794,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -825,7 +808,7 @@ impl megalodon::Megalodon for Firefish {
         _note: Option<String>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -837,15 +820,18 @@ impl megalodon::Megalodon for Firefish {
         &self,
         ids: Vec<String>,
     ) -> Result<Response<Vec<MegalodonEntities::Relationship>>, Error> {
-        let mut relations = [].to_vec();
-        for id in ids.into_iter() {
-            let rel = self.get_relationship(id).await?;
-            relations.extend([rel.json]);
-        }
+        let params = HashMap::<&str, Value>::from([(
+            "userId",
+            Value::Array(ids.into_iter().map(|id| Value::String(id)).collect()),
+        )]);
+        let res = self
+            .client
+            .post::<Vec<entities::Relation>>("/api/users/relation", &params, None)
+            .await?;
         Ok(Response::<Vec<MegalodonEntities::Relationship>>::new(
-            relations,
-            200,
-            "200".to_string(),
+            res.json.into_iter().map(|j| j.into()).collect(),
+            res.status,
+            res.status_text,
             reqwest::header::HeaderMap::default(),
         ))
     }
@@ -886,7 +872,7 @@ impl megalodon::Megalodon for Firefish {
         _acct: String,
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -899,7 +885,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetBookmarksInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -996,7 +982,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetDomainBlocksInputOptions>,
     ) -> Result<Response<Vec<String>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1006,7 +992,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn block_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1016,7 +1002,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn unblock_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1026,7 +1012,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_filters(&self) -> Result<Response<Vec<MegalodonEntities::Filter>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1036,7 +1022,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_filter(&self, _id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1051,7 +1037,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1067,7 +1053,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1077,7 +1063,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn delete_filter(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1184,7 +1170,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetEndorsementsInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1196,7 +1182,7 @@ impl megalodon::Megalodon for Firefish {
         &self,
     ) -> Result<Response<Vec<MegalodonEntities::FeaturedTag>>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1209,7 +1195,7 @@ impl megalodon::Megalodon for Firefish {
         _name: String,
     ) -> Result<Response<MegalodonEntities::FeaturedTag>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1219,7 +1205,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn delete_featured_tag(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1229,7 +1215,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_suggested_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1256,7 +1242,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_followed_tags(&self) -> Result<Response<Vec<MegalodonEntities::Tag>>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1286,7 +1272,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1296,7 +1282,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn follow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1306,7 +1292,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn unfollow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1513,7 +1499,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1582,7 +1568,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1595,7 +1581,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1605,7 +1591,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn mute_status(&self, _id: String) -> Result<Response<MegalodonEntities::Status>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1618,7 +1604,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Status>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1741,7 +1727,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_poll(&self, _id: String) -> Result<Response<MegalodonEntities::Poll>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1781,7 +1767,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetScheduledStatusesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::ScheduledStatus>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1794,7 +1780,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1808,7 +1794,7 @@ impl megalodon::Megalodon for Firefish {
         _scheduled_at: Option<DateTime<Utc>>,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1818,7 +1804,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn cancel_scheduled_status(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2029,7 +2015,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn delete_conversation(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2042,7 +2028,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Conversation>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2182,7 +2168,7 @@ impl megalodon::Megalodon for Firefish {
         _timeline: Vec<String>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2195,7 +2181,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::SaveMarkersInputOptions>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2255,7 +2241,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Notification>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2286,7 +2272,7 @@ impl megalodon::Megalodon for Firefish {
         _options: &megalodon::ReadNotificationsInputOptions,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish doest not support".to_string(),
+            "Sharkey doest not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2300,7 +2286,7 @@ impl megalodon::Megalodon for Firefish {
         _data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2312,7 +2298,7 @@ impl megalodon::Megalodon for Firefish {
         &self,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2325,7 +2311,7 @@ impl megalodon::Megalodon for Firefish {
         _data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2335,7 +2321,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn delete_push_subscription(&self) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2399,7 +2385,7 @@ impl megalodon::Megalodon for Firefish {
 
     async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2411,7 +2397,7 @@ impl megalodon::Megalodon for Firefish {
         &self,
     ) -> Result<Response<Vec<MegalodonEntities::Activity>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2441,7 +2427,7 @@ impl megalodon::Megalodon for Firefish {
         _options: Option<&megalodon::GetInstanceDirectoryInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2455,7 +2441,7 @@ impl megalodon::Megalodon for Firefish {
         let params = HashMap::<&str, Value>::new();
         let res = self
             .client
-            .post::<entities::Meta>("/api/meta", &params, None)
+            .post::<entities::custom_emoji::CustomEmojiResponse>("/api/emojis", &params, None)
             .await?;
         Ok(Response::<Vec<MegalodonEntities::Emoji>>::new(
             res.json.emojis.into_iter().map(|e| e.into()).collect(),
@@ -2496,7 +2482,7 @@ impl megalodon::Megalodon for Firefish {
         _name: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2510,7 +2496,7 @@ impl megalodon::Megalodon for Firefish {
         _name: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2557,7 +2543,7 @@ impl megalodon::Megalodon for Firefish {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Reaction>>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2571,7 +2557,7 @@ impl megalodon::Megalodon for Firefish {
         _emoji: String,
     ) -> Result<Response<MegalodonEntities::Reaction>, Error> {
         Err(Error::new_own(
-            "Firefish does not support".to_string(),
+            "Sharkey does not support".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,

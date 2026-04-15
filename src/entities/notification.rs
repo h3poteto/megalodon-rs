@@ -16,6 +16,7 @@ pub struct Notification {
     pub r#type: NotificationType,
 }
 
+// https://docs.joinmastodon.org/entities/Notification/#type
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationType {
@@ -34,6 +35,8 @@ pub enum NotificationType {
     AdminReport,
     GroupInvited,
     App,
+    Quote,
+    QuotedUpdate,
     Unknown,
 }
 
@@ -55,6 +58,8 @@ impl fmt::Display for NotificationType {
             NotificationType::AdminReport => write!(f, "admin.report"),
             NotificationType::GroupInvited => write!(f, "group_invited"),
             NotificationType::App => write!(f, "app"),
+            NotificationType::Quote => write!(f, "quote"),
+            NotificationType::QuotedUpdate => write!(f, "quoted_update"),
             NotificationType::Unknown => write!(f, "unknown"),
         }
     }
@@ -79,6 +84,8 @@ impl FromStr for NotificationType {
             "admin.report" => Ok(NotificationType::AdminReport),
             "group_invited" => Ok(NotificationType::GroupInvited),
             "app" => Ok(NotificationType::App),
+            "quote" => Ok(NotificationType::Quote),
+            "quoted_update" => Ok(NotificationType::QuotedUpdate),
             "unknown" => Ok(NotificationType::Unknown),
             _ => Err(Error::new_own(
                 s.to_owned(),

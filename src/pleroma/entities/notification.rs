@@ -4,7 +4,7 @@ use crate::error::{Error, Kind};
 use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
-use serde::{de, ser, Deserialize};
+use serde::{Deserialize, de, ser};
 use std::fmt;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -34,6 +34,7 @@ impl Notification {
     }
 }
 
+// https://git.pleroma.social/pleroma/pleroma/src/commit/683ab39160a2ff95d151887a89217bd1d4a6dcf5/lib/pleroma/notification.ex#L65-L78
 #[derive(Debug, Clone)]
 pub enum NotificationType {
     Follow,
