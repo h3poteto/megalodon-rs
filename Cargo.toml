@@ -1,9 +1,9 @@
 [package]
 name = "megalodon"
-version = "1.2.1"
+version = "1.2.2"
 edition = "2021"
 authors = ["Akira Fukushima <h3.poteto@gmail.com>"]
-description = "Mastodon and Pleroma API client library for Rust."
+description = "Fediverse API client library for Rust."
 license = "MIT"
 repository = "https://github.com/h3poteto/megalodon-rs"
 homepage = "https://github.com/h3poteto/megalodon-rs"
