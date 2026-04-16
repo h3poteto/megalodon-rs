@@ -1816,7 +1816,7 @@ impl megalodon::Megalodon for Sharkey {
         &self,
         options: Option<&megalodon::GetPublicTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = HashMap::<&str, Value>::new();
+        let mut params = HashMap::<&str, Value>::from([("allowPartial", Value::Bool(true))]);
         if let Some(options) = options {
             if let Some(only_media) = options.only_media {
                 params.insert("withFiles", Value::Bool(only_media));
@@ -1850,7 +1850,7 @@ impl megalodon::Megalodon for Sharkey {
         &self,
         options: Option<&megalodon::GetLocalTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = HashMap::<&str, Value>::new();
+        let mut params = HashMap::<&str, Value>::from([("allowPartial", Value::Bool(true))]);
         if let Some(options) = options {
             if let Some(only_media) = options.only_media {
                 params.insert("withFiles", Value::Bool(only_media));
@@ -1885,7 +1885,10 @@ impl megalodon::Megalodon for Sharkey {
         hashtag: String,
         options: Option<&megalodon::GetTagTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = HashMap::<&str, Value>::from([("tag", Value::String(hashtag))]);
+        let mut params = HashMap::<&str, Value>::from([
+            ("tag", Value::String(hashtag)),
+            ("allowPartial", Value::Bool(true)),
+        ]);
         if let Some(options) = options {
             if let Some(only_media) = options.only_media {
                 params.insert("withFiles", Value::Bool(only_media));
@@ -1919,7 +1922,12 @@ impl megalodon::Megalodon for Sharkey {
         &self,
         options: Option<&megalodon::GetHomeTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = HashMap::<&str, Value>::new();
+        // https://github.com/misskey-dev/misskey/blob/86092f2faf62a748b555b2aacec4629c5594d044/packages/backend/src/server/api/endpoints/notes/timeline.ts#L47
+        // true is recommended but for compatibility false by default
+        // https://github.com/misskey-dev/misskey/blob/86092f2faf62a748b555b2aacec4629c5594d044/packages/backend/src/core/FanoutTimelineEndpointService.ts#L184
+        // allowPartial: If the number of statuses is less than the limit, this logic will attempt to retrieve statuses from Redis until the limit is reached.
+        // So, this should be true in case there are too few statuses on the timeline.
+        let mut params = HashMap::<&str, Value>::from([("allowPartial", Value::Bool(true))]);
         if let Some(options) = options {
             if let Some(only_media) = options.only_media {
                 params.insert("withFiles", Value::Bool(only_media));
@@ -1954,7 +1962,10 @@ impl megalodon::Megalodon for Sharkey {
         list_id: String,
         options: Option<&megalodon::GetListTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
-        let mut params = HashMap::<&str, Value>::from([("listId", Value::String(list_id))]);
+        let mut params = HashMap::<&str, Value>::from([
+            ("listId", Value::String(list_id)),
+            ("allowPartial", Value::Bool(true)),
+        ]);
         if let Some(options) = options {
             if let Some(limit) = options.limit {
                 params.insert("limit", serde_json::Number::from(limit).into());
@@ -1985,8 +1996,10 @@ impl megalodon::Megalodon for Sharkey {
         &self,
         options: Option<&megalodon::GetConversationTimelineInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Conversation>>, Error> {
-        let mut params =
-            HashMap::<&str, Value>::from([("visibility", Value::String("specified".to_string()))]);
+        let mut params = HashMap::<&str, Value>::from([
+            ("visibility", Value::String("specified".to_string())),
+            ("allowPartial", Value::Bool(true)),
+        ]);
         if let Some(options) = options {
             if let Some(limit) = options.limit {
                 params.insert("limit", serde_json::Number::from(limit).into());
