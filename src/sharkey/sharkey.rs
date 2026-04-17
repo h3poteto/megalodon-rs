@@ -349,7 +349,7 @@ impl megalodon::Megalodon for Sharkey {
         _refresh_token: String,
     ) -> Result<MegalodonOAuth::TokenData, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support refresh_access_token".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -364,7 +364,7 @@ impl megalodon::Megalodon for Sharkey {
         _access_token: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support revoke_access_token".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -376,7 +376,7 @@ impl megalodon::Megalodon for Sharkey {
         &self,
     ) -> Result<Response<MegalodonEntities::Application>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support verify_app_credentials".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -394,7 +394,7 @@ impl megalodon::Megalodon for Sharkey {
         _reason: Option<String>,
     ) -> Result<Response<MegalodonEntities::Token>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support register_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -543,7 +543,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support subscribe_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -556,7 +556,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support unsubscribe_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -627,7 +627,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::List>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_account_lists".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -640,7 +640,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::IdentityProof>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_identity_proofs".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -781,7 +781,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support pin_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -794,7 +794,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support unpin_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -808,7 +808,7 @@ impl megalodon::Megalodon for Sharkey {
         _note: Option<String>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support set_account_note".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -885,7 +885,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::GetBookmarksInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Status>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_bookmarks".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -982,7 +982,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::GetDomainBlocksInputOptions>,
     ) -> Result<Response<Vec<String>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_domain_blocks".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -992,7 +992,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn block_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support block_domain".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1002,7 +1002,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn unblock_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support unblock_domain".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1012,7 +1012,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn get_filters(&self) -> Result<Response<Vec<MegalodonEntities::Filter>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_filters".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1022,7 +1022,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn get_filter(&self, _id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1037,7 +1037,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support create_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1053,7 +1053,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support update_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1063,7 +1063,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn delete_filter(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support delete_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1170,7 +1170,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::GetEndorsementsInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_endorsements".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1272,7 +1272,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn get_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_tag".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1282,7 +1282,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn follow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support follow_tag".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1292,7 +1292,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn unfollow_tag(&self, _id: String) -> Result<Response<MegalodonEntities::Tag>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support unfollow_tag".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1727,7 +1727,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn get_poll(&self, _id: String) -> Result<Response<MegalodonEntities::Poll>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_poll".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1767,7 +1767,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::GetScheduledStatusesInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::ScheduledStatus>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_scheduled_statuses".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1780,7 +1780,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_scheduled_status".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1794,7 +1794,7 @@ impl megalodon::Megalodon for Sharkey {
         _scheduled_at: Option<DateTime<Utc>>,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support schedule_status".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1804,7 +1804,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn cancel_scheduled_status(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support cancel_scheduled_status".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2028,7 +2028,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn delete_conversation(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support delete_conversation".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2041,7 +2041,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Conversation>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support read_conversation".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2181,7 +2181,7 @@ impl megalodon::Megalodon for Sharkey {
         _timeline: Vec<String>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_markers".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2194,7 +2194,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::SaveMarkersInputOptions>,
     ) -> Result<Response<MegalodonEntities::Marker>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support save_markers".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2254,7 +2254,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Notification>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_notification".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2299,7 +2299,7 @@ impl megalodon::Megalodon for Sharkey {
         _data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support subscribe_push_notification".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2311,7 +2311,7 @@ impl megalodon::Megalodon for Sharkey {
         &self,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_push_subscription".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2324,7 +2324,7 @@ impl megalodon::Megalodon for Sharkey {
         _data: Option<&megalodon::SubscribePushNotificationInputData>,
     ) -> Result<Response<MegalodonEntities::PushSubscription>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support update_push_subscription".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2334,7 +2334,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn delete_push_subscription(&self) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support delete_push_subscription".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2398,7 +2398,7 @@ impl megalodon::Megalodon for Sharkey {
 
     async fn get_instance_peers(&self) -> Result<Response<Vec<String>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_instance_peers".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2410,7 +2410,7 @@ impl megalodon::Megalodon for Sharkey {
         &self,
     ) -> Result<Response<Vec<MegalodonEntities::Activity>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_instance_activity".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2440,7 +2440,7 @@ impl megalodon::Megalodon for Sharkey {
         _options: Option<&megalodon::GetInstanceDirectoryInputOptions>,
     ) -> Result<Response<Vec<MegalodonEntities::Account>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_instance_directory".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2495,7 +2495,7 @@ impl megalodon::Megalodon for Sharkey {
         _name: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support add_reaction_to_announcement".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2509,7 +2509,7 @@ impl megalodon::Megalodon for Sharkey {
         _name: String,
     ) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support remove_reaction_from_announcement".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2556,7 +2556,7 @@ impl megalodon::Megalodon for Sharkey {
         _id: String,
     ) -> Result<Response<Vec<MegalodonEntities::Reaction>>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_emoji_reactions".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2570,7 +2570,7 @@ impl megalodon::Megalodon for Sharkey {
         _emoji: String,
     ) -> Result<Response<MegalodonEntities::Reaction>, Error> {
         Err(Error::new_own(
-            "Sharkey does not support".to_string(),
+            "Sharkey does not support get_emoji_reaction".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
