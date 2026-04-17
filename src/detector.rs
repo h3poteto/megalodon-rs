@@ -256,7 +256,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_detector_sharkey() {
-        let sns = detector("https://calckey.world").await;
+        let sns = detector("https://sakurajima.social").await;
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Sharkey);
