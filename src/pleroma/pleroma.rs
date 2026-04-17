@@ -749,7 +749,7 @@ impl megalodon::Megalodon for Pleroma {
         _note: Option<String>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Pleroma does not support".to_string(),
+            "Pleroma does not support set_account_note".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,

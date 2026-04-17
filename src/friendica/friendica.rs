@@ -211,7 +211,7 @@ impl megalodon::Megalodon for Friendica {
         _reason: Option<String>,
     ) -> Result<Response<MegalodonEntities::Token>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support register_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -239,7 +239,7 @@ impl megalodon::Megalodon for Friendica {
         _options: Option<&megalodon::UpdateCredentialsInputOptions>,
     ) -> Result<Response<MegalodonEntities::Account>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support update_credentials".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -618,7 +618,7 @@ impl megalodon::Megalodon for Friendica {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support pin_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -631,7 +631,7 @@ impl megalodon::Megalodon for Friendica {
         _id: String,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support unpin_account".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -645,7 +645,7 @@ impl megalodon::Megalodon for Friendica {
         _note: Option<String>,
     ) -> Result<Response<MegalodonEntities::Relationship>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support set_account_note".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -868,7 +868,7 @@ impl megalodon::Megalodon for Friendica {
         _options: Option<&megalodon::GetDomainBlocksInputOptions>,
     ) -> Result<Response<Vec<String>>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support get_domain_blocks".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -878,7 +878,7 @@ impl megalodon::Megalodon for Friendica {
 
     async fn block_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support block_domain".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -888,7 +888,7 @@ impl megalodon::Megalodon for Friendica {
 
     async fn unblock_domain(&self, _domain: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support unblock_domain".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -912,7 +912,7 @@ impl megalodon::Megalodon for Friendica {
 
     async fn get_filter(&self, _id: String) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support get_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -927,7 +927,7 @@ impl megalodon::Megalodon for Friendica {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support create_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -943,7 +943,7 @@ impl megalodon::Megalodon for Friendica {
         _options: Option<&megalodon::FilterInputOptions>,
     ) -> Result<Response<MegalodonEntities::Filter>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support update_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -953,7 +953,7 @@ impl megalodon::Megalodon for Friendica {
 
     async fn delete_filter(&self, _id: String) -> Result<Response<()>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support delete_filter".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -967,7 +967,7 @@ impl megalodon::Megalodon for Friendica {
         _options: Option<&megalodon::ReportInputOptions>,
     ) -> Result<Response<MegalodonEntities::Report>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support report".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1325,7 +1325,7 @@ impl megalodon::Megalodon for Friendica {
     ) -> Result<Response<MegalodonEntities::StatusSource>, Error> {
         // Check https://wiki.friendi.ca/docs/api-mastodon#currently_unimplemented_endpoints
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support get_status_source".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1813,7 +1813,7 @@ impl megalodon::Megalodon for Friendica {
         _status_id: Option<String>,
     ) -> Result<Response<MegalodonEntities::Poll>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support vote_poll".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -1883,7 +1883,7 @@ impl megalodon::Megalodon for Friendica {
         _scheduled_at: Option<DateTime<Utc>>,
     ) -> Result<Response<MegalodonEntities::ScheduledStatus>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support schedule_status".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
@@ -2615,7 +2615,7 @@ impl megalodon::Megalodon for Friendica {
         &self,
     ) -> Result<Response<Vec<MegalodonEntities::Activity>>, Error> {
         Err(Error::new_own(
-            "Friendica does not support".to_string(),
+            "Friendica does not support get_instance_activity".to_string(),
             error::Kind::NoImplementedError,
             None,
             None,
