@@ -90,7 +90,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "iceshrimp" => Ok(SNS::Firefish),
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
-                "sharkey" => Ok(SNS::Sharkey),
                 "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
@@ -124,7 +123,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "iceshrimp" => Ok(SNS::Firefish),
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
-                "sharkey" => Ok(SNS::Sharkey),
                 "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
@@ -158,7 +156,6 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
                 "iceshrimp" => Ok(SNS::Firefish),
                 "mastodon" => Ok(SNS::Mastodon),
                 "pleroma" => Ok(SNS::Pleroma),
-                "sharkey" => Ok(SNS::Sharkey),
                 "pixelfed" => Ok(SNS::Pixelfed),
                 _ => {
                     if let Some(upstream) = nodeinfo.metadata.upstream {
@@ -252,14 +249,6 @@ mod tests {
 
         assert!(sns.is_ok());
         assert_eq!(sns.unwrap(), SNS::Mastodon);
-    }
-
-    #[tokio::test]
-    async fn test_detector_sharkey() {
-        let sns = detector("https://sakurajima.social").await;
-
-        assert!(sns.is_ok());
-        assert_eq!(sns.unwrap(), SNS::Sharkey);
     }
 
     #[tokio::test]
