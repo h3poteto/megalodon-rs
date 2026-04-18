@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
+#[allow(dead_code)]
 pub struct Reaction {
     // id: String,
     // created_at: DateTime<Utc>,

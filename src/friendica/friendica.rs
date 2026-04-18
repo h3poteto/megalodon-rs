@@ -1682,7 +1682,7 @@ impl megalodon::Megalodon for Friendica {
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         // Generate a random filename if not provided
         let mut file_name_unhash = [0; 32];
-        rand::thread_rng().fill_bytes(&mut file_name_unhash);
+        rand::rng().fill_bytes(&mut file_name_unhash);
         let random_file_name = hex::encode(Sha1::digest(file_name_unhash));
 
         let stream = FramedRead::new(reader, BytesCodec::new());

@@ -3,11 +3,11 @@ use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
 use crate::megalodon::FollowRequestOutput;
+use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -1762,7 +1762,7 @@ impl megalodon::Megalodon for Gotosocial {
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         // Generate a random filename if not provided
         let mut file_name_unhash = [0; 32];
-        rand::thread_rng().fill_bytes(&mut file_name_unhash);
+        rand::rng().fill_bytes(&mut file_name_unhash);
         let random_file_name = hex::encode(Sha1::digest(file_name_unhash));
 
         let stream = FramedRead::new(reader, BytesCodec::new());
