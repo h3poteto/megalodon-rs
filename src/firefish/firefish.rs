@@ -39,9 +39,7 @@ impl Firefish {
         access_token: Option<String>,
     ) -> Firefish {
         let client = APIClient::new(client, base_url, access_token);
-        Firefish {
-            client,
-        }
+        Firefish { client }
     }
 
     async fn generate_auth_url_and_token(

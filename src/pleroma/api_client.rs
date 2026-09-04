@@ -50,7 +50,11 @@ impl APIClient {
             req.headers_mut().extend(headers);
         }
 
-        let res = self.client.request(req).await?;
+        let res = self
+            .client
+            .request(req)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -106,7 +110,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_json_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -162,7 +167,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_multipart_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -218,7 +224,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_json_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -274,7 +281,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_multipart_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -330,7 +338,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_json_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -386,7 +395,8 @@ impl APIClient {
         let res = self
             .client
             .request(crate::http::set_json_body(req, params)?)
-            .await?;
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {

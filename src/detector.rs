@@ -57,7 +57,8 @@ pub async fn detector(client: &dyn HttpClient, url: &str) -> Result<SNS, error::
             reqwest::Method::GET,
             format!("{}{}", url, "/.well-known/nodeinfo").parse()?,
         ))
-        .await?
+        .await
+        .map_err(error::Error::HttpError)?
         .error_for_status()?
         .json::<Links>()
         .await?;
@@ -83,7 +84,8 @@ pub async fn detector(client: &dyn HttpClient, url: &str) -> Result<SNS, error::
                     reqwest::Method::GET,
                     link.href.clone(),
                 ))
-                .await?
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo10>()
                 .await?;
             match nodeinfo.software.name.as_str() {
@@ -118,7 +120,8 @@ pub async fn detector(client: &dyn HttpClient, url: &str) -> Result<SNS, error::
                     reqwest::Method::GET,
                     link.href.clone(),
                 ))
-                .await?
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo20>()
                 .await?;
             match nodeinfo.software.name.as_str() {
@@ -153,7 +156,8 @@ pub async fn detector(client: &dyn HttpClient, url: &str) -> Result<SNS, error::
                     reqwest::Method::GET,
                     link.href.clone(),
                 ))
-                .await?
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo21>()
                 .await?;
             match nodeinfo.software.name.as_str() {

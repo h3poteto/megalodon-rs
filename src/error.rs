@@ -11,6 +11,10 @@ pub enum Error {
     ParseError(#[from] url::ParseError),
     #[error(transparent)]
     InvalidHeaderValue(#[from] reqwest::header::InvalidHeaderValue),
+    /// Error from the [`HttpClient`](crate::HttpClient)
+    /// This error will be raised when the request is invalid or failed to parse the response.
+    #[error(transparent)]
+    HttpError(Box<dyn std::error::Error + Send + Sync>),
     /// RequestError from [`reqwest::Error`].
     /// This error will be raised when the request is invalid or failed to parse the response in reqwest.
     #[error(transparent)]

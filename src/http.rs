@@ -10,7 +10,7 @@ pub trait HttpClient: std::fmt::Debug + Send + Sync + 'static {
     fn request<'a>(
         &'a self,
         req: reqwest::Request,
-    ) -> BoxFuture<'a, Result<reqwest::Response, reqwest::Error>>;
+    ) -> BoxFuture<'a, Result<reqwest::Response, Box<dyn std::error::Error + Send + Sync>>>;
     /// Clones the client into a box
     fn box_clone(&self) -> Box<dyn HttpClient>;
 }
@@ -19,7 +19,7 @@ where
     for<'a> &'a T: Service<
         reqwest::Request,
         Response = reqwest::Response,
-        Error = reqwest::Error,
+        Error: std::error::Error + Send + Sync + 'static,
         Future: Send,
     >,
     T: std::fmt::Debug + Clone + Send + Sync + 'static,
@@ -27,9 +27,9 @@ where
     fn request(
         &self,
         req: reqwest::Request,
-    ) -> BoxFuture<'_, Result<reqwest::Response, reqwest::Error>> {
+    ) -> BoxFuture<'_, Result<reqwest::Response, Box<dyn std::error::Error + Send + Sync>>> {
         let mut this = self;
-        Box::pin(this.call(req))
+        Box::pin(async move { this.call(req).await.map_err(|e| Box::new(e) as _) })
     }
     fn box_clone(&self) -> Box<dyn HttpClient> {
         Box::new(self.clone())
@@ -72,8 +72,8 @@ pub(crate) async fn begin_websocket(
     mut url: reqwest::Url,
     headers: reqwest::header::HeaderMap<reqwest::header::HeaderValue>,
 ) -> Result<tokio_tungstenite::WebSocketStream<reqwest::Upgraded>, MegalodonError> {
-    use tokio_tungstenite::tungstenite::client::IntoClientRequest as _;
     use crate::error::Kind;
+    use tokio_tungstenite::tungstenite::client::IntoClientRequest as _;
 
     if url.scheme() == "ws" {
         url.set_scheme("http").unwrap();
@@ -92,7 +92,10 @@ pub(crate) async fn begin_websocket(
             .unwrap()
             .as_bytes(),
     );
-    let res = client.request(req.try_into()?).await?;
+    let res = client
+        .request(req.try_into()?)
+        .await
+        .map_err(MegalodonError::HttpError)?;
     if res.status() != reqwest::StatusCode::SWITCHING_PROTOCOLS {
         return Err(MegalodonError::new_own(
             "Websocket error".to_string(),
@@ -153,4 +156,22 @@ pub(crate) async fn begin_websocket(
         None,
     )
     .await)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn reqwest_is_http_client() {
+        let _c: Box<dyn HttpClient> = Box::new(reqwest::Client::new());
+    }
+
+    #[test]
+    fn reqwest_middleware_is_http_client() {
+        let _c: Box<dyn HttpClient> = Box::new(reqwest_middleware::ClientWithMiddleware::new(
+            reqwest::Client::new(),
+            vec![],
+        ));
+    }
 }

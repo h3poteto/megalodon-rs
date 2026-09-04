@@ -40,9 +40,7 @@ impl Mastodon {
         access_token: Option<String>,
     ) -> Self {
         let client = APIClient::new(client, base_url, access_token);
-        Self {
-            client,
-        }
+        Self { client }
     }
 
     async fn generate_auth_url(
@@ -54,8 +52,14 @@ impl Mastodon {
     ) -> Result<String, Error> {
         let client = BasicClient::new(ClientId::new(client_id))
             .set_client_secret(ClientSecret::new(client_secret))
-            .set_auth_uri(AuthUrl::new(format!("{}/oauth/authorize", self.client.base_url))?)
-            .set_token_uri(TokenUrl::new(format!("{}/oauth/token", self.client.base_url))?)
+            .set_auth_uri(AuthUrl::new(format!(
+                "{}/oauth/authorize",
+                self.client.base_url
+            ))?)
+            .set_token_uri(TokenUrl::new(format!(
+                "{}/oauth/token",
+                self.client.base_url
+            ))?)
             .set_redirect_uri(RedirectUrl::new(redirect_uri)?);
 
         let scopes: Vec<Scope> = scope.iter().map(|s| Scope::new(s.to_string())).collect();
