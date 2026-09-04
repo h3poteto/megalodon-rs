@@ -9,10 +9,10 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
-pub struct APIClient {
-    client: Box<dyn HttpClient>,
-    access_token: Option<String>,
-    base_url: String,
+pub(super) struct APIClient {
+    pub(super) client: Box<dyn HttpClient>,
+    pub(super) access_token: Option<String>,
+    pub(super) base_url: String,
 }
 
 impl APIClient {

@@ -177,7 +177,7 @@ impl WebSocket {
             .map_err(|e| {
                 error!("Failed to connect: {:?}", e);
                 match e {
-                    crate::Error::OwnError(e) if e.status == Some(401) => {
+                    crate::error::Error::OwnError(e) if e.status == Some(401) => {
                         InnerError::new(InnerKind::UnauthorizedError)
                     }
                     _ => InnerError::new(InnerKind::ConnectionError),

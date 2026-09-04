@@ -1,7 +1,6 @@
-use crate::error::{Error as MegalodonError, Kind};
+use crate::error::Error as MegalodonError;
 use futures_util::future::BoxFuture;
 use reqwest::{multipart::Form, Request};
-use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tower_service::Service;
 
 /// Generic HTTP client, implemented for [`reqwest::Client`] or anything implementing
@@ -67,11 +66,15 @@ pub(crate) fn set_multipart_body(mut req: Request, form: Form) -> Result<Request
 }
 
 /// Begins a websocket stream
+#[cfg(feature = "streaming")]
 pub(crate) async fn begin_websocket(
     client: &dyn HttpClient,
     mut url: reqwest::Url,
     headers: reqwest::header::HeaderMap<reqwest::header::HeaderValue>,
 ) -> Result<tokio_tungstenite::WebSocketStream<reqwest::Upgraded>, MegalodonError> {
+    use tokio_tungstenite::tungstenite::client::IntoClientRequest as _;
+    use crate::error::Kind;
+
     if url.scheme() == "ws" {
         url.set_scheme("http").unwrap();
     } else if url.scheme() == "wss" {
@@ -118,7 +121,7 @@ pub(crate) async fn begin_websocket(
         .headers()
         .get(reqwest::header::UPGRADE)
         .and_then(|v| std::str::from_utf8(v.as_bytes()).ok())
-        .map(|v| !v.trim_ascii().eq_ignore_ascii_case("websocket"))
+        .map(|v| !v.trim_ascii().eq_ignore_ascii_case("streaming"))
         .unwrap_or(true)
     {
         return Err(MegalodonError::new_own(

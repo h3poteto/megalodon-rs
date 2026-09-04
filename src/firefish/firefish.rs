@@ -9,26 +9,26 @@ use tokio::io::AsyncRead;
 use tokio_util::codec::{BytesCodec, FramedRead};
 use tracing::warn;
 
+#[cfg(feature = "streaming")]
+use super::web_socket::WebSocket;
 use super::{
     api_client::{APIClient, DEFAULT_SCOPES},
     entities, oauth,
-    web_socket::WebSocket,
 };
+#[cfg(feature = "streaming")]
+use crate::Streaming;
 use crate::{
     entities as MegalodonEntities,
     error::{self, Error},
     megalodon::{self, FollowRequestOutput},
     oauth as MegalodonOAuth,
     response::Response,
-    Streaming,
 };
 
 /// Firefish API Client which satisfies megalodon trait.
 #[derive(Debug, Clone)]
 pub struct Firefish {
     client: APIClient,
-    base_url: String,
-    access_token: Option<String>,
 }
 
 impl Firefish {
@@ -38,11 +38,9 @@ impl Firefish {
         base_url: String,
         access_token: Option<String>,
     ) -> Firefish {
-        let client = APIClient::new(client, base_url.clone(), access_token.clone());
+        let client = APIClient::new(client, base_url, access_token);
         Firefish {
             client,
-            base_url,
-            access_token,
         }
     }
 
@@ -310,7 +308,7 @@ impl megalodon::Megalodon for Firefish {
         if let Some(scopes) = &options.scopes {
             scope = scopes.iter().map(|s| s.as_ref()).collect();
         };
-        let mut redirect_uris = self.base_url.clone();
+        let mut redirect_uris = self.client.base_url.clone();
         if let Some(uris) = &options.redirect_uris {
             redirect_uris = uris.to_string();
         }
@@ -2578,6 +2576,7 @@ impl megalodon::Megalodon for Firefish {
         ))
     }
 
+    #[cfg(feature = "streaming")]
     async fn streaming_url(&self) -> String {
         let instance = self.get_instance().await;
         if let Ok(instance) = instance {
@@ -2587,82 +2586,88 @@ impl megalodon::Megalodon for Firefish {
             };
         }
 
-        self.base_url.clone()
+        self.client.base_url.clone()
     }
 
+    #[cfg(feature = "streaming")]
     async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("user"),
             None,
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("globalTimeline"),
             None,
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("localTimeline"),
             None,
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("conversation"),
             None,
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn tag_streaming(&self, _tag: String) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("hashtag"),
             None,
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url,
             String::from("list"),
             Some(list_id),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)

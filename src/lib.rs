@@ -59,13 +59,14 @@ pub mod oauth;
 pub mod pixelfed;
 pub mod pleroma;
 pub mod response;
+#[cfg(feature = "streaming")]
 pub mod streaming;
 
 pub use self::http::HttpClient;
 pub use self::megalodon::Megalodon;
-use crate::error::Error;
 pub use detector::detector;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "streaming")]
 pub use streaming::Streaming;
 
 /// Which SNS.

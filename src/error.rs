@@ -21,6 +21,7 @@ pub enum Error {
     StandardError(#[from] std::io::Error),
     /// WebSocketError from [`tungstenite::error::Error`].
     /// This error will be raised when tungstenite WebSocket raises an error.
+    #[cfg(feature = "streaming")]
     #[error(transparent)]
     WebSocketError(#[from] tokio_tungstenite::tungstenite::error::Error),
     /// JsonError from [`serde_json::Error`].

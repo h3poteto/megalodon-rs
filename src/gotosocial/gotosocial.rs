@@ -1,14 +1,17 @@
 use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
+#[cfg(feature = "streaming")]
 use super::web_socket::WebSocket;
+use crate::error;
 use crate::http::HttpClient;
 use crate::megalodon::FollowRequestOutput;
+#[cfg(feature = "streaming")]
+use crate::Streaming;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -27,8 +30,6 @@ use tokio_util::codec::{BytesCodec, FramedRead};
 #[derive(Debug, Clone)]
 pub struct Gotosocial {
     client: APIClient,
-    base_url: String,
-    access_token: Option<String>,
 }
 
 impl Gotosocial {
@@ -38,11 +39,9 @@ impl Gotosocial {
         base_url: String,
         access_token: Option<String>,
     ) -> Gotosocial {
-        let client = APIClient::new(client, base_url.clone(), access_token.clone());
+        let client = APIClient::new(client, base_url, access_token);
         Gotosocial {
             client,
-            base_url,
-            access_token,
         }
     }
 
@@ -55,8 +54,8 @@ impl Gotosocial {
     ) -> Result<String, Error> {
         let client = BasicClient::new(ClientId::new(client_id))
             .set_client_secret(ClientSecret::new(client_secret))
-            .set_auth_uri(AuthUrl::new(format!("{}/oauth/authorize", self.base_url))?)
-            .set_token_uri(TokenUrl::new(format!("{}/oauth/token", self.base_url))?)
+            .set_auth_uri(AuthUrl::new(format!("{}/oauth/authorize", self.client.base_url))?)
+            .set_token_uri(TokenUrl::new(format!("{}/oauth/token", self.client.base_url))?)
             .set_redirect_uri(RedirectUrl::new(redirect_uri)?);
 
         let scopes: Vec<Scope> = scope.iter().map(|s| Scope::new(s.to_string())).collect();
@@ -2775,6 +2774,7 @@ impl megalodon::Megalodon for Gotosocial {
         ))
     }
 
+    #[cfg(feature = "streaming")]
     async fn streaming_url(&self) -> String {
         let instance = self.get_instance().await;
         if let Ok(instance) = instance {
@@ -2784,88 +2784,94 @@ impl megalodon::Megalodon for Gotosocial {
             };
         }
 
-        self.base_url.clone()
+        self.client.base_url.clone()
     }
 
+    #[cfg(feature = "streaming")]
     async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("user"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("public"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("public:local"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("direct"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn tag_streaming(&self, tag: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("tag={}", tag)]);
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("hashtag"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let params = Vec::<String>::from([format!("list={}", list_id)]);
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
-            self.client.http_client().clone(),
+            self.client.client.clone(),
             streaming_url + "/api/v1/streaming",
             String::from("list"),
             Some(params),
-            self.access_token.clone(),
+            self.client.access_token.clone(),
         );
 
         Box::new(c)

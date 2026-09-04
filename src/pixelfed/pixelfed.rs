@@ -3,14 +3,17 @@ use std::collections::HashMap;
 use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
+#[cfg(feature = "streaming")]
 use super::web_socket::WebSocket;
+use crate::error;
 use crate::http::HttpClient;
 use crate::megalodon::FollowRequestOutput;
+#[cfg(feature = "streaming")]
+use crate::Streaming;
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use crate::{error, Streaming};
 use rand::RngCore;
 
 use async_trait::async_trait;
@@ -29,7 +32,6 @@ use tokio_util::codec::{BytesCodec, FramedRead};
 #[derive(Debug, Clone)]
 pub struct Pixelfed {
     client: APIClient,
-    base_url: String,
 }
 
 impl Pixelfed {
@@ -39,8 +41,8 @@ impl Pixelfed {
         base_url: String,
         access_token: Option<String>,
     ) -> Pixelfed {
-        let client = APIClient::new(client, base_url.clone(), access_token.clone());
-        Self { client, base_url }
+        let client = APIClient::new(client, base_url, access_token);
+        Self { client }
     }
 
     async fn generate_auth_url(
@@ -52,8 +54,8 @@ impl Pixelfed {
     ) -> Result<String, Error> {
         let client = BasicClient::new(ClientId::new(client_id))
             .set_client_secret(ClientSecret::new(client_secret))
-            .set_auth_uri(AuthUrl::new(format!("{}/oauth/authorize", self.base_url))?)
-            .set_token_uri(TokenUrl::new(format!("{}/oauth/token", self.base_url))?)
+            .set_auth_uri(AuthUrl::new(format!("{}/oauth/authorize", self.client.base_url))?)
+            .set_token_uri(TokenUrl::new(format!("{}/oauth/token", self.client.base_url))?)
             .set_redirect_uri(RedirectUrl::new(redirect_uri)?);
 
         let scopes: Vec<Scope> = scope.iter().map(|s| Scope::new(s.to_string())).collect();
@@ -2892,6 +2894,7 @@ impl megalodon::Megalodon for Pixelfed {
         ))
     }
 
+    #[cfg(feature = "streaming")]
     async fn streaming_url(&self) -> String {
         let instance = self.get_instance().await;
         if let Ok(instance) = instance {
@@ -2901,39 +2904,45 @@ impl megalodon::Megalodon for Pixelfed {
             };
         }
 
-        self.base_url.clone()
+        self.client.base_url.clone()
     }
 
+    #[cfg(feature = "streaming")]
     async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn tag_streaming(&self, _tag: String) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 
         Box::new(c)
     }
 
+    #[cfg(feature = "streaming")]
     async fn list_streaming(&self, _list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let c = WebSocket::new();
 

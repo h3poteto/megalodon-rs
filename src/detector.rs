@@ -200,7 +200,7 @@ mod tests {
     async fn test_detector_mastodon() {
         let sns = detector(&reqwest::Client::new(), "https://mastodon.social").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
@@ -208,7 +208,7 @@ mod tests {
     async fn test_detector_pleroma() {
         let sns = detector(&reqwest::Client::new(), "https://pleroma.io").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pleroma);
     }
 
@@ -216,7 +216,7 @@ mod tests {
     async fn test_detector_fedibird() {
         let sns = detector(&reqwest::Client::new(), "https://fedibird.com").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
@@ -224,7 +224,7 @@ mod tests {
     async fn test_detector_friendica() {
         let sns = detector(&reqwest::Client::new(), "https://squeet.me").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Friendica);
     }
 
@@ -232,7 +232,7 @@ mod tests {
     async fn test_detector_akkoma() {
         let sns = detector(&reqwest::Client::new(), "https://blob.cat").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pleroma);
     }
 
@@ -240,7 +240,7 @@ mod tests {
     async fn test_detector_firefish() {
         let sns = detector(&reqwest::Client::new(), "https://cybre.club").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Firefish);
     }
 
@@ -264,7 +264,7 @@ mod tests {
     async fn test_detector_kmyblue() {
         let sns = detector(&reqwest::Client::new(), "https://kmy.blue").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
@@ -272,7 +272,7 @@ mod tests {
     async fn test_detector_pixelfed() {
         let sns = detector(&reqwest::Client::new(), "https://pixelfed.social").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pixelfed);
     }
 }
