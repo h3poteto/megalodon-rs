@@ -69,10 +69,10 @@ async fn upload_media(
 ) -> Result<entities::UploadMedia, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.upload_media(file_path, None).await?;
     Ok(res.json())
 }
@@ -85,10 +85,10 @@ async fn post_status(
 ) -> Result<megalodon::megalodon::PostStatusOutput, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client
         .post_status(
             status.to_string(),

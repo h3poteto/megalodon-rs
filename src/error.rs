@@ -9,6 +9,8 @@ pub enum Error {
     /// This error will be raised when provided URL is invalid.
     #[error(transparent)]
     ParseError(#[from] url::ParseError),
+    #[error(transparent)]
+    InvalidHeaderValue(#[from] reqwest::header::InvalidHeaderValue),
     /// RequestError from [`reqwest::Error`].
     /// This error will be raised when the request is invalid or failed to parse the response in reqwest.
     #[error(transparent)]

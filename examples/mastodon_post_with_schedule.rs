@@ -16,7 +16,12 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Mastodon, url, Some(token), None).unwrap();
+    let client = generator(
+        megalodon::SNS::Mastodon,
+        reqwest::Client::new(),
+        url,
+        Some(token),
+    );
 
     let scheduled_at = Utc::now() + Duration::try_minutes(6).unwrap();
     println!("scheduled at {:#?}", scheduled_at);

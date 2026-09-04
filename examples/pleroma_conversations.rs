@@ -31,10 +31,10 @@ async fn get_conversations(
 ) -> Result<Vec<entities::Conversation>, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_conversation_timeline(None).await?;
     Ok(res.json())
 }

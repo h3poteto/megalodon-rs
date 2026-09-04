@@ -14,7 +14,12 @@ async fn main() {
         println!("Specify PLEROMA_ACCESS_TOKEN!!");
         return;
     };
-    let client = generator(megalodon::SNS::Pleroma, url.to_string(), Some(token), None).unwrap();
+    let client = generator(
+        megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
+        url.to_string(),
+        Some(token),
+    );
     println!("Target status_id: ");
     let mut status_id = String::new();
     std::io::stdin().read_line(&mut status_id).ok();

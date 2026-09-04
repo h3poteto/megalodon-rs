@@ -10,7 +10,7 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Friendica, url, None, None).unwrap();
+    let client = generator(megalodon::SNS::Friendica, reqwest::Client::new(), url, None);
     let options = megalodon::megalodon::AppInputOptions {
         scopes: Some(
             [

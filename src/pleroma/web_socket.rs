@@ -5,20 +5,14 @@ use std::thread;
 use std::time::Duration;
 
 use super::entities;
-use crate::default::DEFAULT_UA;
 use crate::error::{Error, Kind};
+use crate::http::{begin_websocket, HttpClient};
 use crate::streaming::{Message, Streaming};
 use async_trait::async_trait;
 use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
-use tokio_tungstenite::{
-    connect_async_tls_with_config,
-    tungstenite::{
-        Error as WebSocketError,
-        client::IntoClientRequest,
-        http::StatusCode,
-        protocol::{Message as WebSocketMessage, frame::coding::CloseCode},
-    },
+use tokio_tungstenite::tungstenite::protocol::{
+    frame::coding::CloseCode, Message as WebSocketMessage,
 };
 use tracing::{debug, error, info, warn};
 use url::Url;
@@ -28,11 +22,11 @@ const READ_MESSAGE_TIMEOUT_SECONDS: u64 = 60;
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {
+    client: Box<dyn HttpClient>,
     url: String,
     stream: String,
     params: Option<Vec<String>>,
     access_token: Option<String>,
-    user_agent: String,
 }
 
 #[derive(Deserialize)]
@@ -43,23 +37,18 @@ struct RawMessage {
 
 impl WebSocket {
     pub fn new(
+        client: Box<dyn HttpClient>,
         url: String,
         stream: String,
         params: Option<Vec<String>>,
         access_token: Option<String>,
-        user_agent: Option<String>,
     ) -> Self {
-        let ua: String;
-        match user_agent {
-            Some(agent) => ua = agent,
-            None => ua = DEFAULT_UA.to_string(),
-        }
         Self {
+            client,
             url,
             stream,
             params,
             access_token,
-            user_agent: ua,
         }
     }
 
@@ -177,34 +166,22 @@ impl WebSocket {
             dyn Fn(Message) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync + '_,
         >,
     ) -> Result<(), InnerError> {
-        let mut req = Url::parse(url)
-            .unwrap()
-            .into_client_request()
-            .map_err(|e| {
-                error!("Failed to parse url: {}", e);
-                InnerError::new(InnerKind::ConnectionError)
-            })?;
-        req.headers_mut()
-            .insert("User-Agent", self.user_agent.parse().unwrap());
-        let connector = crate::tls::build_connector();
-        let (mut socket, response) =
-            connect_async_tls_with_config(req, None, false, connector).await.map_err(|e| {
-            error!("Failed to connect: {}", e);
-            match e {
-                WebSocketError::Http(response) => match response.status() {
-                    StatusCode::UNAUTHORIZED => InnerError::new(InnerKind::UnauthorizedError),
-                    _ => InnerError::new(InnerKind::ConnectionError),
-                },
-                _ => InnerError::new(InnerKind::ConnectionError),
-            }
+        let url = Url::parse(url).map_err(|e| {
+            error!("Failed to parse url: {}", e);
+            InnerError::new(InnerKind::ConnectionError)
         })?;
-
+        let mut socket = begin_websocket(&*self.client, url.clone(), Default::default())
+            .await
+            .map_err(|e| {
+                error!("Failed to connect: {:?}", e);
+                match e {
+                    crate::Error::OwnError(e) if e.status == Some(401) => {
+                        InnerError::new(InnerKind::UnauthorizedError)
+                    }
+                    _ => InnerError::new(InnerKind::ConnectionError),
+                }
+            })?;
         debug!("Connected to {}", url);
-        debug!("Response HTTP code: {}", response.status());
-        debug!("Response contains the following headers:");
-        for (ref header, _value) in response.headers() {
-            debug!("* {}", header);
-        }
 
         loop {
             let res = tokio::time::timeout(

@@ -36,10 +36,10 @@ async fn search(
 ) -> Result<entities::Results, error::Error> {
     let client = generator(
         megalodon::SNS::Mastodon,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let options = SearchInputOptions {
         r#type: Some(SearchType::Accounts),
         limit: None,

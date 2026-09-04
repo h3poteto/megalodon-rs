@@ -15,11 +15,12 @@ use super::{
     web_socket::WebSocket,
 };
 use crate::{
-    Streaming, entities as MegalodonEntities,
+    entities as MegalodonEntities,
     error::{self, Error},
     megalodon::{self, FollowRequestOutput},
     oauth as MegalodonOAuth,
     response::Response,
+    Streaming,
 };
 
 /// Firefish API Client which satisfies megalodon trait.
@@ -28,23 +29,21 @@ pub struct Firefish {
     client: APIClient,
     base_url: String,
     access_token: Option<String>,
-    user_agent: Option<String>,
 }
 
 impl Firefish {
     /// Create a new [`Firefish`].
     pub fn new(
+        client: Box<dyn crate::http::HttpClient>,
         base_url: String,
         access_token: Option<String>,
-        user_agent: Option<String>,
-    ) -> Result<Firefish, Error> {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
-        Ok(Firefish {
+    ) -> Firefish {
+        let client = APIClient::new(client, base_url.clone(), access_token.clone());
+        Firefish {
             client,
             base_url,
             access_token,
-            user_agent,
-        })
+        }
     }
 
     async fn generate_auth_url_and_token(
@@ -2594,11 +2593,11 @@ impl megalodon::Megalodon for Firefish {
     async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("user"),
             None,
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2607,11 +2606,11 @@ impl megalodon::Megalodon for Firefish {
     async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("globalTimeline"),
             None,
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2620,11 +2619,11 @@ impl megalodon::Megalodon for Firefish {
     async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("localTimeline"),
             None,
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2633,11 +2632,11 @@ impl megalodon::Megalodon for Firefish {
     async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("conversation"),
             None,
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2646,11 +2645,11 @@ impl megalodon::Megalodon for Firefish {
     async fn tag_streaming(&self, _tag: String) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("hashtag"),
             None,
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -2659,11 +2658,11 @@ impl megalodon::Megalodon for Firefish {
     async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync> {
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url,
             String::from("list"),
             Some(list_id),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)

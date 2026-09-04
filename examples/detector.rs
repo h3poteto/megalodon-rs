@@ -9,6 +9,6 @@ async fn main() {
         println!("Specify MASTODON_URL!!");
         return;
     };
-    let sns = detector(url.as_str()).await;
+    let sns = detector(&reqwest::Client::new(), url.as_str()).await;
     println!("{:#?}", sns);
 }

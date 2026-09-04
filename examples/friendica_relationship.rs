@@ -32,10 +32,10 @@ async fn get_relationship(
 ) -> Result<Vec<entities::Relationship>, error::Error> {
     let client = generator(
         megalodon::SNS::Friendica,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_relationships([id.to_string()].to_vec()).await?;
     Ok(res.json())
 }

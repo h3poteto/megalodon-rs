@@ -2,12 +2,13 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
+use crate::http::HttpClient;
 use crate::megalodon::FollowRequestOutput;
-use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
+use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -28,23 +29,21 @@ pub struct Mastodon {
     client: APIClient,
     base_url: String,
     access_token: Option<String>,
-    user_agent: Option<String>,
 }
 
 impl Mastodon {
     /// Create a new [`Mastodon`].
     pub fn new(
+        client: Box<dyn HttpClient>,
         base_url: String,
         access_token: Option<String>,
-        user_agent: Option<String>,
-    ) -> Result<Mastodon, Error> {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
-        Ok(Mastodon {
+    ) -> Self {
+        let client = APIClient::new(client, base_url.clone(), access_token.clone());
+        Self {
             client,
             base_url,
             access_token,
-            user_agent,
-        })
+        }
     }
 
     async fn generate_auth_url(
@@ -3178,11 +3177,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("user"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -3192,11 +3191,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("public"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -3206,11 +3205,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("public:local"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -3220,11 +3219,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::new();
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("direct"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -3234,11 +3233,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::from([format!("tag={}", tag)]);
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("hashtag"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)
@@ -3248,11 +3247,11 @@ impl megalodon::Megalodon for Mastodon {
         let params = Vec::<String>::from([format!("list={}", list_id)]);
         let streaming_url = self.streaming_url().await;
         let c = WebSocket::new(
+            self.client.http_client().clone(),
             streaming_url + "/api/v1/streaming",
             String::from("list"),
             Some(params),
             self.access_token.clone(),
-            self.user_agent.clone(),
         );
 
         Box::new(c)

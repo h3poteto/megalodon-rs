@@ -2,12 +2,13 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
+use crate::http::HttpClient;
 use crate::megalodon::FollowRequestOutput;
-use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
+use crate::{error, Streaming};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use oauth2::basic::BasicClient;
@@ -32,12 +33,12 @@ pub struct Friendica {
 impl Friendica {
     /// Create a new [`Friendica`].
     pub fn new(
+        client: Box<dyn HttpClient>,
         base_url: String,
         access_token: Option<String>,
-        user_agent: Option<String>,
-    ) -> Result<Friendica, Error> {
-        let client = APIClient::new(base_url.clone(), access_token, user_agent)?;
-        Ok(Friendica { client, base_url })
+    ) -> Friendica {
+        let client = APIClient::new(client, base_url.clone(), access_token);
+        Friendica { client, base_url }
     }
 
     async fn generate_auth_url(

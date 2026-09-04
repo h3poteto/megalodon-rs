@@ -9,7 +9,7 @@ async fn main() {
         println!("Specify PIXELFED_URL!!");
         return;
     };
-    let client = generator(megalodon::SNS::Pixelfed, url, None, None).unwrap();
+    let client = generator(megalodon::SNS::Pixelfed, reqwest::Client::new(), url, None);
     let options = megalodon::megalodon::AppInputOptions {
         scopes: Some(
             [

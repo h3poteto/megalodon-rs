@@ -36,10 +36,10 @@ async fn follow_requests(
 ) -> Result<Vec<FollowRequestOutput>, error::Error> {
     let client = generator(
         megalodon::SNS::Friendica,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_follow_requests(None).await?;
 
     Ok(res.json())

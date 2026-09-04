@@ -31,10 +31,10 @@ async fn get_notifications(
 ) -> Result<Vec<entities::Notification>, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_notifications(None).await?;
     Ok(res.json())
 }

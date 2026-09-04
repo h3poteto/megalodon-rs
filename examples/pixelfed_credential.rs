@@ -26,7 +26,12 @@ async fn verify_credentials(
     url: &str,
     access_token: String,
 ) -> Result<entities::Account, error::Error> {
-    let client = generator(SNS::Pixelfed, url.to_string(), Some(access_token), None)?;
+    let client = generator(
+        SNS::Pixelfed,
+        reqwest::Client::new(),
+        url.to_string(),
+        Some(access_token),
+    );
     let res = client.verify_account_credentials().await?;
     Ok(res.json())
 }

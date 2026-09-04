@@ -4,12 +4,13 @@ use super::api_client::APIClient;
 use super::entities;
 use super::oauth;
 use super::web_socket::WebSocket;
+use crate::http::HttpClient;
 use crate::megalodon::FollowRequestOutput;
-use crate::{Streaming, error};
 use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
+use crate::{error, Streaming};
 use rand::RngCore;
 
 use async_trait::async_trait;
@@ -34,12 +35,12 @@ pub struct Pixelfed {
 impl Pixelfed {
     /// Create a new [`Pixelfed`].
     pub fn new(
+        client: Box<dyn HttpClient>,
         base_url: String,
         access_token: Option<String>,
-        user_agent: Option<String>,
-    ) -> Result<Pixelfed, Error> {
-        let client = APIClient::new(base_url.clone(), access_token.clone(), user_agent.clone())?;
-        Ok(Self { client, base_url })
+    ) -> Pixelfed {
+        let client = APIClient::new(client, base_url.clone(), access_token.clone());
+        Self { client, base_url }
     }
 
     async fn generate_auth_url(

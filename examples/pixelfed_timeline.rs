@@ -32,10 +32,10 @@ async fn home_timeline(
 ) -> Result<Vec<entities::Status>, error::Error> {
     let client = generator(
         megalodon::SNS::Pixelfed,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_public_timeline(None).await?;
 
     Ok(res.json())

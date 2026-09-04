@@ -20,11 +20,10 @@ async fn main() {
 async fn streaming(url: &str, access_token: String) {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )
-    .unwrap();
+    );
     let streaming = client.user_streaming().await;
 
     streaming

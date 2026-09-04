@@ -32,10 +32,10 @@ async fn home_timeline(
 ) -> Result<Vec<entities::Status>, error::Error> {
     let client = generator(
         megalodon::SNS::Gotosocial,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_home_timeline(None).await?;
 
     Ok(res.json())

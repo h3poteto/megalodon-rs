@@ -33,10 +33,10 @@ async fn upload_media(
 ) -> Result<entities::UploadMedia, error::Error> {
     let client = generator(
         megalodon::SNS::Friendica,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.upload_media(file_path, None).await?;
     Ok(res.json())
 }

@@ -29,10 +29,10 @@ async fn main() {
 async fn search(url: &str, access_token: String) -> Result<entities::Results, error::Error> {
     let client = generator(
         megalodon::SNS::Firefish,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.search(String::from("h3poteto"), None).await?;
 
     Ok(res.json())
