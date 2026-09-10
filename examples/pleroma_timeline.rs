@@ -28,10 +28,10 @@ async fn main() {
 async fn bookmark(url: &str, access_token: String) -> Result<Vec<entities::Status>, error::Error> {
     let client = generator(
         megalodon::SNS::Pleroma,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.get_bookmarks(None).await?;
 
     Ok(res.json())

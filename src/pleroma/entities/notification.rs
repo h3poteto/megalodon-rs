@@ -4,7 +4,7 @@ use crate::error::{Error, Kind};
 use crate::entities as MegalodonEntities;
 use chrono::{DateTime, Utc};
 use core::str::FromStr;
-use serde::{Deserialize, de, ser};
+use serde::{de, ser, Deserialize};
 use std::fmt;
 
 #[derive(Debug, Deserialize, Clone)]

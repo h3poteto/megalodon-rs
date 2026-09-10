@@ -10,7 +10,12 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Firefish, url.to_string(), None, None).unwrap();
+    let client = generator(
+        megalodon::SNS::Firefish,
+        reqwest::Client::new(),
+        url.to_string(),
+        None,
+    );
     let options = megalodon::megalodon::AppInputOptions {
         ..Default::default()
     };

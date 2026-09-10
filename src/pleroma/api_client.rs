@@ -1,5 +1,5 @@
-use crate::default::DEFAULT_UA;
 use crate::error::{Error as MegalodonError, Kind};
+use crate::http::HttpClient;
 use crate::response::Response;
 use reqwest::header::HeaderMap;
 use reqwest::Url;
@@ -9,31 +9,23 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
-pub struct APIClient {
-    access_token: Option<String>,
-    base_url: String,
-    client: reqwest::Client,
+pub(super) struct APIClient {
+    pub(super) client: Box<dyn HttpClient>,
+    pub(super) access_token: Option<String>,
+    pub(super) base_url: String,
 }
 
 impl APIClient {
     pub fn new(
+        client: Box<dyn HttpClient>,
         base_url: String,
         access_token: Option<String>,
-        user_agent: Option<String>,
-    ) -> Result<Self, MegalodonError> {
-        let ua: String;
-        match user_agent {
-            Some(agent) => ua = agent,
-            None => ua = DEFAULT_UA.to_string(),
-        }
-
-        let client = reqwest::Client::builder().user_agent(ua).build()?;
-
-        Ok(Self {
+    ) -> Self {
+        Self {
+            client,
             access_token,
             base_url,
-            client,
-        })
+        }
     }
 
     pub async fn get<T>(
@@ -47,15 +39,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.get(url);
+        let mut req = reqwest::Request::new(reqwest::Method::GET, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.send().await?;
+        let res = self
+            .client
+            .request(req)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -97,15 +96,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.post(url);
+        let mut req = reqwest::Request::new(reqwest::Method::POST, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.json(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_json_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -147,15 +153,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.post(url);
+        let mut req = reqwest::Request::new(reqwest::Method::POST, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.multipart(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_multipart_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -197,15 +210,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.put(url);
+        let mut req = reqwest::Request::new(reqwest::Method::PUT, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.json(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_json_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -247,15 +267,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.put(url);
+        let mut req = reqwest::Request::new(reqwest::Method::PUT, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.multipart(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_multipart_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -297,15 +324,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.patch(url);
+        let mut req = reqwest::Request::new(reqwest::Method::PATCH, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.json(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_json_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {
@@ -347,15 +381,22 @@ impl APIClient {
         let url_str = format!("{}{}", self.base_url, path);
         let url = Url::parse(&*url_str)?;
 
-        let mut req = self.client.delete(url);
+        let mut req = reqwest::Request::new(reqwest::Method::DELETE, url);
         if let Some(token) = &self.access_token {
-            req = req.bearer_auth(token);
+            req.headers_mut().insert(
+                reqwest::header::AUTHORIZATION,
+                format!("Bearer {token}").try_into()?,
+            );
         }
         if let Some(headers) = headers {
-            req = req.headers(headers);
+            req.headers_mut().extend(headers);
         }
 
-        let res = req.json(params).send().await?;
+        let res = self
+            .client
+            .request(crate::http::set_json_body(req, params)?)
+            .await
+            .map_err(MegalodonError::HttpError)?;
         let res_headers = res.headers().clone();
         let status = res.status();
         match status {

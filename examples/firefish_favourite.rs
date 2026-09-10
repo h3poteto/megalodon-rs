@@ -37,10 +37,10 @@ async fn favourite_status(
 ) -> Result<entities::Status, error::Error> {
     let client = generator(
         megalodon::SNS::Firefish,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.favourite_status(status_id).await?;
 
     Ok(res.json())

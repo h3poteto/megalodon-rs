@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use std::future::Future;
 use std::pin::Pin;
 
-use crate::{Streaming, streaming::Message};
+use crate::{streaming::Message, Streaming};
 
 #[derive(Debug, Clone)]
 pub struct WebSocket {}

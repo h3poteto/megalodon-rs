@@ -37,10 +37,10 @@ async fn reblog_status(
 ) -> Result<entities::Status, error::Error> {
     let client = generator(
         megalodon::SNS::Friendica,
+        reqwest::Client::new(),
         url.to_string(),
         Some(access_token),
-        None,
-    )?;
+    );
     let res = client.reblog_status(status_id).await?;
 
     Ok(res.json())

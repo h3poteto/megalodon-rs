@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::{SNS, error};
+use crate::{error, HttpClient, SNS};
 
 #[derive(Deserialize, Debug)]
 struct Links {
@@ -9,7 +9,7 @@ struct Links {
 
 #[derive(Deserialize, Debug)]
 struct Link {
-    href: String,
+    href: reqwest::Url,
     rel: String,
 }
 
@@ -51,14 +51,18 @@ struct Upstream {
 }
 
 /// Detect which SNS the provided URL is. To detect SNS, the URL has to open `/api/v1/instance` or `/api/meta` endpoint.
-pub async fn detector(url: &str) -> Result<SNS, error::Error> {
-    let client = reqwest::Client::builder().user_agent("megalodon").build()?;
+pub async fn detector(client: &dyn HttpClient, url: &str) -> Result<SNS, error::Error> {
     let links = client
-        .get(format!("{}{}", url, "/.well-known/nodeinfo"))
-        .send()
-        .await?
+        .request(reqwest::Request::new(
+            reqwest::Method::GET,
+            format!("{}{}", url, "/.well-known/nodeinfo").parse()?,
+        ))
+        .await
+        .map_err(error::Error::HttpError)?
+        .error_for_status()?
         .json::<Links>()
         .await?;
+
     let Some(link) = links
         .links
         .iter()
@@ -76,9 +80,12 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
     match link.rel.as_str() {
         NODEINFO_10 => {
             let nodeinfo = client
-                .get(link.href.as_str())
-                .send()
-                .await?
+                .request(reqwest::Request::new(
+                    reqwest::Method::GET,
+                    link.href.clone(),
+                ))
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo10>()
                 .await?;
             match nodeinfo.software.name.as_str() {
@@ -109,9 +116,12 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
         }
         NODEINFO_20 => {
             let nodeinfo = client
-                .get(link.href.as_str())
-                .send()
-                .await?
+                .request(reqwest::Request::new(
+                    reqwest::Method::GET,
+                    link.href.clone(),
+                ))
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo20>()
                 .await?;
             match nodeinfo.software.name.as_str() {
@@ -142,9 +152,12 @@ pub async fn detector(url: &str) -> Result<SNS, error::Error> {
         }
         NODEINFO_21 => {
             let nodeinfo = client
-                .get(link.href.as_str())
-                .send()
-                .await?
+                .request(reqwest::Request::new(
+                    reqwest::Method::GET,
+                    link.href.clone(),
+                ))
+                .await
+                .map_err(error::Error::HttpError)?
                 .json::<Nodeinfo21>()
                 .await?;
             match nodeinfo.software.name.as_str() {
@@ -189,73 +202,81 @@ mod tests {
 
     #[tokio::test]
     async fn test_detector_mastodon() {
-        let sns = detector("https://mastodon.social").await;
+        let sns = detector(&reqwest::Client::new(), "https://mastodon.social").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
     #[tokio::test]
     async fn test_detector_pleroma() {
-        let sns = detector("https://pleroma.io").await;
+        let sns = detector(&reqwest::Client::new(), "https://pleroma.io").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pleroma);
     }
 
     #[tokio::test]
     async fn test_detector_fedibird() {
-        let sns = detector("https://fedibird.com").await;
+        let sns = detector(&reqwest::Client::new(), "https://fedibird.com").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
     #[tokio::test]
     async fn test_detector_friendica() {
-        let sns = detector("https://squeet.me").await;
+        let sns = detector(&reqwest::Client::new(), "https://squeet.me").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Friendica);
     }
 
     #[tokio::test]
     async fn test_detector_akkoma() {
-        let sns = detector("https://blob.cat").await;
+        let sns = detector(&reqwest::Client::new(), "https://blob.cat").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pleroma);
     }
 
     #[tokio::test]
     async fn test_detector_firefish() {
-        let sns = detector("https://cybre.club").await;
+        let sns = detector(&reqwest::Client::new(), "https://cybre.club").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Firefish);
     }
 
     #[tokio::test]
     async fn test_detector_gotosocial() {
-        let sns = detector("https://goblin.technology").await;
+        let sns = detector(
+            // https://goblin.technology returns a 418 code for the default reqwest useragent
+            &reqwest::Client::builder()
+                .user_agent("megalodon")
+                .build()
+                .unwrap(),
+            "https://goblin.technology",
+        )
+        .await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Gotosocial);
     }
 
     #[tokio::test]
     async fn test_detector_kmyblue() {
-        let sns = detector("https://kmy.blue").await;
+        let sns = detector(&reqwest::Client::new(), "https://kmy.blue").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Mastodon);
     }
 
     #[tokio::test]
     async fn test_detector_pixelfed() {
-        let sns = detector("https://pixelfed.social").await;
+        let sns = detector(&reqwest::Client::new(), "https://pixelfed.social").await;
 
-        assert!(sns.is_ok());
+        assert!(sns.is_ok(), "{sns:?}");
         assert_eq!(sns.unwrap(), SNS::Pixelfed);
     }
 }

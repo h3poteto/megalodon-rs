@@ -166,10 +166,7 @@ impl From<Status> for MegalodonEntities::Status {
             pinned: val.pinned,
             emoji_reactions: None,
             quote: val.quote.map(|i| i.into()),
-            quote_approval: val
-                .quote_approval
-                .map(|i| i.into())
-                .unwrap_or_default(),
+            quote_approval: val.quote_approval.map(|i| i.into()).unwrap_or_default(),
             bookmarked: val.bookmarked,
         }
     }

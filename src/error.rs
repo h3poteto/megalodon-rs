@@ -9,6 +9,12 @@ pub enum Error {
     /// This error will be raised when provided URL is invalid.
     #[error(transparent)]
     ParseError(#[from] url::ParseError),
+    #[error(transparent)]
+    InvalidHeaderValue(#[from] reqwest::header::InvalidHeaderValue),
+    /// Error from the [`HttpClient`](crate::HttpClient)
+    /// This error will be raised when the request is invalid or failed to parse the response.
+    #[error(transparent)]
+    HttpError(Box<dyn std::error::Error + Send + Sync>),
     /// RequestError from [`reqwest::Error`].
     /// This error will be raised when the request is invalid or failed to parse the response in reqwest.
     #[error(transparent)]
@@ -19,6 +25,7 @@ pub enum Error {
     StandardError(#[from] std::io::Error),
     /// WebSocketError from [`tungstenite::error::Error`].
     /// This error will be raised when tungstenite WebSocket raises an error.
+    #[cfg(feature = "streaming")]
     #[error(transparent)]
     WebSocketError(#[from] tokio_tungstenite::tungstenite::error::Error),
     /// JsonError from [`serde_json::Error`].
@@ -43,7 +50,7 @@ pub struct OwnError {
 }
 
 /// Error kind of [`OwnError`].
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, Clone, Copy, PartialEq, Eq)]
 pub enum Kind {
     /// The implementation is not found.
     /// When this error is raised, the method has not yet implemented.

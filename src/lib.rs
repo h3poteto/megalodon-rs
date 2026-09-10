@@ -13,10 +13,10 @@
 //! # async fn run() -> Result<(), Error> {
 //! let client = megalodon::generator(
 //!   megalodon::SNS::Mastodon,
+//!   reqwest::Client::new(),
 //!   String::from("https://fedibird.com"),
 //!   None,
-//!   None,
-//! )?;
+//! );
 //! let res = client.get_instance().await?;
 //! println!("{:#?}", res.json());
 //! # Ok(())
@@ -33,10 +33,10 @@
 //! # async fn run() -> Result<(), Error> {
 //! let client = megalodon::generator(
 //!   megalodon::SNS::Mastodon,
+//!   reqwest::Client::new(),
 //!   String::from("https://fedibird.com"),
 //!   Some(String::from("your access token")),
-//!   None,
-//! )?;
+//! );
 //! let res = client.verify_account_credentials().await?;
 //! println!("{:#?}", res.json());
 //! # Ok(())
@@ -52,19 +52,21 @@ pub mod error;
 pub mod firefish;
 pub mod friendica;
 pub mod gotosocial;
+pub(crate) mod http;
 pub mod mastodon;
 pub mod megalodon;
 pub mod oauth;
 pub mod pixelfed;
 pub mod pleroma;
 pub mod response;
+#[cfg(feature = "streaming")]
 pub mod streaming;
-pub(crate) mod tls;
 
+pub use self::http::HttpClient;
 pub use self::megalodon::Megalodon;
-use crate::error::Error;
 pub use detector::detector;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "streaming")]
 pub use streaming::Streaming;
 
 /// Which SNS.
@@ -116,34 +118,35 @@ impl FromStr for SNS {
 /// Generate an API client which satisfies megalodon trait.
 pub fn generator(
     sns: SNS,
+    client: impl HttpClient,
     base_url: String,
     access_token: Option<String>,
-    user_agent: Option<String>,
-) -> Result<Box<dyn Megalodon + Send + Sync>, Error> {
+) -> Box<dyn Megalodon + Send + Sync> {
+    let client = Box::new(client) as Box<dyn HttpClient>;
     match sns {
         SNS::Pleroma => {
-            let pleroma = pleroma::Pleroma::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(pleroma))
+            let pleroma = pleroma::Pleroma::new(client, base_url, access_token);
+            Box::new(pleroma)
         }
         SNS::Friendica => {
-            let friendica = friendica::Friendica::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(friendica))
+            let friendica = friendica::Friendica::new(client, base_url, access_token);
+            Box::new(friendica)
         }
         SNS::Mastodon => {
-            let mastodon = mastodon::Mastodon::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(mastodon))
+            let mastodon = mastodon::Mastodon::new(client, base_url, access_token);
+            Box::new(mastodon)
         }
         SNS::Firefish => {
-            let firefish = firefish::Firefish::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(firefish))
+            let firefish = firefish::Firefish::new(client, base_url, access_token);
+            Box::new(firefish)
         }
         SNS::Gotosocial => {
-            let gotosocial = gotosocial::Gotosocial::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(gotosocial))
+            let gotosocial = gotosocial::Gotosocial::new(client, base_url, access_token);
+            Box::new(gotosocial)
         }
         SNS::Pixelfed => {
-            let pixelfed = pixelfed::Pixelfed::new(base_url, access_token, user_agent)?;
-            Ok(Box::new(pixelfed))
+            let pixelfed = pixelfed::Pixelfed::new(client, base_url, access_token);
+            Box::new(pixelfed)
         }
     }
 }

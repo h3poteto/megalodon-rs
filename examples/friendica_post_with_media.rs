@@ -18,7 +18,12 @@ async fn main() {
         return;
     };
 
-    let client = generator(megalodon::SNS::Friendica, url, Some(token), None).unwrap();
+    let client = generator(
+        megalodon::SNS::Friendica,
+        reqwest::Client::new(),
+        url,
+        Some(token),
+    );
 
     let file_path = "./sample.jpg".to_string();
     let Ok(res) = upload_media(&client, file_path.to_string()).await else {

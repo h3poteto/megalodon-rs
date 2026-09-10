@@ -6,7 +6,7 @@ use crate::{
     megalodon,
 };
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize, de};
+use serde::{de, Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Status {

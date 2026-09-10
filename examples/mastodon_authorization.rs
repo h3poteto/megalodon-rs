@@ -9,7 +9,7 @@ async fn main() {
         println!("Specify MASTODON_URL!!");
         return;
     };
-    let client = generator(megalodon::SNS::Mastodon, url, None, None).unwrap();
+    let client = generator(megalodon::SNS::Mastodon, reqwest::Client::new(), url, None);
     let options = megalodon::megalodon::AppInputOptions {
         scopes: Some(
             [

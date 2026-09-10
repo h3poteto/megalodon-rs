@@ -3,10 +3,12 @@
 use core::fmt;
 use std::str::FromStr;
 
+use crate::entities;
 use crate::error::{Error, Kind};
 use crate::oauth::{AppData, TokenData};
 use crate::response::Response;
-use crate::{entities, Streaming};
+#[cfg(feature = "streaming")]
+use crate::Streaming;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
@@ -455,7 +457,8 @@ pub trait Megalodon {
         options: Option<&UploadMediaInputOptions>,
     ) -> Result<Response<entities::UploadMedia>, Error> {
         let file = File::open(file_path.clone()).await?;
-        self.upload_media_reader(Box::new(file), options, Some(file_path)).await
+        self.upload_media_reader(Box::new(file), options, Some(file_path))
+            .await
     }
 
     async fn upload_media_reader(
@@ -775,24 +778,31 @@ pub trait Megalodon {
     // Streaming
     // ======================================
     /// Get the base URL for streaming endpoints
+    #[cfg(feature = "streaming")]
     async fn streaming_url(&self) -> String;
 
     /// Get user streaming object.
+    #[cfg(feature = "streaming")]
     async fn user_streaming(&self) -> Box<dyn Streaming + Send + Sync>;
 
     /// Get public streaming object.
+    #[cfg(feature = "streaming")]
     async fn public_streaming(&self) -> Box<dyn Streaming + Send + Sync>;
 
     /// Get local streaming object.
+    #[cfg(feature = "streaming")]
     async fn local_streaming(&self) -> Box<dyn Streaming + Send + Sync>;
 
     /// Get direct streaming object.
+    #[cfg(feature = "streaming")]
     async fn direct_streaming(&self) -> Box<dyn Streaming + Send + Sync>;
 
     /// Get tag streaming object.
+    #[cfg(feature = "streaming")]
     async fn tag_streaming(&self, tag: String) -> Box<dyn Streaming + Send + Sync>;
 
     /// Get list streaming object.
+    #[cfg(feature = "streaming")]
     async fn list_streaming(&self, list_id: String) -> Box<dyn Streaming + Send + Sync>;
 }
 
