@@ -50,7 +50,7 @@ pub struct OwnError {
 }
 
 /// Error kind of [`OwnError`].
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, Clone, Copy, PartialEq, Eq)]
 pub enum Kind {
     /// The implementation is not found.
     /// When this error is raised, the method has not yet implemented.
