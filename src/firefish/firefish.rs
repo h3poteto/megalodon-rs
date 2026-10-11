@@ -1,9 +1,7 @@
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
-use rand::RngCore;
 use regex::Regex;
 use serde_json::Value;
-use sha1::{Digest, Sha1};
 use std::{collections::HashMap, str::FromStr};
 use tokio::io::AsyncRead;
 use tokio_util::codec::{BytesCodec, FramedRead};
@@ -1645,9 +1643,7 @@ impl megalodon::Megalodon for Firefish {
         file_name: Option<String>,
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         // Generate a random filename if not provided
-        let mut file_name_unhash = [0; 32];
-        rand::rng().fill_bytes(&mut file_name_unhash);
-        let random_file_name = hex::encode(Sha1::digest(file_name_unhash));
+        let random_file_name = uuid::Uuid::new_v4().to_string();
 
         let stream = FramedRead::new(reader, BytesCodec::new());
         let file_body = reqwest::Body::wrap_stream(stream);

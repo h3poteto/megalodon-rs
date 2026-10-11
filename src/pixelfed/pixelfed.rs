@@ -14,7 +14,6 @@ use crate::{
     default, entities as MegalodonEntities, error::Error, megalodon, oauth as MegalodonOAuth,
     response::Response,
 };
-use rand::RngCore;
 
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
@@ -23,7 +22,6 @@ use oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, ResponseType, Scope, TokenUrl,
 };
 use serde_json::Value;
-use sha1::{Digest, Sha1};
 use std::ops::Sub;
 use tokio::{fs::File, io::AsyncRead};
 use tokio_util::codec::{BytesCodec, FramedRead};
@@ -1827,9 +1825,7 @@ impl megalodon::Megalodon for Pixelfed {
         file_name: Option<String>,
     ) -> Result<Response<MegalodonEntities::UploadMedia>, Error> {
         // Generate a random filename if not provided
-        let mut file_name_unhash = [0; 32];
-        rand::rng().fill_bytes(&mut file_name_unhash);
-        let random_file_name = hex::encode(Sha1::digest(file_name_unhash));
+        let random_file_name = uuid::Uuid::new_v4().to_string();
 
         let stream = FramedRead::new(reader, BytesCodec::new());
         let file_body = reqwest::Body::wrap_stream(stream);
@@ -1912,7 +1908,7 @@ impl megalodon::Megalodon for Pixelfed {
             if let Some(file_path) = &options.file_path {
                 let file = File::open(file_path).await?;
 
-                let file_name = hex::encode(Sha1::digest(file_path.as_bytes()));
+                let file_name = uuid::Uuid::new_v4().to_string();
 
                 let stream = FramedRead::new(file, BytesCodec::new());
                 let file_body = reqwest::Body::wrap_stream(stream);
